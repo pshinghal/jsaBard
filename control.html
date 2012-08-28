@@ -1,0 +1,190 @@
+<!-- /* ---------------------------------------------------------------------------------------
+This jsaSound Code is distributed under LGPL 3
+Copyright (C) 2012 National University of Singapore
+Inquiries: director@anclab.org
+
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 3 of the License, or any later version.
+This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNULesser General Public License for more details.
+You should have received a copy of the GNU General Public License and GNU Lesser General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>
+------------------------------------------------------------------------------------------*/ --><html>
+<!--  Kumar Subramanian (http://nishabdam.com) is the Guru responsible for the party node.js architecture! -->
+    <head>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <script src="http://animatedsoundworks.com:8000/socket.io/socket.io.js"></script>
+		<script src="utils/utils.js"></script>
+        <script>
+            // make_party(n) is a function that gives a roughly
+            // pronounceable string name that has about 13xn bits
+            // of pseudo-randomness in it.
+            var make_party = (function () {
+                var letters  = "abcdefghijklmnopqrstuvwxyz";
+                var category = "vcccvcccvcccccvcccccvccccc";
+                var consonants = "bcdfghjklmnpqrstvwxyz";
+                var vowels = "aeiou";
+
+                return function (n) {
+                    var result = [];
+                    var i, k, a1, a2, a3;
+                    for (i = 0; i < n; ++i) {
+                        k = Math.floor(Math.random() * letters.length);
+                        a1 = letters.charAt(k);
+                        a2 = vowels.charAt(Math.floor(Math.random() * vowels.length));
+                        a3 = consonants.charAt(Math.floor(Math.random() * consonants.length));
+
+                        if (category.charAt(k) === 'c') {
+                            // First letter is a consonant. Make the second
+                            // a vowel and the third a consonant.
+                            result.push(a1 + a2 + a3);
+                        } else {
+                            // First letter is a vowel. Make the second a consonant
+                            // and the third a vowel.
+                            result.push(a1 + a3 + a2);
+                        }
+                    }
+                    return result.join(' ');
+                };
+            }());
+        </script>
+        <script>
+            var socket = io.connect('animatedsoundworks.com:8000');
+			console.log("Controler: socket = " + socket);
+			
+            var party = make_party(3);
+
+            socket.on('connect', function () {
+				console.log("Controler: socket.emit register and party name  " + party);
+                socket.emit('register', {party: party.replace(/ /g, ''), type: "control"});
+            });
+
+            function send(msg) {
+				//console.log("Controler: send  " + JSON.stringify(msg));
+                socket.send(JSON.stringify(msg));
+            }
+
+            function relativeOffset(element, event) {
+                var totalOffsetX = 0;
+                var totalOffsetY = 0;
+                var elemX = 0;
+                var elemY = 0;
+                var currentElement = element;
+
+                do {
+                    totalOffsetX += currentElement.offsetLeft;
+                    totalOffsetY += currentElement.offsetTop;
+                } while(currentElement = currentElement.offsetParent)
+
+                elemX = event.pageX - totalOffsetX;
+                elemY = event.pageY - totalOffsetY;
+
+                return {x:elemX, y:elemY};        
+            }
+			//----------------------------------------------------------------------------
+            function setupCanvas(id) {
+			
+				// first set up callbacks for the phone sensor data
+				window.addEventListener('deviceorientation', function(event) {
+					//var heading = event.alpha;
+					var pitch = event.beta;
+					var roll = event.gamma;
+					
+					//document.getElementById("heading").innerHTML = heading;
+					document.getElementById("pitch").innerHTML = parseInt(pitch);
+					document.getElementById("roll").innerHTML = parseInt(roll);
+					
+					// send them together
+					// map [-45,45] to [-1,1]
+					var foo1 = mapconstrain(-45, 45, 0, 1, pitch);
+					var foo2 = mapconstrain(-45, 45, 0, 1, roll);
+					send({ selector: "pitchroll", p: foo1, r: foo2 });
+
+				}, false);
+
+				// Now for the touch data
+                var canvas = document.getElementById(id);
+                if (!canvas) {
+                    document.write("ERROR: Bad canvas id!");
+                    throw false;
+                }
+
+                canvas.addEventListener("touchstart", makeTouchHandler(newTouch), false);
+                canvas.addEventListener("touchmove", makeTouchHandler(newTouch), false);
+                canvas.addEventListener("touchend", makeTouchHandler(touchDone), false);
+                document.getElementById('play_stop').onclick = function (event) {
+					send({ selector: 'play_stop' });
+                };
+
+                var context = canvas.getContext('2d');
+                function draw(x, y) {
+                    context.fillStyle = 'white';
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    context.lineStyle = 'black';
+                    context.strokeRect(2, 2, canvas.width-4, canvas.height-4);
+                    context.fillStyle = 'red';
+                    context.beginPath();
+                    context.arc(x, y, 10, 0, Math.PI * 2);
+                    context.fill();
+                }
+
+                draw(0, 0);
+
+                // Draw the party name at init time. It will
+                // disappear once you start using the control.
+                context.font = '18px sans-serif';
+                context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                context.fillText(party, 15, 30);
+
+                var trackedTouch = undefined;
+				
+				var modx, mody; // trapped in the limits of the box
+                function newTouch(touch) {
+                    var xy = relativeOffset(canvas, touch);
+                    if (!trackedTouch) { 
+                        // Start tracking this.
+                        trackedTouch = touch.identifier; 
+                    }
+                    if (trackedTouch === touch.identifier) {
+                        //send({ selector: "morph", x: xy.x * 180 / canvas.width, y: xy.y * 180 / canvas.height });
+						// keep the red dot in the box where it belongs
+						modx= Math.max(0, Math.min(xy.x, canvas.width));
+						mody= Math.max(0, Math.min(xy.y, canvas.height));
+						send({ selector: "morph", x: modx / canvas.width, y: mody / canvas.height });
+                        draw(modx, mody);
+                    }
+                }
+
+                function touchDone(touch) {
+                    if (trackedTouch === touch.identifier) {
+                        trackedTouch = undefined;
+                    }
+                }
+
+                function makeTouchHandler(func) {
+                    return function (event) {
+                        event.preventDefault();
+                        var i, N;
+                        for (i = 0, N = event.changedTouches.length; i < N; ++i) {
+                            func(event.changedTouches[i]);
+                        }
+                    };
+                }
+            }
+        </script>
+    </head>
+    <body>
+	<div style="width:250px;float:left;">
+        <canvas id="touch" width="240" height="240"></canvas>
+        <br/>
+        <button id="play_stop" style="width: 240; height: 80; font-size: x-large">Play/Stop</button>
+	</div >
+	<div style="background-color:#DDDDFF;height:320px;width:80px;float:left;">
+		<h4>
+		Pitch    <div id="pitch" align="center">p</div><br>
+		Roll    <div id="roll" align="center">r</div><br>
+		</h4>	
+	</div>
+	
+        <script>setupCanvas("touch");</script>
+    </body>
+</html>
+
