@@ -6,13 +6,19 @@ Inquiries: director@anclab.org
 This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 3 of the License, or any later version.
 This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNULesser General Public License for more details.
 You should have received a copy of the GNU General Public License and GNU Lesser General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>
-------------------------------------------------------------------------------------------*/ --><html>
+------------------------------------------------------------------------------------------*/ -->
+<html>
 <!--  Kumar Subramanian (http://nishabdam.com) is the Guru responsible for the party node.js architecture! -->
     <head>
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		
+		<script type="text/javascript">	
+			var jsaHost="animatedsoundworks.com:8000";
+		</script>
         <script src="http://animatedsoundworks.com:8000/socket.io/socket.io.js"></script>
-		<script src="utils/utils.js"></script>
+
+		<script src="jsaUtils/utils.js"></script>
         <script>
             // make_party(n) is a function that gives a roughly
             // pronounceable string name that has about 13xn bits
@@ -47,7 +53,7 @@ You should have received a copy of the GNU General Public License and GNU Lesser
             }());
         </script>
         <script>
-            var socket = io.connect('animatedsoundworks.com:8000');
+			var socket = io.connect(jsaHost);
 			console.log("Controler: socket = " + socket);
 			
             var party = make_party(3);
@@ -91,11 +97,11 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 					//document.getElementById("heading").innerHTML = heading;
 					document.getElementById("pitch").innerHTML = parseInt(pitch);
 					document.getElementById("roll").innerHTML = parseInt(roll);
-					
 					// send them together
 					// map [-45,45] to [-1,1]
 					var foo1 = mapconstrain(-45, 45, 0, 1, pitch);
 					var foo2 = mapconstrain(-45, 45, 0, 1, roll);
+
 					send({ selector: "pitchroll", p: foo1, r: foo2 });
 
 				}, false);

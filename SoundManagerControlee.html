@@ -10,7 +10,7 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 <head>
 <!--  Kumar Subramanian (http://nishabdam.com) is the Guru responsible for the party node.js architecture! 
 // Modified, adapted, and further messed with by:
-//	Lonce Wyse, July 2010
+//	Lonce Wyse, July 2012
 //------------------------------ -->
  <!-- ---------------------------------------------------------------------------
 This code demonstrates 
@@ -20,7 +20,10 @@ This code demonstrates
 ------------------------------------------------------------------------------- -->   
 
 	<!-- #include for node party connection with phone -->
-    <script src="http://animatedsoundworks.com:8000/socket.io/socket.io.js"></script>		
+	<script type="text/javascript">	
+		var jsaHost="animatedsoundworks.com:8000";
+	</script>
+    <script src="http://animatedsoundworks.com:8000/socket.io/socket.io.js"> </script>		
 	<script src="controlHandler.js"></script>
 	<!-- --------------------------------------------- -->
 		
@@ -40,7 +43,7 @@ This code demonstrates
 	<!--  ------------------------------ -->
 	
 	<!--  "Player" code -->
-	<script src="jsaComponents/SliderBox.js"></script>
+	<script src="jsaComponents/sliderBox.js"></script>
 	
 	<!--  Sound loading and management code --------------------------------------- -->
 	<script type="text/javascript">	
