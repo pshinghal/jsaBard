@@ -2,7 +2,9 @@ README
 
 jsaPhoneControl is an experiment in using smartphones as controllers for jsaSound Models.
 
-DEPENDS ON: jsaSounds gitHub project (in 3 directories: jsaComponents, jsaModels, and jsaUtils)
+DEPENDS ON: 
+	1) node.js, and socket.io.js 
+	2  jsaSounds gitHub project (for 3 directories: jsaComponents, jsaModels, and jsaUtils)
 
 jsaPhoneControl code should all reside on a server.
 run message-router.js on the server
@@ -17,7 +19,7 @@ Currently hardcoded to run at:
 It might be availabe there right now. 
 
 
-If you want to run it locally, 
+If you want to run it on a different server (e.g. locally), 
 At the top of files
 	control.html and SoundManagerControlee.html
            1) change jsaHost to the name or IP address of the server
