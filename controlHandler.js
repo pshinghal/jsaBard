@@ -12,6 +12,13 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 //	Lonce Wyse, July 2010
 //------------------------------
 // This is where we set up the responses to incoming control messages.
+
+
+console.log("LOADING CONTROLHANDLER");
+
+
+
+ 
 controlHandler = function(){
 	
 	var m_sm;
@@ -103,3 +110,4 @@ controlHandler = function(){
 	
 	return myInterface;
 }
+

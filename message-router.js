@@ -75,10 +75,12 @@ io.sockets.on('connection', function (socket) {
             party.synths.push(socket);
             socket.on('message', make_fwd(party.controllers));
             socket.on('disconnect', make_on_disconnect('Synth', party, party.synths, socket));
+            console.log("synth connected");
         } else if (party && data.type === 'control') {
             party.controllers.push(socket);
             socket.on('message', make_fwd(party.synths));
             socket.on('disconnect', make_on_disconnect('Controller', party, party.controllers, socket));
+            console.log("controller connected");
         }
     });
 });
