@@ -22,8 +22,8 @@ require.config({
 	}
 });
 require(
-	["require", "jsaSound/jsaCore/sliderBox"],
-	function (require, makeSliderBox) {
+	["require", "jsaSound/jsaCore/sliderBox", "jsaSound/scripts/controlHandler"],
+	function (require, makeSliderBox, m_handler) {
 		var currentSndModel;
 		var soundSelectorElem = document.getElementById("soundSelector");
 
@@ -67,7 +67,11 @@ require(
 				function (currentSM) {
 					console.log("got model");
 					sb = makeSliderBox(currentSM());
-					console.log("made slider box");
+
+					m_handler.setSM(sb);
+
+
+					console.log("made slider box and assigned to m_handler " + m_handler);
 				}
 			);
 		}
@@ -76,5 +80,8 @@ require(
 		makeSoundListSelector();
 
 		soundSelectorElem.addEventListener("change", soundChoice);
+
+		console.log("ARRGGHH");
+
 	}
 );

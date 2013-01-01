@@ -14,24 +14,20 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 // This is where we set up the responses to incoming control messages.
 
 
-console.log("LOADING CONTROLHANDLER");
-
-
-
- 
-controlHandler = function(){
+define(["socket.io-client/dist/socket.io"],
+function(){
 	
 	var m_sm;
 	var playingP=false;
 	
-	var myInterface = {}
+	var myInterface = {};
 	myInterface.setSM = function(i_sm){
 		console.log("setting sound model in handler");
 		m_sm = i_sm;
-	}
+	};
 	
-    var init = function (){	
-	var foo;
+    var init = function (){
+    var foo;
 
 	// These are on the controlee web page:
 	var party_setup = document.getElementById('party_setup');
@@ -76,7 +72,7 @@ controlHandler = function(){
 			if(m_sm){
 				m_sm.setRangeParamNorm (0, msg.x);
 				m_sm.setRangeParamNorm (1, msg.y);
-			}				
+			}
 		};
 
 		handlers.play_stop = function (msg) {
@@ -92,22 +88,23 @@ controlHandler = function(){
 		};
 		
 		handlers.pitchroll = function (msg) {
-			if(m_sm){			    
+			if(m_sm){
 				m_sm.setRangeParamNorm (2, msg.p);
 				m_sm.setRangeParamNorm (3, msg.r);
-			} 
+			}
 		};
 
 		
-		setTimeout(function () { 
+		setTimeout(function () {
 			console.log("timeout");
-			party_setup.parentNode.removeChild(party_setup); 
+			party_setup.parentNode.removeChild(party_setup);
 			party_setup = undefined;
 		}, 0);
 		
-		}
+		};
 	}();
 	
 	return myInterface;
 }
 
+)
