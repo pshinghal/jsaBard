@@ -42,7 +42,6 @@ function(){
 		
 		console.log ("button click to join " + partyName);
 		
-		//var socket = io.connect('animatedsoundworks.com:8000');
 		var socket = io.connect(jsaHost);
 		console.log ("joining using socket " + socket);
 		
