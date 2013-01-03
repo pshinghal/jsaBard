@@ -7,9 +7,6 @@ This library is free software; you can redistribute it and/or modify it under th
 This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNULesser General Public License for more details.
 You should have received a copy of the GNU General Public License and GNU Lesser General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
-
-
-
 require.config({
 	paths: {
 		// "core": "../jsaCore",
@@ -44,7 +41,8 @@ require(
 			{name: "Mp3", model: "jsaMp3"},
 			{name: "Granular Mp3", model: "jsaGranularMp3"},
 			{name: "Mic Input", model: "jsaMicInput"},
-			{name: "Mic Input 2", model: "jsaMicInput2"}
+			{name: "Mic Input 2", model: "jsaMicInput2"},
+			{name: "Monster Voice", model: "jsaMonsterVoice"}
 		];
 
 		// Create the html select box using the hard-coded soundList above
@@ -66,13 +64,8 @@ require(
 				["jsaSound/jsaModels/" + soundList[soundSelectorElem.selectedIndex].model],
 				// And open the sliderBox
 				function (currentSM) {
-					console.log("got model");
 					sb = makeSliderBox(currentSM());
-
 					m_handler.setSM(sb);
-
-
-					console.log("made slider box and assigned to m_handler " + m_handler);
 				}
 			);
 		}
@@ -81,8 +74,6 @@ require(
 		makeSoundListSelector();
 
 		soundSelectorElem.addEventListener("change", soundChoice);
-
-		console.log("ARRGGHH");
 
 	}
 );

@@ -9,7 +9,8 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 -->
 <html>
 	<head>
-	 	<!--
+       <link rel="stylesheet" type="text/css" href="css/jsaPhoneSelector.css">
+ 	 	<!--
 		This code demonstrates 
 		a) Using a dynamically created list selector to choose sound jsaModels,
 		b) a dynamically created "Player" to display sliders for sound model parameters
@@ -34,36 +35,37 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 
 	</head>
 	<body>
-		<h1> Dynamically create model gui with sliders and text boxes for parameters </h1> 
-		<!-- Here we will dynamically create the sound list for selection -->
-		Choose your sound model:
-		<select id="soundSelector">
-		</select> </br>
-
-
-<br>
-<br>
-<br>
-<!-- ------------------------------------------------------------------- -->
-<!--  and this is the phone party stuff   ------------------------------- -->
-<hr />
-	<div class="row">
-		<h2 class="span8">You can also control these sounds from a chrome-enabled smart phone.</h2>
-		Type this URL into your phone browser:  http://animatedsoundworks.com/ctlexp/control.html  (or use the QR code below) </br>
-		<img border="0" src="./images/qrcode.6092328.controler.jpg" alt="Controller QRcode address" width="250" height="250" />
-	</div>
-
-	<div class="span2">
-		<div class="span2 well" id="party_setup">
-			 <div class="row">
-				<div class="span2">
-					Type the 9-letter code the phone receives, then press Join: </br>
-					<input id="party_box" style="width:100px" type="text" autofocus placeholder="controller name"/>
-					<button id="join_party" >Join</button>
-				</div>
+		<div class="soundSelectorDivID">
+			<h1> Experimental sound model API </h1>
+			<h2> Create slider boxes for random (and also experimental) sounds</h2> 
+			<!-- Here we will dynamically create the sound list for selection -->
+			<div class="contentID">
+				Choose your sound model: </br>
+				<select id="soundSelector">
+				</select> </br>
 			</div>
+			<br>
 		</div>
-	 </div>
+
+<!--  -----------------------   and this is the phone party stuff   ------------------------------- -->
+<hr />
+	<div class="soundSelectorDivID">
+
+		<h2 class="contentID">Even more experimental: You can also control these sounds from a smart phone.</h2>
+		Type this URL into your phone browser:  http://animatedsoundworks.com/ctlexp/control.html  (or use the QR code below) </br>
+
+		<div class="contentID">
+		<img border="0" src="./images/qrcode.6092328.controler.jpg" alt="Controller QRcode address" width="250" height="250" />
+
+
+		<div class="span2">
+			Type the 9-letter code the phone receives, then press Join: </br>
+			<input id="party_box" style="width:100px" type="text" autofocus placeholder="controller name"/>
+			<button id="join_party" >Join</button>
+			<br><br>
+		</div>
+		</div>
+	</div>
 
 
 
