@@ -1,14 +1,18 @@
 body
 {
 background-color:#111111;
+font-family:Calibri ; font-size:16px; 
 }
 .soundSelectorDivID{ 
 background: -webkit-linear-gradient( top left, 888888, #B0AAB0, #777777 );
-
 } 
+.selectorTextDivID{
+	margin-left:20px;
+}
 .contentID{ 
 width: 600px ;
 margin-left: auto ;
 margin-right: auto ;
+
 }	
 

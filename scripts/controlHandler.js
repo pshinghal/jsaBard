@@ -69,8 +69,8 @@ function(){
 
 		handlers.morph = function (msg) {
 			if(m_sm){
-				m_sm.setRangeParamNorm (0, msg.x);
-				m_sm.setRangeParamNorm (1, msg.y);
+				m_sm.setParamNorm (0, msg.x);
+				m_sm.setParamNorm (1, msg.y);
 			}
 		};
 
@@ -88,8 +88,8 @@ function(){
 		
 		handlers.pitchroll = function (msg) {
 			if(m_sm){
-				m_sm.setRangeParamNorm (2, msg.p);
-				m_sm.setRangeParamNorm (3, msg.r);
+				m_sm.setParamNorm (2, msg.p);
+				m_sm.setParamNorm (3, msg.r);
 			}
 		};
 

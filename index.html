@@ -36,22 +36,25 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 	</head>
 	<body>
 		<div class="soundSelectorDivID">
-			<h1> Experimental sound model API </h1>
-			<h2> Create slider boxes for random (and also experimental) sounds</h2> 
-			<!-- Here we will dynamically create the sound list for selection -->
-			<div class="contentID">
-				Choose your sound model: </br>
-				<select id="soundSelector">
-				</select> </br>
+			<div class=selectorTextDivID>
+				<h1> jsaSound for Interactive Sound Modeling </h1>
+				This is the same sound collection and sliderbox interface described in more detail at <a href = "http://animatedsoundworks.com/jsaSound/"> jsaSound</a>.  
+				<!-- Here we will dynamically create the sound list for selection -->
+				<div class="contentID">
+					Choose your sound model: </br>
+					<select id="soundSelector">
+					</select> </br>
+				</div>
+
 			</div>
-			<br>
 		</div>
 
 <!--  -----------------------   and this is the phone party stuff   ------------------------------- -->
 <hr />
 	<div class="soundSelectorDivID">
-
-		<h2 class="contentID">Even more experimental: You can also control these sounds from a smart phone.</h2>
+		<div class=selectorTextDivID>
+		<h2> Interface experiment: Smart phone control.</h2>
+		Note: This can be somewhat unresponsive since you are sending control signals to a US-based server and back to your client. However, grab the source and run the server on a local machine, and you have a viable interface. <br><br>
 		Type this URL into your phone browser:  http://animatedsoundworks.com/ctlexp/control.html  (or use the QR code below) </br>
 
 		<div class="contentID">
@@ -63,6 +66,7 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 			<input id="party_box" style="width:100px" type="text" autofocus placeholder="controller name"/>
 			<button id="join_party" >Join</button>
 			<br><br>
+		</div>
 		</div>
 		</div>
 	</div>
