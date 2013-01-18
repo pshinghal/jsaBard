@@ -30,7 +30,7 @@ function(){
     var foo;
 
 	// These are on the controlee web page:
-	var party_setup = document.getElementById('party_setup');
+	//var party_setup = document.getElementById('party_setup');
 	var party_box = document.getElementById('party_box');
 	var join_party_btn = document.getElementById('join_party');
 
@@ -96,7 +96,7 @@ function(){
 		
 		setTimeout(function () {
 			console.log("timeout");
-			party_setup.parentNode.removeChild(party_setup);
+			//party_setup.parentNode.removeChild(party_setup);
 			party_setup = undefined;
 		}, 0);
 		
