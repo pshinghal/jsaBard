@@ -1,6 +1,12 @@
 jsaCore/
+
 jsaModels/
+
 jsaOpCodes/
+
+jsaResources/
 scripts/require.js
+
 *~
+
 scripts/socket.io-client/
