@@ -10,3 +10,6 @@ scripts/require.js
 *~
 
 scripts/socket.io-client/
+node_modules/
+jsaSound/
+jsaSound
