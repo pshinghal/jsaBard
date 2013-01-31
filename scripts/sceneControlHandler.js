@@ -65,7 +65,7 @@ define(
 					switch (handler.type) {
 					// TODO: Standardise the "val" part
 					case "range":
-						m_sm.set(handler.parameter, msg.val);
+						m_sm.setRangeParamNorm(handler.parameter, msg.val);
 						break;
 
 					//This is a special type.
