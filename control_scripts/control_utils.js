@@ -80,6 +80,8 @@ function mtof(m) {
   return Math.pow(2, (m - 69) / 12) * 440;
 }
 
+// Maps position of x between f1 and f2 to same relative position between t1 and t2.
+// eg. 5(f1) <-- 6 --> 9(f2) ==> 0(t1) <-- 0.25(new) --> 1(t2)
 function mapconstrain(f1, f2, t1, t2, x){
    var raw = t1 + ((x-f1)/(f2-f1)) * (t2-t1);
    return Math.max(t1, Math.min(raw, t2));
