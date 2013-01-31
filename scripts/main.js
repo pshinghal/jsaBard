@@ -9,17 +9,11 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 */
 require.config({
 	paths: {
-		// "core": "../jsaCore",
-		// "baseSM": "../jsaCore/baseSM",
-		// "models": "../jsaModels",
-		// "utils": "../jsaCore/utils",
-		// "opCodes": "../jsaOpCodes",
-		// "config": "../jsaCore/config",
-		"jsaSound": ".."
+		"jsaSound": "../jsaSound"
 	}
 });
 require(
-	["require", "jsaSound/jsaCore/sliderBox", "jsaSound/scripts/controlHandler"],
+	["require", "jsaSound/jsaCore/sliderBox", "controlHandler"],
 	function (require, makeSliderBox, m_handler) {
 		var currentSndModel;
 		var soundSelectorElem = document.getElementById("soundSelector");
