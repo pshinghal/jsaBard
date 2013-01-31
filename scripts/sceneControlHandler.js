@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 define(
 	["socket.io-client/dist/socket.io"],
 	function () {
-		var m_sm;
+		var soundModels = {};
 		var m_scene;
 		var playingP = false;
 
 		var myInterface = {};
-		myInterface.setSM = function (i_sm) {
-			console.log("setting sound model in handler");
-			m_sm = i_sm;
+		myInterface.addSM = function (i_modelName, i_soundModel) {
+			console.log("Adding sound model in handler");
+			soundModels[i_modelName] = i_soundModel;
 		};
 
 		myInterface.setScene = function (sceneMapping) {

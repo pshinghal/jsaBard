@@ -24,41 +24,72 @@ require(
 
 		//TODO: Load this dynamically
 		var sceneMapping = {
-			model: "jsaMetaDrone2",
+			models: ["jsaMetaDrone2", "jsaMp3"],
 			handlers: {
-				morphX: {
-					type: "range",
-					parameter: "Base Note"
-				},
-				morphY: {
-					type: "range",
-					parameter: "Number of Generators"
-				},
 				pitch: {
 					type: "range",
-					parameter: "Gain"
+					targets: [
+						{
+							model: "jsaMetaDrone2",
+							parameter: "Gain"
+						},
+						{
+							model: "jsaMp3",
+							parameter: "Gain"
+						}
+					]
+				},
+				roll: {
+					type: "range",
+					targets: [
+						{
+							model: "jsaMetaDrone2",
+							parameter: "Base Note"
+						}
+					]
 				},
 				toggle: {
 					type: "play_stop",
-					parameter: "Play/Stop"
+					targets: [
+						{
+							model: "jsaMp3",
+							parameter: "Play/Stop"
+						}
+					]
 				},
 				pushbutton: {
 					type: "play_stop",
-					parameter: "Play/Stop"
+					targets: [
+						{
+							model: "jsaMetaDrone2",
+							parameter: "Play/Stop"
+						}
+					]
 				}
 			}
 		};
 
-		var sb;
-		require(
-			// Get the model
-			["jsaSound/jsaModels/" + sceneMapping.model],
-			// And open the sliderBox
-			function (currentSM) {
-				sb = makeSliderBox(currentSM());
-				m_handler.setSM(sb);
-				m_handler.setScene(sceneMapping);
+		m_handler.setScene(sceneMapping);
+
+		function loadSoundModels() {
+			function soundModelHelper(num) {
+				if (num < sceneMapping.models.length) {
+					require(
+						// Get the model
+						["jsaSound/jsaModels/" + sceneMapping.models[num]],
+						// And open the sliderBox
+						function (currentSM) {
+							var sb = makeSliderBox(currentSM());
+							m_handler.addSM(sceneMapping.models[num], sb);
+							soundModelHelper(num + 1);
+						}
+					);
+				}
 			}
-		);
+			soundModelHelper(0);
+		}
+
+		loadSoundModels();
 	}
 );
+
