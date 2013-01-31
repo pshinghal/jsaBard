@@ -37,6 +37,14 @@ require(
 				pitch: {
 					type: "range",
 					parameter: "Gain"
+				},
+				toggle: {
+					type: "play_stop",
+					parameter: "Play/Stop"
+				},
+				pushbutton: {
+					type: "play_stop",
+					parameter: "Play/Stop"
 				}
 			}
 		};

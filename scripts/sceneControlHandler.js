@@ -58,6 +58,21 @@ define(
 					console.error(JSON.stringify(msg));
 				}
 
+				//TODO: (MAYBE) implement way of specifying whether we want to STOP or to RELEASE
+				// This currently interfaces with the sliderBox, so play and release are no different. i.e. play() while playing is the same as release()
+				// Keeping this at the moment, for possible future use.
+				var play_stop = function (msg) {
+					if (m_sm && playingP) {
+						m_sm.release();
+						console.log("releaseing sound");
+						playingP = false;
+					} else {
+						m_sm.play();
+						console.log("playing sound");
+						playingP = true;
+					}
+				};
+
 				function dispatch(msg) {
 					// (handlers[msg.selector] || defaultHandler)(msg); // cool javascript pattern!!!! 
 					var handler = m_scene.handlers[msg.id];
@@ -70,6 +85,7 @@ define(
 
 					//This is a special type.
 					//TODO: Have a more "standardised" version of this, too.
+					//Well, in a way, both are special types. Anything other than range and play/stop is unlikely to exist.
 					case "play_stop":
 						play_stop();
 						break;
@@ -88,18 +104,6 @@ define(
 					console.log("emit the register message  ");
 					socket.emit('register', { party: partyName, type: 'synth' });
 				});
-
-				var play_stop = function (msg) {
-					if (m_sm && playingP) {
-						m_sm.release();
-						console.log("releaseing sound");
-						playingP = false;
-					} else {
-						m_sm.play();
-						console.log("playing sound");
-						playingP = true;
-					}
-				};
 
 				handlers.pitchroll = function (msg) {
 					if (m_sm) {

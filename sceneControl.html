@@ -108,6 +108,31 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 
 				}, false);
 
+                var toggleElem = document.getElementById("toggle");
+                var pushbuttonElem = document.getElementById("pushbutton");
+
+                function sendToggle (event) {
+                    event.preventDefault();
+                    send({ id: "toggle", type: "play_stop", val: "play_stop"});
+                }
+
+                function sendPushbuttonDown (event) {
+                    event.preventDefault();
+                    send({ id: "pushbutton", type: "play_stop", val: "play"});
+                }
+
+                function sendPushbuttonUp (event) {
+                    event.preventDefault();
+                    send({ id: "pushbutton", type: "play_stop", val: "stop"});
+                }
+
+                toggleElem.addEventListener("touchstart", sendToggle, false);
+                // toggleElem.addEventListener("mousedown", sendToggle, false);
+                pushbuttonElem.addEventListener("touchstart", sendPushbuttonDown, false);
+                // pushbuttonElem.addEventListener("mousedown", sendPushbuttonDown, false);
+                pushbuttonElem.addEventListener("touchend", sendPushbuttonUp, false);
+                // pushbuttonElem.addEventListener("mouseup", sendPushbuttonUp, false);
+
                 /*
 				// Now for the touch data
                 var canvas = document.getElementById(id);
