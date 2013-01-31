@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!-- /* ---------------------------------------------------------------------------------------
 This jsaSound Code is distributed under LGPL 3
 Copyright (C) 2012 National University of Singapore
@@ -54,12 +55,12 @@ You should have received a copy of the GNU General Public License and GNU Lesser
         </script>
         <script>
 			var socket = io.connect(jsaHost);
-			console.log("Controler: socket = " + socket);
+			console.log("Controller: socket = " + socket);
 			
             var party = make_party(3);
 
             socket.on('connect', function () {
-				console.log("Controler: socket.emit register and party name  " + party);
+				console.log("Controller: socket.emit register and party name  " + party);
                 socket.emit('register', {party: party.replace(/ /g, ''), type: "control"});
             });
 
@@ -102,10 +103,12 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 					var foo1 = mapconstrain(-45, 45, 0, 1, pitch);
 					var foo2 = mapconstrain(-45, 45, 0, 1, roll);
 
-					send({ selector: "pitchroll", p: foo1, r: foo2 });
+					send({ id: "pitch", type: "range", val: foo1});
+                    send({ id: "roll", type: "range", val: foo2 });
 
 				}, false);
 
+                /*
 				// Now for the touch data
                 var canvas = document.getElementById(id);
                 if (!canvas) {
@@ -174,14 +177,21 @@ You should have received a copy of the GNU General Public License and GNU Lesser
                         }
                     };
                 }
+                */
             }
         </script>
     </head>
     <body>
 	<div style="width:250px;float:left;">
-        <canvas id="touch" width="240" height="240"></canvas>
+        <div style = "width: 240px; height: 40px; font-size: x-large;">
+            <p id="partyname">Party Name</p>
+        </div>
+        <!-- <canvas id="touch" width="240" height="240"></canvas> -->
+        <button id="toggle" style="width: 240px; height: 140px; font-size: x-large;">Toggle</button>
         <br/>
-        <button id="play_stop" style="width: 240; height: 80; font-size: x-large">Play/Stop</button>
+        <button id="pushbutton" style="width: 240px; height: 140px; font-size: x-large;">Pushbutton</button>
+        <!-- <br/> -->
+        <!-- <button id="play_stop" style="width: 240px; height: 80px; font-size: x-large;">Play/Stop</button> -->
 	</div >
 	<div style="background-color:#DDDDFF;height:320px;width:80px;float:left;">
 		<h4>
@@ -190,7 +200,10 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 		</h4>	
 	</div>
 	
-        <script>setupCanvas("touch");</script>
+        <script>
+             setupCanvas("touch");
+             document.getElementById("partyname").innerHTML = party;
+        </script>
     </body>
 </html>
 
