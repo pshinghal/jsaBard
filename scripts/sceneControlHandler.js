@@ -52,8 +52,6 @@ define(
 				console.log("joining using socket " + socket);
 
 
-				var handlers = {};
-
 				function defaultHandler(msg) {
 					console.error(JSON.stringify(msg));
 				}
@@ -104,13 +102,6 @@ define(
 					console.log("emit the register message  ");
 					socket.emit('register', { party: partyName, type: 'synth' });
 				});
-
-				handlers.pitchroll = function (msg) {
-					if (m_sm) {
-						m_sm.setParamNorm(2, msg.p);
-						m_sm.setParamNorm(3, msg.r);
-					}
-				};
 
 				setTimeout(function () {
 					console.log("timeout");
