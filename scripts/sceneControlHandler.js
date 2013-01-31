@@ -19,12 +19,13 @@ define(
 	function () {
 		var soundModels = {};
 		var m_scene;
-		var playingP = false;
+		var playingP = {};
 
 		var myInterface = {};
 		myInterface.addSM = function (i_modelName, i_soundModel) {
 			console.log("Adding sound model in handler");
 			soundModels[i_modelName] = i_soundModel;
+			playingP[i_modelName] = false;
 		};
 
 		myInterface.setScene = function (sceneMapping) {
@@ -59,33 +60,46 @@ define(
 				//TODO: (MAYBE) implement way of specifying whether we want to STOP or to RELEASE
 				// This currently interfaces with the sliderBox, so play and release are no different. i.e. play() while playing is the same as release()
 				// Keeping this at the moment, for possible future use.
-				var play_stop = function (msg) {
-					if (m_sm && playingP) {
-						m_sm.release();
-						console.log("releaseing sound");
-						playingP = false;
+				var play_stop = function (targetModelName) {
+					console.log("Play/Stop " + targetModelName);
+					if (soundModels[targetModelName] && playingP[targetModelName]) {
+						console.log("Yes, playing");
+						console.log(soundModels[targetModelName]);
+						soundModels[targetModelName].release();
+						console.log("releasing sound");
+						playingP[targetModelName] = false;
 					} else {
-						m_sm.play();
+						console.log("Not playing");
+						console.log(soundModels[targetModelName]);
+						soundModels[targetModelName].play();
 						console.log("playing sound");
-						playingP = true;
+						playingP[targetModelName] = true;
 					}
 				};
 
 				function dispatch(msg) {
+					var i, targetModelName, targetParamName, targetVal;
 					// (handlers[msg.selector] || defaultHandler)(msg); // cool javascript pattern!!!! 
 					var handler = m_scene.handlers[msg.id];
 					// TODO: Check that the parameter and the message have the same (or a compatible) TYPE
 					switch (handler.type) {
 					// TODO: Standardise the "val" part
 					case "range":
-						m_sm.setRangeParamNorm(handler.parameter, msg.val);
+						for (i = 0; i < handler.targets.length; i += 1) {
+							targetModelName = handler.targets[i].model;
+							targetParamName = handler.targets[i].parameter;
+							soundModels[targetModelName].setRangeParamNorm(targetParamName, msg.val);
+						}
 						break;
 
 					//This is a special type.
 					//TODO: Have a more "standardised" version of this, too.
 					//Well, in a way, both are special types. Anything other than range and play/stop is unlikely to exist.
 					case "play_stop":
-						play_stop();
+						for (i = 0; i < handler.targets.length; i += 1) {
+							targetModelName = handler.targets[i].model;
+							play_stop(targetModelName);
+						}
 						break;
 					default:
 						console.log("Bad parameter type!");
