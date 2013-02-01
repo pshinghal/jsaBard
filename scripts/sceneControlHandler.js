@@ -63,16 +63,16 @@ define(
 				var play_stop = function (targetModelName) {
 					console.log("Play/Stop " + targetModelName);
 					if (soundModels[targetModelName] && playingP[targetModelName]) {
-						console.log("Yes, playing");
-						console.log(soundModels[targetModelName]);
+						// console.log("Yes, playing");
+						// console.log(soundModels[targetModelName]);
 						soundModels[targetModelName].release();
-						console.log("releasing sound");
+						// console.log("releasing sound");
 						playingP[targetModelName] = false;
 					} else {
-						console.log("Not playing");
-						console.log(soundModels[targetModelName]);
+						// console.log("Not playing");
+						// console.log(soundModels[targetModelName]);
 						soundModels[targetModelName].play();
-						console.log("playing sound");
+						// console.log("playing sound");
 						playingP[targetModelName] = true;
 					}
 				};
@@ -88,7 +88,7 @@ define(
 						for (i = 0; i < handler.targets.length; i += 1) {
 							targetModelName = handler.targets[i].model;
 							targetParamName = handler.targets[i].parameter;
-							soundModels[targetModelName].setRangeParamNorm(targetParamName, msg.val);
+							soundModels[targetModelName].setParamNorm(targetParamName, msg.val);
 						}
 						break;
 
