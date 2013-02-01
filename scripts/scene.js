@@ -24,17 +24,17 @@ require(
 
 		//TODO: Load this dynamically
 		var sceneMapping = {
-			models: ["jsaMetaDrone2", "jsaMp3"],
+			models: ["jsaRSBeatSet", "jsaTelephoneSpeech"],
 			handlers: {
 				pitch: {
 					type: "range",
 					targets: [
 						{
-							model: "jsaMetaDrone2",
+							model: "jsaRSBeatSet",
 							parameter: "Gain"
 						},
 						{
-							model: "jsaMp3",
+							model: "jsaTelephoneSpeech",
 							parameter: "Gain"
 						}
 					]
@@ -43,8 +43,8 @@ require(
 					type: "range",
 					targets: [
 						{
-							model: "jsaMetaDrone2",
-							parameter: "Base Note"
+							model: "jsaRSBeatSet",
+							parameter: "Rate"
 						}
 					]
 				},
@@ -52,7 +52,7 @@ require(
 					type: "play_stop",
 					targets: [
 						{
-							model: "jsaMp3",
+							model: "jsaRSBeatSet",
 							parameter: "Play/Stop"
 						}
 					]
@@ -61,7 +61,7 @@ require(
 					type: "play_stop",
 					targets: [
 						{
-							model: "jsaMetaDrone2",
+							model: "jsaTelephoneSpeech",
 							parameter: "Play/Stop"
 						}
 					]
