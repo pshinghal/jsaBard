@@ -29,22 +29,35 @@ You should have received a copy of the GNU General Public License and GNU Lesser
  * to the message router that you're running explicitly.
  */
 
-var http = require('http');
-var fs = require('fs');
+var express = require("express");
+var app = express();
+var server = require("http").createServer(app);
+var io = require("socket.io").listen(server);
+// var fs = require('fs');
 
-var app = http.createServer(handler);
-var io = require('socket.io').listen(app);
+// var app = http.createServer(handler);
+// var io = require('socket.io').listen(app);
 
 app.listen(8000);
 
-var parties = {}; 
+var parties = {};
 // A map from party name to a structure with info on
 // the synths and controllers that belong to the party.
- 
 
-function handler(req, res) {
-    res.end();
-}
+
+// function handler(req, res) {
+//     res.end();
+// }
+
+app.get('/', function (req, res) {
+    res.sendfile(__dirname + "/index.html");
+});
+
+app.get('/scene', function (req, res) {
+    res.sendfile(__dirname + "/scene.html");
+});
+
+app.use(express.static(__dirname));
 
 function partyNamed(name) {
     if (!name) { return undefined; }
