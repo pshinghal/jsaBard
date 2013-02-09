@@ -22,7 +22,8 @@ You should have received a copy of the GNU General Public License and GNU Lesser
  * 2. Install socket.io by running "npm install socket.io" from the
  *    directory from which you'll be running the routing service.
  *    (http://socket.io/)
- * 3. Run the service using "node message-router.js". The service
+ * 3. Install Express by running "npm install express"
+ * 4. Run the service using "node message-router.js". The service
  *    will run on port 8000, so make sure that port is available.
  * 
  * Note that your synth and controller HTML+JS code needs to connect
@@ -33,31 +34,32 @@ var express = require("express");
 var app = express();
 var server = require("http").createServer(app);
 var io = require("socket.io").listen(server);
-// var fs = require('fs');
 
-// var app = http.createServer(handler);
-// var io = require('socket.io').listen(app);
-
-app.listen(8000);
+server.listen(8000);
 
 var parties = {};
 // A map from party name to a structure with info on
 // the synths and controllers that belong to the party.
 
+function addStatic(route) {
+    console.log("Adding static handler for " + route);
+    app.use(express.static(__dirname + route));
+    console.log("Added");
+}
 
-// function handler(req, res) {
-//     res.end();
-// }
+function addGetter(route, file) {
+    console.log("Adding getter");
+    app.get(route, function (req, res) {
+        console.log("Got request for " + file);
+        res.sendfile(__dirname + file);
+    });
+    console.log("Added");
+}
 
-app.get('/', function (req, res) {
-    res.sendfile(__dirname + "/index.html");
-});
+addGetter("/", "/index.html");
+addGetter("/scene", "/scene.html");
 
-app.get('/scene', function (req, res) {
-    res.sendfile(__dirname + "/scene.html");
-});
-
-app.use(express.static(__dirname));
+addStatic("/");
 
 function partyNamed(name) {
     if (!name) { return undefined; }
