@@ -14,6 +14,58 @@ You should have received a copy of the GNU General Public License and GNU Lesser
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		
+        <style type="text/css">
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                margin: auto;
+                width: 100%;
+                max-width: 480px;
+                height: 480px;
+                max-height: 100%;
+                position: relative;
+            }
+
+            button {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                width: 100%;
+                /*height: 160px;*/
+                height: 100%;
+                font-size: x-large;
+            }
+
+            .innerContainer {
+                margin: 0;
+                padding: 0;
+                height: 45%;
+            }
+
+            #textcontainer {
+                font-size: x-large;
+                /*height: 40px;*/
+                height: auto;
+                margin: auto;
+            }
+
+            p {
+                margin: auto;
+                font-family: sans-serif;
+                text-align: center;
+            }
+
+            #toggle {
+                background-color: red;
+            }
+
+            #pushbutton {
+                background-color: yellow;
+            }
+        </style>
+
 		<script type="text/javascript">
             // Will this work everywhere?
 			var jsaHost="/";
@@ -96,10 +148,11 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 					var pitch = event.beta;
 					var roll = event.gamma;
 					
-					//document.getElementById("heading").innerHTML = heading;
-					document.getElementById("pitch").innerHTML = parseInt(pitch);
-					document.getElementById("roll").innerHTML = parseInt(roll);
-					// send them together
+                    // DEBUG MODE for pitch and roll
+					// document.getElementById("pitch").innerHTML = parseInt(pitch);
+					// document.getElementById("roll").innerHTML = parseInt(roll);
+					
+                    // send them together
 					// map [-45,45] to [-1,1]
 					var foo1 = mapconstrain(-45, 45, 0, 1, pitch);
 					var foo2 = mapconstrain(-45, 45, 0, 1, roll);
@@ -133,103 +186,32 @@ You should have received a copy of the GNU General Public License and GNU Lesser
                 // pushbuttonElem.addEventListener("mousedown", sendPushbuttonDown, false);
                 pushbuttonElem.addEventListener("touchend", sendPushbuttonUp, false);
                 // pushbuttonElem.addEventListener("mouseup", sendPushbuttonUp, false);
-
-                /*
-				// Now for the touch data
-                var canvas = document.getElementById(id);
-                if (!canvas) {
-                    document.write("ERROR: Bad canvas id!");
-                    throw false;
-                }
-
-                canvas.addEventListener("touchstart", makeTouchHandler(newTouch), false);
-                canvas.addEventListener("touchmove", makeTouchHandler(newTouch), false);
-                canvas.addEventListener("touchend", makeTouchHandler(touchDone), false);
-                document.getElementById('play_stop').onclick = function (event) {
-					send({ selector: 'play_stop' });
-                };
-
-                var context = canvas.getContext('2d');
-                function draw(x, y) {
-                    context.fillStyle = 'white';
-                    context.clearRect(0, 0, canvas.width, canvas.height);
-                    context.lineStyle = 'black';
-                    context.strokeRect(2, 2, canvas.width-4, canvas.height-4);
-                    context.fillStyle = 'red';
-                    context.beginPath();
-                    context.arc(x, y, 10, 0, Math.PI * 2);
-                    context.fill();
-                }
-
-                draw(0, 0);
-
-                // Draw the party name at init time. It will
-                // disappear once you start using the control.
-                context.font = '18px sans-serif';
-                context.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                context.fillText(party, 15, 30);
-
-                var trackedTouch = undefined;
-				
-				var modx, mody; // trapped in the limits of the box
-                function newTouch(touch) {
-                    var xy = relativeOffset(canvas, touch);
-                    if (!trackedTouch) { 
-                        // Start tracking this.
-                        trackedTouch = touch.identifier; 
-                    }
-                    if (trackedTouch === touch.identifier) {
-                        //send({ selector: "morph", x: xy.x * 180 / canvas.width, y: xy.y * 180 / canvas.height });
-						// keep the red dot in the box where it belongs
-						modx= Math.max(0, Math.min(xy.x, canvas.width));
-						mody= Math.max(0, Math.min(xy.y, canvas.height));
-						send({ selector: "morph", x: modx / canvas.width, y: mody / canvas.height });
-                        draw(modx, mody);
-                    }
-                }
-
-                function touchDone(touch) {
-                    if (trackedTouch === touch.identifier) {
-                        trackedTouch = undefined;
-                    }
-                }
-
-                function makeTouchHandler(func) {
-                    return function (event) {
-                        event.preventDefault();
-                        var i, N;
-                        for (i = 0, N = event.changedTouches.length; i < N; ++i) {
-                            func(event.changedTouches[i]);
-                        }
-                    };
-                }
-                */
             }
         </script>
     </head>
     <body>
-	<div style="width:250px;float:left;">
-        <div style = "width: 240px; height: 40px; font-size: x-large;">
+	<div class="container">
+        <!-- <canvas id="touch" width="240" height="240"></canvas> -->
+        <div class="innerContainer">
+            <button id="toggle">Toggle</button>
+        </div>
+        <div class="innerContainer" id="textcontainer">
             <p id="partyname">Party Name</p>
         </div>
-        <!-- <canvas id="touch" width="240" height="240"></canvas> -->
-        <button id="toggle" style="width: 240px; height: 140px; font-size: x-large;">Toggle</button>
-        <br/>
-        <button id="pushbutton" style="width: 240px; height: 140px; font-size: x-large;">Pushbutton</button>
-        <!-- <br/> -->
-        <!-- <button id="play_stop" style="width: 240px; height: 80px; font-size: x-large;">Play/Stop</button> -->
+        <div class="innerContainer">
+            <button id="pushbutton">Pushbutton</button>
+        </div>
 	</div >
-	<div style="background-color:#DDDDFF;height:320px;width:80px;float:left;">
+    <!-- DEBUG MODE for pitch and roll -->
+	<!-- <div style="background-color:#DDDDFF;height:320px;width:80px;float:left;">
 		<h4>
 		Pitch    <div id="pitch" align="center">p</div><br>
 		Roll    <div id="roll" align="center">r</div><br>
 		</h4>	
-	</div>
-	
+	</div> -->
         <script>
              setupCanvas("touch");
              document.getElementById("partyname").innerHTML = party;
         </script>
     </body>
 </html>
-
