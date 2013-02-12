@@ -119,8 +119,8 @@ define(
 
 				setTimeout(function () {
 					console.log("timeout");
-					party_setup.parentNode.removeChild(party_setup);
-					party_setup = undefined;
+					//party_setup.parentNode.removeChild(party_setup);
+					//party_setup = undefined;
 				}, 0);
 			};
 		};

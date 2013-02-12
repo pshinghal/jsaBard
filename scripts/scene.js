@@ -24,7 +24,7 @@ require(
 
 		//TODO: Load this dynamically
 		var sceneMapping = {
-			models: ["jsaRSBeatSet", "jsaTelephoneSpeech"],
+			models: ["jsaRSBeatSet", "jsaMetaMic"],
 			handlers: {
 				pitch: {
 					type: "range",
@@ -34,7 +34,7 @@ require(
 							parameter: "Gain"
 						},
 						{
-							model: "jsaTelephoneSpeech",
+							model: "jsaMetaMic",
 							parameter: "Gain"
 						}
 					]
@@ -61,7 +61,7 @@ require(
 					type: "play_stop",
 					targets: [
 						{
-							model: "jsaTelephoneSpeech",
+							model: "jsaMetaMic",
 							parameter: "Play/Stop"
 						}
 					]
