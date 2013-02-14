@@ -6,6 +6,10 @@ font-family:Calibri ; font-size:16px;
 .soundSelectorDivID{ 
 background: -webkit-linear-gradient( top left, 888888, #B0AAB0, #777777 );
 } 
+.soundSelectorDivID2{ 
+background: -webkit-linear-gradient( top left, 888888, #B0AAB0, #777777 );
+height:100%;
+} 
 .selectorTextDivID{
 	margin-left:20px;
 }
