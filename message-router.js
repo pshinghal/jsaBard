@@ -56,8 +56,8 @@ function addGetter(route, file) {
     console.log("Added");
 }
 
-addGetter("/", "/index.html");
-addGetter("/scene", "/scene.html");
+addGetter("/", "/scene.html");
+addGetter("/control", "/sceneControl.html");
 
 addStatic("/");
 
