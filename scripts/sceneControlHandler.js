@@ -20,8 +20,10 @@ define(
 		var soundModels = {};
 		var m_scene;
 		var playingP = {};
+		var currState = {};
 
 		var myInterface = {};
+
 		myInterface.addSM = function (i_modelName, i_soundModel) {
 			console.log("Adding sound model in handler");
 			soundModels[i_modelName] = i_soundModel;
@@ -31,6 +33,21 @@ define(
 		myInterface.setScene = function (sceneMapping) {
 			console.log("Setting scene in handler");
 			m_scene = sceneMapping;
+		};
+
+		var initialiseTwoStates = function () {
+			var handler;
+			var firstStateTargets;
+			var i;
+			for (handler in m_scene.handlers) {
+				if (m_scene.handlers.hasOwnProperty(handler) && m_scene.handlers[handler].type === "twoState") {
+					currState[handler] = 0;
+					firstStateTargets = m_scene.handlers[handler].targets[0];
+					for (i = 0; i < firstStateTargets.length; i += 1) {
+						soundModels[firstStateTargets[i].model].setParamNorm(firstStateTargets[i].parameter, firstStateTargets[i].defaultValue);
+					}
+				}
+			}
 		};
 
 	    var init = function () {
@@ -80,7 +97,8 @@ define(
 				function dispatch(msg) {
 					var i, targetModelName, targetParamName, targetVal;
 					// (handlers[msg.selector] || defaultHandler)(msg); // cool javascript pattern!!!! 
-					var handler = m_scene.handlers[msg.id];
+					var handlerName = msg.id;
+					var handler = m_scene.handlers[handlerName];
 					// TODO: Check that the parameter and the message have the same (or a compatible) TYPE
 					switch (handler.type) {
 					// TODO: Standardise the "val" part
@@ -101,10 +119,26 @@ define(
 							play_stop(targetModelName);
 						}
 						break;
+					case "twoState":
+						currState[handlerName] = (currState[handlerName] + 1) % 2;
+						var targetState = currState[handlerName];
+						// console.log("Setting state " + targetState);
+						for (i = 0; i < handler.targets[targetState].length; i += 1) {
+							targetModelName = handler.targets[targetState][i].model;
+							targetParamName = handler.targets[targetState][i].parameter;
+							// If no value has been passed, the model will be updated with the dafault value
+							// IMPORTANT NOTE: This specifies an EXACT way in which the value must be passed to control a twoState type function.
+							// MAY NEED TO BE CHANGED
+							targetVal = (msg.val && msg.val[targetModelName] && msg.val[targetModelName][targetParamName]) ? msg.val : handler.targets[targetState][i].defaultValue;
+							soundModels[targetModelName].setParamNorm(targetParamName, targetVal);
+						}
+						break;
 					default:
 						console.log("Bad parameter type!");
 					}
 				}
+
+				initialiseTwoStates();
 
 				socket.on('connect', function () {
 					console.log("socket.on ");
