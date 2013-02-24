@@ -57,6 +57,29 @@ require(
 						}
 					]
 				},
+				dummyTwoState: {
+					// can be generalised to multiple states
+					type: "twoState",
+					// targets is a 2-d array of target objects:
+					// targets[0] is one state, targets[1] is the other.
+					targets: [
+						[
+							{
+								model: "jsaTelephoneSpeech",
+								parameter: "filter Q",
+								// IMPORTANT NOTE: this value is passed to setParamNorm, so it must be between 0 to 1;
+								defaultValue: 2.0 / 150.0
+							}
+						],
+						[
+							{
+								model: "jsaTelephoneSpeech",
+								parameter: "filter Q",
+								defaultValue: 50.0 / 150.0
+							}
+						]
+					]
+				},
 				pushbutton: {
 					type: "play_stop",
 					targets: [
