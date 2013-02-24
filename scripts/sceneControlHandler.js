@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 
 
 define(
-	["socket.io-client/dist/socket.io"],
+	["/socket.io/socket.io.js"],
 	function () {
 		var soundModels = {};
 		var m_scene;
