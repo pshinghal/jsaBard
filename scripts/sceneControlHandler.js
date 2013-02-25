@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 
 
 define(
-	["/socket.io/socket.io.js"],
-	function () {
+	[ "require", "jsaSound/jsaCore/sliderBox", "rig", "/socket.io/socket.io.js"],
+	function (require, makeSliderBox, rig) {
 		var soundModels = {};
 		var m_scene;
 		var playingP = {};
@@ -24,16 +24,78 @@ define(
 
 		var myInterface = {};
 
+		var currentScene, numScenes;
+
+		var initScene = function(){
+			if (rig.length <=0){
+				console.log("Rig has no scenes!");
+				return;
+			}
+			numScenes=rig.length;
+			currentScene=0;
+			// set initial scene to nullScene
+			myInterface.setScene(rig[currentScene]);
+			
+
+		}
+
 		myInterface.addSM = function (i_modelName, i_soundModel) {
 			console.log("Adding sound model in handler");
 			soundModels[i_modelName] = i_soundModel;
 			playingP[i_modelName] = false;
 		};
 
-		myInterface.setScene = function (sceneMapping) {
-			console.log("Setting scene in handler");
-			m_scene = sceneMapping;
+		myInterface.setScene = function (newscene) {
+			console.log("Setting scene in handler to scene " + newscene);
+			m_scene = newscene;
+			loadSoundModels(m_scene, initialiseTwoStates);						
 		};
+
+
+
+		function loadSoundModels(scene, callback) {
+			function soundModelHelper(num) {
+				if (num < scene.models.length) {
+					console.log("The scene you are loading has " + scene.models.length + " models.")
+					
+					require(
+						// Get the model
+						["jsaSound/jsaModels/" + scene.models[num]],
+						// And open the sliderBox
+						function (currentSM) {
+							console.log("making slider box");
+							console.log("RIG is " + rig);
+							console.log("scenelist  " + rig[0]);
+							var sb = makeSliderBox(currentSM());
+							myInterface.addSM(scene.models[num], sb);
+							soundModelHelper(num + 1);
+
+							if ((num+1) === scene.models.length){
+								// loading sounds takes time, and we need them loaded before calling initialiseTwoStates()
+								callback();
+							}
+						}
+					);
+
+				}
+
+			}
+			soundModelHelper(0);
+		}
+
+		function closeSoundModels(scene){
+			//console.log("closeing " + soundModels.length + " soundmodels.");
+			for (var i in soundModels){
+				//console.log("i is " + i + " and soundModels[i] is "  + soundModels[i]);
+				soundModels[i].close();
+			}
+			for (var i in playingP){
+				playingP[i]=false;
+			}
+			soundModels={};
+		}
+
+
 
 		var initialiseTwoStates = function () {
 			var handler;
@@ -44,7 +106,13 @@ define(
 					currState[handler] = 0;
 					firstStateTargets = m_scene.handlers[handler].targets[0];
 					for (i = 0; i < firstStateTargets.length; i += 1) {
+						//console.log("firstStateTargets[i].model " + firstStateTargets[i].model);
+						//console.log("soundModels " + soundModels[firstStateTargets[i].model]);
+						//console.log("setting value to " + firstStateTargets[i].defaultValue);
 						soundModels[firstStateTargets[i].model].setParamNorm(firstStateTargets[i].parameter, firstStateTargets[i].defaultValue);
+						if (firstStateTargets[i].defaultState && (firstStateTargets[i].defaultState === "play")){
+							soundModels[firstStateTargets[i].model].play();
+						}
 					}
 				}
 			}
@@ -99,6 +167,13 @@ define(
 					// (handlers[msg.selector] || defaultHandler)(msg); // cool javascript pattern!!!! 
 					var handlerName = msg.id;
 					var handler = m_scene.handlers[handlerName];
+
+					if (! handler){
+						//console.log("message " + handlerName + " not used in this scene");
+						return;
+					}
+
+				
 					// TODO: Check that the parameter and the message have the same (or a compatible) TYPE
 					switch (handler.type) {
 					// TODO: Standardise the "val" part
@@ -106,6 +181,7 @@ define(
 						for (i = 0; i < handler.targets.length; i += 1) {
 							targetModelName = handler.targets[i].model;
 							targetParamName = handler.targets[i].parameter;
+							//console.log("got range message, targetModelName = " + targetModelName + ", and with soundModels = " + soundModels+ ", and soundModels[targetModelName] = " + soundModels[targetModelName]);
 							soundModels[targetModelName].setParamNorm(targetParamName, msg.val);
 						}
 						break;
@@ -120,6 +196,7 @@ define(
 						}
 						break;
 					case "twoState":
+						console.log("Two state !!!");
 						currState[handlerName] = (currState[handlerName] + 1) % 2;
 						var targetState = currState[handlerName];
 						// console.log("Setting state " + targetState);
@@ -133,12 +210,19 @@ define(
 							soundModels[targetModelName].setParamNorm(targetParamName, targetVal);
 						}
 						break;
+					case "scene_change":
+						console.log("sceneChange!");
+						closeSoundModels(rig[currentScene]);
+						currentScene = (currentScene+1)%numScenes;
+						myInterface.setScene(rig[currentScene]);
+
+						break;
 					default:
 						console.log("Bad parameter type!");
 					}
 				}
 
-				initialiseTwoStates();
+				//initialiseTwoStates();
 
 				socket.on('connect', function () {
 					console.log("socket.on ");
@@ -160,6 +244,8 @@ define(
 		};
 
 		init();
+
+		initScene();
 
 		return myInterface;
 	}
