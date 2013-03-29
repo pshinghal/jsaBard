@@ -1,12 +1,6 @@
-require.config({
-	paths: {
-		"jsaSound": "../jsaSound"
-	}
-});
-
 define(
-["require", "sceneControlHandler"],
-	function (require, m_handler) {
+	[],
+	function () {
 		var sceneMapping = {
 			models: ["jsaRSBeatSet", "jsaMetaMic2"],
 			handlers: {
@@ -84,10 +78,7 @@ define(
 			}
 		};
 
-
 		var sceneList = [nullScene, sceneMapping];
-		var currentSceneNum=0;
-				//var utils = 3;
 		return sceneList;
 	}
 );

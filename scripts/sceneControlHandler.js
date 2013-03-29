@@ -26,18 +26,16 @@ define(
 
 		var currentScene, numScenes;
 
-		var initScene = function(){
-			if (rig.length <=0){
+		var initScene = function () {
+			if (rig.length <= 0) {
 				console.log("Rig has no scenes!");
 				return;
 			}
-			numScenes=rig.length;
-			currentScene=0;
+			numScenes = rig.length;
+			currentScene = 0;
 			// set initial scene to nullScene
 			myInterface.setScene(rig[currentScene]);
-			
-
-		}
+		};
 
 		myInterface.addSM = function (i_modelName, i_soundModel) {
 			console.log("Adding sound model in handler");
@@ -45,19 +43,16 @@ define(
 			playingP[i_modelName] = false;
 		};
 
-		myInterface.setScene = function (newscene) {
-			console.log("Setting scene in handler to scene " + newscene);
-			m_scene = newscene;
-			loadSoundModels(m_scene, initialiseTwoStates);						
+		myInterface.setScene = function (newScene) {
+			console.log("Setting scene in handler to scene " + newScene);
+			m_scene = newScene;
+			loadSoundModels(m_scene, initialiseTwoStates);
 		};
-
-
 
 		function loadSoundModels(scene, callback) {
 			function soundModelHelper(num) {
 				if (num < scene.models.length) {
-					console.log("The scene you are loading has " + scene.models.length + " models.")
-					
+					console.log("The scene you are loading has " + scene.models.length + " models.");
 					require(
 						// Get the model
 						["jsaSound/jsaModels/" + scene.models[num]],
@@ -69,14 +64,10 @@ define(
 							var sb = makeSliderBox(currentSM());
 							myInterface.addSM(scene.models[num], sb);
 							soundModelHelper(num + 1);
-
-							if ((num+1) === scene.models.length){
-								// loading sounds takes time, and we need them loaded before calling initialiseTwoStates()
-								callback();
-							}
 						}
 					);
-
+				} else {
+					callback();
 				}
 
 			}
@@ -84,18 +75,18 @@ define(
 		}
 
 		function closeSoundModels(scene){
+			var currentSMName;
 			//console.log("closeing " + soundModels.length + " soundmodels.");
-			for (var i in soundModels){
+			for (currentSMName in soundModels){
 				//console.log("i is " + i + " and soundModels[i] is "  + soundModels[i]);
-				soundModels[i].close();
+				if (soundModels.hasOwnProperty(currentSMName))
+					soundModels[currentSMName].close();
 			}
-			for (var i in playingP){
-				playingP[i]=false;
+			for (currentSMName in playingP) {
+				playingP[currentSMName] = false;
 			}
-			soundModels={};
+			soundModels = {};
 		}
-
-
 
 		var initialiseTwoStates = function () {
 			var handler;
@@ -118,9 +109,7 @@ define(
 			}
 		};
 
-	    var init = function () {
-		    var foo;
-
+		var init = function () {
 			// These are on the controlee web page:
 			var party_setup = document.getElementById('party_setup');
 			var party_box = document.getElementById('party_box');
@@ -173,7 +162,6 @@ define(
 						return;
 					}
 
-				
 					// TODO: Check that the parameter and the message have the same (or a compatible) TYPE
 					switch (handler.type) {
 					// TODO: Standardise the "val" part
@@ -181,7 +169,7 @@ define(
 						for (i = 0; i < handler.targets.length; i += 1) {
 							targetModelName = handler.targets[i].model;
 							targetParamName = handler.targets[i].parameter;
-							//console.log("got range message, targetModelName = " + targetModelName + ", and with soundModels = " + soundModels+ ", and soundModels[targetModelName] = " + soundModels[targetModelName]);
+							// console.log("got range message, targetModelName = " + targetModelName + ", and with soundModels = " + soundModels+ ", and soundModels[targetModelName] = " + soundModels[targetModelName]);
 							soundModels[targetModelName].setParamNorm(targetParamName, msg.val);
 						}
 						break;
@@ -195,6 +183,7 @@ define(
 							play_stop(targetModelName);
 						}
 						break;
+
 					case "twoState":
 						console.log("Two state !!!");
 						currState[handlerName] = (currState[handlerName] + 1) % 2;
@@ -210,19 +199,18 @@ define(
 							soundModels[targetModelName].setParamNorm(targetParamName, targetVal);
 						}
 						break;
+
 					case "scene_change":
 						console.log("sceneChange!");
 						closeSoundModels(rig[currentScene]);
 						currentScene = (currentScene+1)%numScenes;
 						myInterface.setScene(rig[currentScene]);
-
 						break;
+
 					default:
 						console.log("Bad parameter type!");
 					}
 				}
-
-				//initialiseTwoStates();
 
 				socket.on('connect', function () {
 					console.log("socket.on ");
