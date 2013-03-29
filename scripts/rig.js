@@ -30,8 +30,7 @@ define(
 					type: "play_stop",
 					targets: [
 						{
-							model: "jsaRSBeatSet",
-							parameter: "Play/Stop"
+							model: "jsaRSBeatSet"
 						}
 					]
 				},

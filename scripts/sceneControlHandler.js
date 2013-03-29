@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 
 define(
 	[ "require", "jsaSound/jsaCore/sliderBox", "rig", "/socket.io/socket.io.js"],
+	// TODO: init and initScene need to be cleaned up/combined.
+	// Doesn't look nice that both async inits are executed in a non-daisy-chained manner.
 	function (require, makeSliderBox, rig) {
 		var soundModels = {};
 		var m_scene;
@@ -231,9 +233,9 @@ define(
 			};
 		};
 
-		init();
-
 		initScene();
+
+		init();
 
 		return myInterface;
 	}
