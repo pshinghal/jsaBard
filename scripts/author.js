@@ -1,21 +1,48 @@
 define(
-	["controllerModel", "handlerModel"],
-	function (controllerModel, handlerModel) {
-		var nextSceneId = 1;
-		var nextHandlerContentItemId = 1;
+	["controllerModel", "handlerModel", "Story"],
+	function (controllerModel, handlerModel, Story) {
+		var nextSceneId = 0;
+		var nextHandlerContentItemId = 0;
+		var nextModelId = 0;
 
 		var elemIds = {
 			scenesDiv: "scenes",
 			descriptionDiv: "description",
 			handlerContentsDiv: "handlerContents",
+			modelsDiv: "models",
 			newSceneButton: "newScene",
-			newHandlerContentItemButton: "newHandlerContentItem"
+			newHandlerContentItemButton: "newHandlerContentItem",
+			newModelButton: "newModel"
 		};
+
+		var story = Story();
+		var currSceneNumber = 0;
 
 		var elements = {};
 
 		function elem(elemName) {
 			return document.getElementById(elemName);
+		}
+
+		function atoi(str) {
+			return parseInt(str, 10);
+		}
+
+		function setActive(node) {
+			var currentClass = node.getAttribute("class").trim().split(" ");
+			if (currentClass.indexOf("active") > -1)
+				return;
+			currentClass.push("active");
+			node.setAttribute("class", currentClass.join(" "));
+		}
+
+		function removeActive(node) {
+			var currentClass = node.getAttribute("class").trim().split(" ");
+			var pos = currentClass.indexOf("active");
+			if (pos == -1)
+				return;
+			currentClass.splice(pos, 1);
+			node.setAttribute("class", currentClass.join(" "));
 		}
 
 		function mapElementsToIds() {
@@ -25,26 +52,29 @@ define(
 			}
 		}
 
+		//===============
+		// DOM functions
+		//===============
+
 		function getNewScene() {
+			var nextSceneId = story.getNextSceneId();
 			var sceneDiv = document.createElement("div");
 			sceneDiv.setAttribute("class", "scene");
 			sceneDiv.setAttribute("id", "scene/" + nextSceneId);
 
 			var pDiv = document.createElement("p");
 			pDiv.innerHTML = "Scene " + nextSceneId;
+			pDiv.addEventListener("click", makeSceneSelector(pDiv));
 			sceneDiv.appendChild(pDiv);
 
 			var deleteButton = document.createElement("button");
 			deleteButton.innerHTML = "Delete";
 			deleteButton.setAttribute("class", "deleteScene");
-			deleteButton.setAttribute("id", "button/scene/" + nextSceneId);
-			deleteButton.addEventListener("click", makeSceneDeleter(nextSceneId));
+			deleteButton.addEventListener("click", makeSceneDeleter(deleteButton));
 			sceneDiv.appendChild(deleteButton);
 
 			// Add horizontal rule at the end
 			sceneDiv.appendChild(document.createElement("hr"));
-
-			nextSceneId++;
 
 			return sceneDiv;
 		}
@@ -59,20 +89,91 @@ define(
 
 		function addNewScene() {
 			appendScenes(getNewScene());
+			story.addNewScene();
 		}
 
+		// REDUCES subsequent nodes
 		function removeScene(sceneNode) {
+			var sceneId = atoi(sceneNode.getAttribute("id").split("/").pop());
+			console.log("This scene's ID is " + sceneId);
+			var nextNode = sceneNode.nextSibling;
 			sceneNode.parentNode.removeChild(sceneNode);
+
+			adjustSceneIdsFrom(nextNode, -1);
 			// TODO: Remove Everything else attached to this scene
+
+			story.removeScene(sceneId);
 		}
 
 		function removeSceneById(id) {
+			console.log("Removing scene with ID " + id);
 			removeScene(elem("scene/" + id));
 		}
 
-		function makeSceneDeleter(id) {
+		function removeSceneByButton(button) {
+			console.log("Starting with node:");
+			console.log(button);
+			var currNode = button;
+			while (currNode && (!currNode.getAttribute("class") || currNode.getAttribute("class").split("/")[0] !== "scene"))
+				currNode = currNode.parentNode;
+			console.log("Bubbled up to node:");
+			console.log(currNode);
+			removeScene(currNode);
+		}
+
+		function selectScene(sceneNode) {
+			console.log("Selecting");
+			console.log(sceneNode);
+			var currSceneId = story.getCurrentSceneId();
+			console.log("Current Adtive ID = " + currSceneId);
+			if (currSceneId > -1)
+				removeActive(elem("scene/" + currSceneId));
+			setActive(sceneNode);
+			var sceneId = atoi(sceneNode.getAttribute("id").split("/").pop());
+			console.log("This scene has ID=" + sceneId);
+			story.setCurrentScene(sceneId);
+			console.log("Set Story's current scene to " + sceneId);
+		}
+
+		function selectSceneById(id) {
+			console.log("Selecting by ID " + id);
+			selectScene(elem("scene/" + id));
+		}
+
+		function selectSceneByNode(node) {
+			var currNode = node;
+			while (currNode && (!currNode.getAttribute("class") || currNode.getAttribute("class").split("/")[0] !== "scene"))
+				currNode = currNode.parentNode;
+			selectScene(currNode);
+		}
+
+		function makeSceneSelector(node) {
 			return function () {
-				removeSceneById(id);
+				selectSceneByNode(node);
+			};
+		}
+
+		function adjustSceneIdsFrom(firstNode, diff) {
+			console.log("Adjusting IDs From a node:" + firstNode);
+			var currNode = firstNode;
+			var currId;
+			while(currNode && currNode.getAttribute("class") && currNode.getAttribute("class").split(" ").indexOf("scene") > -1) {
+				console.log("This node IS a scene");
+				currId = atoi(currNode.getAttribute("id").split("/").pop());
+				console.log("It has ID=" + currId);
+				currId += diff;
+				console.log("It's new ID is=" + currId);
+				currNode.setAttribute("id", "scene/" + currId);
+				console.log("Set it's new ID!");
+				currNode = currNode.nextSibling;
+				console.log("Moved to the next Node!");
+			}
+		}
+
+		function makeSceneDeleter(button) {
+			return function (e) {
+				e.preventDefault();
+				removeSceneByButton(button);
 			};
 		}
 
@@ -122,10 +223,36 @@ define(
 			removeScene(elem("handlerContentItem/" + id));
 		}
 
+		// TODO: Change this to the "ByButton" styl
 		function makeHandlerContentItemDeleter(id) {
 			return function () {
 				removeHandlerContentItemById(id);
 			};
+		}
+
+		function getNewModel() {
+			var modelDiv = document.createElement("div");
+			modelDiv.setAttribute("class", "model");
+			modelDiv.setAttribute("id", "model/" + nextModelId);
+
+			// TODO: Replace with text box for new model
+			var pDiv = document.createElement("p");
+			pDiv.innerHTML = "Model " + nextModelId;
+			modelDiv.appendChild(pDiv);
+
+			var deleteButton = document.createElement("button");
+			deleteButton.innerHTML = "Delete";
+			deleteButton.setAttribute("class", "deleteModel");
+			// TODO: Change this to the "ByButton" style
+			deleteButton.addEventListener("click", makeHandlerContentItemDeleter(nextModelId));
+			modelDiv.appendChild(deleteButton);
+
+			// Add horizontal rule at the end
+			modelDiv.appendChild(document.createElement("hr"));
+
+			nextModelId++;
+
+			return modelDiv;
 		}
 
 		mapElementsToIds();
