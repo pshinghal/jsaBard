@@ -41,7 +41,7 @@ define(
 			for (temp in controllerModel) {
 				if (controllerModel.hasOwnProperty(temp)) {
 					scene.handlers[temp] = {};
-					scene.handlers[temp].type = controllerModel[temp];
+					scene.handlers[temp].type = controllerModel[temp].type;
 					//TODO: Populate dynamically instead
 					scene.handlers[temp].targets = [];
 
