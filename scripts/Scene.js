@@ -44,8 +44,25 @@ define(
 
 			scene.sounds = [];
 
+			function tokenizeBySlash(s) {
+				return s.trim().split("/");
+			}
+
+			function makeUniqueList(list) {
+				var newList = [];
+				var i;
+				for (i = 0; i < newList.length; i++)
+					if (newList.indexOf(list[i]) < 0)
+						newList.push(list[i]);
+				return newList;
+			}
+
 			function getSoundId(name) {
 				return scene.sounds.indexOf(name);
+			}
+
+			function getSoundModelFromName(name) {
+				return tokenizeBySlash(name)[0];
 			}
 
 			function addSoundToRangeHandler(handler) {
@@ -156,8 +173,12 @@ define(
 				removeSoundById(id);
 			};
 
-			myInterface.getSounds = function () {
-				return scene.sounds;
+			myInterface.getSoundNames = function () {
+				return scene.soundNames;
+			};
+
+			myInterface.getSoundModels = function () {
+				return makeUniqueList(scene.sounds.map(getSoundModelFromName));
 			};
 
 			function buildRangeHandler(myHandler) {
@@ -237,7 +258,7 @@ define(
 			// }
 
 			function tokenizeAddress(handlerContentAddress) {
-				return item.trim().split("/");
+				return tokenizeBySlash(handlerContentAddress);
 			}
 
 			function getHandlerNameFromContentAddress(handlerContentAddress) {
