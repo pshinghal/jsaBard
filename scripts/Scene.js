@@ -24,6 +24,7 @@ define(
 
 			var myInterface = {};
 			var temp;
+			var nextSoundKey = 0; //NEVER DECREMENT!
 
 			var scene = {};
 			myInterface.getSceneObj = function () {
@@ -42,6 +43,10 @@ define(
 			};
 
 			scene.sounds = [];
+
+			function getSoundId(name) {
+				return scene.sounds.indexOf(name);
+			}
 
 			function addSoundToRangeHandler(handler) {
 				handler.min.push([]);
@@ -77,8 +82,11 @@ define(
 				}
 			}
 
+			// Returns the name this sound is given. Format: <model name>/<key>. eg. jsaMp3/2
 			myInterface.addSound = function (modelName) {
 				var handlerName;
+				var soundName = modelName + "/" + nextSoundKey;
+				nextSoundKey++;
 				// if (scene.models.indexOf(modelName) > -1)
 					// return;
 				scene.sounds.push(modelName);
@@ -87,6 +95,7 @@ define(
 						addSoundToHandler(scene.handlers[handlerName]);
 					}
 				}
+				return soundName;
 			};
 			// myInterface.removeSound = function (modelName) {
 			//	var pos = scene.models.indexOf(modelName);
@@ -137,6 +146,16 @@ define(
 					}
 				}
 			};
+
+			myInterface.removeSoundByName = function (name) {
+				var id = getSoundId(name);
+				if (id < 0) {
+					console.log("Whoops! There's no sound by that name!");
+					return;
+				}
+				removeSoundById(id);
+			};
+
 			myInterface.getSounds = function () {
 				return scene.sounds;
 			};
@@ -275,7 +294,8 @@ define(
 			// handlerContentAddress specifies which exact row of soundStates is being affected.
 			// For example: "roll/min" or "myFiveStateController/0"
 			// It should probably be (part of) the button's ID
-			myInterface.setSoundState = function (handlerContentAddress, soundId, state) {
+			myInterface.setSoundState = function (handlerContentAddress, soundName, state) {
+				var soundId = getSoundId(soundName);
 				var handlerName = getHandlerNameFromContentAddress(handlerContentAddress);
 				// IF the handler doesn't exist, do nothing
 				if (!scene.handlers[handlerName])
@@ -327,7 +347,8 @@ define(
 			}
 
 			// To set in the sliderBoxes when that state is clicked
-			myInterface.getSoundState = function (handlerContentAddress, soundId) {
+			myInterface.getSoundState = function (handlerContentAddress, soundName) {
+				var soundId = getSoundId(soundName);
 				var handlerName = getHandlerNameFromContentAddress(handlerContentAddress);
 				// IF the handler doesn't exist, do nothing
 				if (!scene.handlers[handlerName])
