@@ -176,7 +176,7 @@ define(
 				removeSceneByButton(button);
 			};
 		}
-
+/*
 		function getNewHandlerContentItem() {
 			var hDiv = document.createElement("div");
 			hDiv.setAttribute("class", "handlerContentItem");
@@ -228,7 +228,7 @@ define(
 			return function () {
 				removeHandlerContentItemById(id);
 			};
-		}
+		}*/
 
 		function getNewModel() {
 			var modelDiv = document.createElement("div");
