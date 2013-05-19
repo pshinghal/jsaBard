@@ -106,7 +106,7 @@ define(
 				nextSoundKey++;
 				// if (scene.models.indexOf(modelName) > -1)
 					// return;
-				scene.sounds.push(modelName);
+				scene.sounds.push(soundName);
 				for (handlerName in scene.handlers) {
 					if (scene.handlers.hasOwnProperty(handlerName)) {
 						addSoundToHandler(scene.handlers[handlerName]);
@@ -174,7 +174,7 @@ define(
 			};
 
 			myInterface.getSoundNames = function () {
-				return scene.soundNames;
+				return scene.sounds.slice(0);
 			};
 
 			myInterface.getSoundModels = function () {
