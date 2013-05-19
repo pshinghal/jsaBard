@@ -26,3 +26,13 @@ define(
 	}
 );
 
+/*
+ * Model to follow:
+ * [
+ *   {
+ *     paramioID: "<the name of the controller element>"
+ *     eventType: "range" // or "nState"
+ *     numStates: 2 // or other number
+ *   }
+ * ]
+ */
