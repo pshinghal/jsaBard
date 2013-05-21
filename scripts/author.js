@@ -1,6 +1,6 @@
 define(
-	["controllerModel", "handlerModel", "Story"],
-	function (controllerModel, handlerModel, Story) {
+	["controllerModel", "Story"],
+	function (controllerModel, Story) {
 		var i;
 
 		// TODO IMPORTANT!
