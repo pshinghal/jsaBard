@@ -149,7 +149,7 @@ define(
 				}
 			}
 
-			myInterface.removeSoundById = function (id) {
+			function removeSoundById(id) {
 				var handlerName;
 				scene.sounds.splice(id, 1);
 				for (handlerName in scene.handlers) {
@@ -196,15 +196,17 @@ define(
 
 			function buildHandler(handlerName) {
 				var myHandler = {};
-				var type = controllerModel[handlerName].type;
+				var type = controllerModel.interface[handlerName].eventType;
+				console.log(type);
+				console.log(controllerModel.interface[handlerName]);
 				myHandler.type = type;
-				myHandler.description = "" + controllerModel[handlerName].description;
+				myHandler.description = "" + controllerModel.interface[handlerName].description;
 				switch (type) {
 					case "range":
 						buildRangeHandler(myHandler);
 						break;
 					case "nState":
-						buildNStateHandler(myHandler, controllerModel[handlerName].numStates);
+						buildNStateHandler(myHandler, controllerModel.interface[handlerName].numStates);
 						break;
 					case "scene_change":
 						buildSceneChangeHandler(myHandler);
@@ -213,18 +215,19 @@ define(
 						console.log("ERROR! Got an unknown handler type: " + type);
 						break;
 				}
+				return myHandler;
 			}
 
 			scene.handlers = [];
 
-			for (temp in controllerModel) {
-				if (controllerModel.hasOwnProperty(temp)) {
+			for (temp in controllerModel.interface) {
+				if (controllerModel.interface.hasOwnProperty(temp)) {
 					scene.handlers[temp] = buildHandler(temp);
-					scene.handlers[temp].type = controllerModel[temp].eventType;
-					if (controllerModel[temp].hasOwnProperty("numStates"))
-						scene.handlers[temp].numStates = controllerModel[temp].numStates;
+					scene.handlers[temp].type = controllerModel.interface[temp].eventType;
+					if (controllerModel.interface[temp].hasOwnProperty("numStates"))
+						scene.handlers[temp].numStates = controllerModel.interface[temp].numStates;
 
-					console.log("Added to sceneHandler " + temp + " a type of " + controllerModel[temp]);
+					console.log("Added to sceneHandler " + temp + " a type of " + controllerModel.interface[temp]);
 				}
 			}
 
