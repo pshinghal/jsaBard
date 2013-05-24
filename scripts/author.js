@@ -20,6 +20,16 @@ define(
 		console.log(controllerModel);
 		// END IMPORTANT
 
+		// FOR DEBUGGING
+		function printArr(arr) {
+			console.log("---");
+			for (var i = 0; i < arr.length; i++) {
+				console.log(arr[i]);
+			}
+			console.log("---");
+		}
+		// END DEBUGGING
+
 		var nextSceneId = 0;
 		var nextHandlerContentItemId = 0;
 		var nextModelId = 0;
@@ -86,19 +96,20 @@ define(
 
 		function getNewScene() {
 			var nextSceneId = story.getNextSceneId();
+			console.log("Scene id is " + nextSceneId);
 			var sceneDiv = document.createElement("div");
 			sceneDiv.setAttribute("class", "scene");
 			sceneDiv.setAttribute("id", "scene/" + nextSceneId);
 
 			var pDiv = document.createElement("p");
 			pDiv.innerHTML = "Scene " + nextSceneId;
-			pDiv.addEventListener("click", makeSceneSelector(pDiv));
+			pDiv.addEventListener("click", makeSceneSelector(sceneDiv));
 			sceneDiv.appendChild(pDiv);
 
 			var deleteButton = document.createElement("button");
 			deleteButton.innerHTML = "Delete";
 			deleteButton.setAttribute("class", "deleteScene");
-			deleteButton.addEventListener("click", makeSceneDeleter(deleteButton));
+			deleteButton.addEventListener("click", makeSceneDeleter(sceneDiv));
 			sceneDiv.appendChild(deleteButton);
 
 			// Add horizontal rule at the end
@@ -116,6 +127,7 @@ define(
 		}
 
 		function addNewScene() {
+			console.log("Adding new scene");
 			appendScenes(getNewScene());
 			story.addNewScene();
 		}
@@ -176,9 +188,11 @@ define(
 			selectScene(currNode);
 		}
 
-		function makeSceneSelector(node) {
-			return function () {
-				selectSceneByNode(node);
+		function makeSceneSelector(sceneDiv) {
+			// var id = sceneDiv.getAttribute("id").trim().split("/")[1];
+			return function (e) {
+				e.preventDefault();
+				selectScene(sceneDiv);
 			};
 		}
 
@@ -199,10 +213,11 @@ define(
 			}
 		}
 
-		function makeSceneDeleter(button) {
+		function makeSceneDeleter(sceneDiv) {
+			// var id = sceneDiv.getAttribute("id").trim().split("/")[1];
 			return function (e) {
 				e.preventDefault();
-				removeSceneByButton(button);
+				removeScene(sceneDiv);
 			};
 		}
 
@@ -366,6 +381,9 @@ define(
 		}
 
 		function populateStateSettersByContainer(buttonContainer, controllerName, paramName) {
+			if (!story.getCurrentScene())
+				return;
+
 			var soundNames = story.getCurrentScene().getSoundNames();
 			var i;
 			for (i = 0; i < soundNames.length; i++) {
@@ -375,6 +393,8 @@ define(
 		}
 
 		function makeControllerParamRow(controllerName, paramName, paramWords) {
+			console.log("Called makeControllerParamRow:");
+			printArr(arguments);
 			var row = document.createElement("div");
 			row.setAttribute("class", "controllerParamRow");
 			row.setAttribute("id", controllerName + "/" + paramName);
@@ -390,6 +410,7 @@ define(
 			var buttonContainer = document.createElement("div");
 			buttonContainer.setAttribute("class", "buttonContainer");
 			buttonContainer.setAttribute("id", controllerName + "/" + paramName + "/buttonContainer");
+			row.appendChild(buttonContainer);
 			populateStateSettersByContainer(buttonContainer, controllerName, paramName);
 
 			return row;
@@ -421,6 +442,8 @@ define(
 		}
 
 		function makeControllerParamRows(name, type, args) {
+			console.log("Called makeControllerParamRows:");
+			printArr(arguments);
 			switch (type) {
 				case "range":
 					return makeRangeParamRows(name);
@@ -432,6 +455,8 @@ define(
 		}
 
 		function makeControllerBlock(name, type, args) {
+			console.log("Called makeControllerBlock:");
+			printArr(arguments);
 			var blockDiv = document.createElement("div");
 			blockDiv.setAttribute("class", "controllerBlock");
 			blockDiv.setAttribute("id", name);
@@ -446,6 +471,9 @@ define(
 		}
 
 		function addNewSound(soundModel) {
+			if (!story.getCurrentScene())
+				return;
+
 			// TODO: Sanitize
 			// Note: Scene does NOT care about the models
 			var soundName = story.getCurrentScene().addSound(soundModel);
@@ -454,7 +482,7 @@ define(
 		}
 
 		function deleteSoundByButton(button) {
-			var tokens = button.getAttribute("id").trim().split();
+			var tokens = button.getAttribute("id").trim().split("/");
 			var soundName = tokens[0] + "/" + tokens[1];
 			story.getCurrentScene().removeSoundByName(soundName);
 			var soundBox = elem(soundName + "/soundBox");
@@ -482,12 +510,19 @@ define(
 			var deleteButton = document.createElement("button");
 			deleteButton.setAttribute("class", "soundDelete");
 			deleteButton.setAttribute("id", name + "/delete");
-			deleteButton.addEventListener("click", makeSoundDeleter(button));
+			deleteButton.addEventListener("click", makeSoundDeleter(deleteButton));
+			deleteButton.innerHTML = "Remove";
 			soundDiv.appendChild(deleteButton);
+
+			return soundDiv;
 		}
 
 		function drawSoundList() {
 			var listDiv = elem("soundList");
+
+			if (!story.getCurrentScene())
+				return;
+
 			var soundNames = story.getCurrentScene().getSoundNames();
 			var i;
 			for (i = 0; i < soundNames.length; i++) {
@@ -510,13 +545,13 @@ define(
 		function drawControllerEditors() {
 			var editorDiv = elem("controllerElementParams");
 			var x;
-			for (x in controllerModel) {
-				if (controllerModel.hasOwnProperty(x)) {
+			for (x in controllerModel.interface) {
+				if (controllerModel.interface.hasOwnProperty(x)) {
 					var name = x;
-					var type = controllerModel[x].eventType;
+					var type = controllerModel.interface[x].eventType;
 					var args = {};
-					if (controllerModel[x].hasOwnProperty("numStates"))
-						args.numStates = controllerModel[x].numStates;
+					if (controllerModel.interface[x].hasOwnProperty("numStates"))
+						args.numStates = controllerModel.interface[x].numStates;
 
 					editorDiv.appendChild(makeControllerBlock(name, type, args));
 				}
@@ -558,7 +593,8 @@ define(
 
 		drawSceneEditor();
 		elements.newSceneButton.addEventListener("click", addNewScene);
-		elements.newHandlerContentItemButton.addEventListener("click", addNewHandlerContentItem);
+		//elements.newHandlerContentItemButton.addEventListener("click", addNewHandlerContentItem);
 		elements.newSoundButton.addEventListener("click", newSoundHandler);
+		console.log("Completed loading author.js");
 	}
 );
