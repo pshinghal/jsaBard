@@ -1,6 +1,13 @@
+require.config({
+	paths: {
+		"jsaSound": "../jsaSound"
+	}
+});
 define(
-	["controllerModel", "Story"],
-	function (controllerModel, Story) {
+	["controllerModel", "Story", "jsaSound/jsaCore/sliderBox"],
+	function (controllerModel, Story, makeSliderBox) {
+		//TODO: Do not allow models to be added when no scene is selected (but a scene HAS been created)
+
 		var i;
 
 		// TODO IMPORTANT!
@@ -51,6 +58,10 @@ define(
 		var story = Story();
 		var currSceneNumber = 0;
 
+		var sliderBoxes = {};
+		var soundModelNames = [];
+		var soundModels = {};
+
 		var elements = {};
 
 		function elem(elemName) {
@@ -87,7 +98,9 @@ define(
 
 		//TODO: Implement with checked sliderBox, etc.
 		function getCurrentSoundState(soundName) {
-			return null;
+			if (!sliderBoxes[soundName])
+				return null;
+			return sliderBoxes[soundName].getSelected();
 		}
 
 		//===============
@@ -161,7 +174,79 @@ define(
 			removeScene(currNode);
 		}
 
+		function loadSliderBoxes() {
+			if (!story.getCurrentScene())
+				return;
+			var soundList = story.getCurrentScene().getSoundNames();
+
+			var i;
+			for (i = 0; i < soundList.length; i++) {
+				var model = soundList[i].trim().split("/")[0];
+				//DANGER. May be incorrect.
+				sliderBoxes[soundList[i]] = makeSliderBox(soundModels[model]());
+			}
+		}
+
+		function loadSoundModels(callback) {
+			// TODO: Sanitize list (?)
+			function soundModelHelper(num) {
+				if (num < soundModelNames.length) {
+					console.log("The scene you are loading has " + soundModelNames.length + " models.");
+					require(
+						// Get the model
+						["jsaSound/jsaModels/" + soundModelNames[num]],
+						// And open the sliderBox
+						function (currentSM) {
+							console.log("Adding " + soundModelNames[num] + " to soundModels object");
+
+							soundModels[soudnModelNames[num]] = currentSM;
+							soundModelHelper(num + 1);
+						}
+					);
+				} else {
+					callback();
+				}
+			}
+			soundModelHelper(0);
+		}
+
+		function reloadSoundModels() {
+			// Memory leak?
+			soundModelNames = [];
+			soundModels = {};
+			if (!story.getCurrentScene())
+				return;
+			soundModelNames = story.getCurrentScene().getSoundModels();
+			console.log("Sound models received:");
+			printArr(soundModelNames);
+
+			loadSoundModels();
+		}
+
+		function clearSliderBoxes() {
+			// Memory leak?
+			sliderBoxes = {};
+		}
+
+		function closeSliderBoxes() {
+			var x;
+			for (x in sliderBoxes) {
+				if (sliderBoxes.hasOwnProperty(x)) {
+					sliderBoxes[x].close();
+				}
+			}
+		}
+
+		function refreshSliderBoxes() {
+			closeSliderBoxes();
+			clearSliderboxes();
+			reloadSoundModels();
+			loadSliderBoxes();
+		}
+
 		function selectScene(sceneNode) {
+			// Avoid "re-selection" of the same nodes
+
 			console.log("Selecting");
 			console.log(sceneNode);
 			var currSceneId = story.getCurrentSceneId();
@@ -172,8 +257,10 @@ define(
 			var sceneId = atoi(sceneNode.getAttribute("id").split("/").pop());
 			console.log("This scene has ID=" + sceneId);
 			story.setCurrentScene(sceneId);
-			redrawSceneEditor();
 			console.log("Set Story's current scene to " + sceneId);
+			redrawSceneEditor();
+
+			refreshSliderBoxes();
 		}
 
 		function selectSceneById(id) {
