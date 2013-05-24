@@ -1,6 +1,6 @@
 require.config({
 	paths: {
-		"jsaSound": "../jsaSound"
+		"jsaSound": "http://localhost:8080/"
 	}
 });
 define(
