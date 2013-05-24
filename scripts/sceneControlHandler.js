@@ -51,6 +51,7 @@ define(
 			loadSoundModels(m_scene, initialiseTwoStates);
 		};
 
+		//Callback is optional
 		function loadSoundModels(scene, callback) {
 			function soundModelHelper(num) {
 				if (num < scene.models.length) {
@@ -68,9 +69,8 @@ define(
 							soundModelHelper(num + 1);
 						}
 					);
-				} else {
+				} else if (callback)
 					callback();
-				}
 
 			}
 			soundModelHelper(0);

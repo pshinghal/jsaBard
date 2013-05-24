@@ -46,14 +46,14 @@ define(
 
 			scene.sounds = [];
 
-			function tokenizeBySlash(s) {
-				return s.trim().split("/");
+			function tokenizeByVBar(s) {
+				return s.trim().split("|");
 			}
 
 			function makeUniqueList(list) {
 				var newList = [];
 				var i;
-				for (i = 0; i < newList.length; i++)
+				for (i = 0; i < list.length; i++)
 					if (newList.indexOf(list[i]) < 0)
 						newList.push(list[i]);
 				return newList;
@@ -64,7 +64,7 @@ define(
 			}
 
 			function getSoundModelFromName(name) {
-				return tokenizeBySlash(name)[0];
+				return tokenizeByVBar(name)[0];
 			}
 
 			function addSoundToRangeHandler(handler) {
@@ -104,7 +104,7 @@ define(
 			// Returns the name this sound is given. Format: <model name>/<key>. eg. jsaMp3/2
 			myInterface.addSound = function (modelName) {
 				var handlerName;
-				var soundName = modelName + "/" + nextSoundKey;
+				var soundName = modelName + "|" + nextSoundKey;
 				nextSoundKey++;
 				scene.sounds.push(soundName);
 				for (handlerName in scene.handlers) {
@@ -231,17 +231,17 @@ define(
 				}
 			}
 
-			function tokenizeAddress(handlerContentAddress) {
-				return tokenizeBySlash(handlerContentAddress);
+			function tokenizeAddress(address) {
+				return tokenizeByVBar(address);
 			}
 
-			function getHandlerNameFromContentAddress(handlerContentAddress) {
-				var tokens = tokenizeAddress(handlerContentAddress);
+			function getHandlerNameFromAddress(address) {
+				var tokens = tokenizeAddress(address);
 				return tokens[0];
 			}
 
-			function setRangeSoundState(handler, handlerControlAddress, soundId, state) {
-				var tokens = tokenizeAddress(handlerContentAddress);
+			function setRangeSoundState(handler, address, soundId, state) {
+				var tokens = tokenizeAddress(address);
 				var minmax = tokens[1];
 				switch (minmax) {
 					case "min":
@@ -256,8 +256,8 @@ define(
 				}
 			}
 
-			function setNStateSoundState(handler, handlerControlAddress, soundId, state) {
-				var tokens = tokenizeAddress(handlerContentAddress);
+			function setNStateSoundState(handler, address, soundId, state) {
+				var tokens = tokenizeAddress(address);
 				var stateId = tokens[1];
 				if (stateId > handler.states.length) {
 					console.log("ERROR: Can't set that state!");
@@ -266,30 +266,31 @@ define(
 				handler.states[stateId] = state;
 			}
 
-			function setSceneChangeSoundState(handler, handlerControlAddress, soundId, state) {
+			function setSceneChangeSoundState(handler, address, soundId, state) {
 				// Cheerio!
 				return;
 			}
 
-			// handlerContentAddress specifies which exact row of soundStates is being affected.
+			// address specifies which exact row of soundStates is being affected.
 			// For example: "roll/min" or "myFiveStateController/0"
 			// It should probably be (part of) the button's ID
-			myInterface.setSoundState = function (handlerContentAddress, soundName, state) {
+			myInterface.setSoundState = function (address, soundName, state) {
+				console.log("setSoundState got addr: " + address + " soundName: " + soundName + " state: " + JSON.stringify(state));
 				var soundId = getSoundId(soundName);
-				var handlerName = getHandlerNameFromContentAddress(handlerContentAddress);
+				var handlerName = getHandlerNameFromAddress(address);
 				// IF the handler doesn't exist, do nothing
 				if (!scene.handlers[handlerName])
 					return false;
 				var handler = scene.handlers[handlerName];
 				switch (handler.type) {
 					case "range":
-						setRangeSoundState(handler, handlerControlAddress, soundId, state);
+						setRangeSoundState(handler, address, soundId, state);
 						break;
 					case "nState":
-						setNStateSoundState(handler, handlerControlAddress, soundId, state);
+						setNStateSoundState(handler, address, soundId, state);
 						break;
 					case "scene_change":
-						setSceneChangeSoundState(handler, handlerControlAddress, soundId, state);
+						setSceneChangeSoundState(handler, address, soundId, state);
 						break;
 					default:
 						console.log("ERROR! Got an unknown handler type: " + type);
@@ -297,8 +298,8 @@ define(
 				}
 			};
 
-			function getRangeSoundState(handler, handlerControlAddress, soundId, state) {
-				var tokens = tokenizeAddress(handlerContentAddress);
+			function getRangeSoundState(handler, address, soundId, state) {
+				var tokens = tokenizeAddress(address);
 				var minmax = tokens[1];
 				switch (minmax) {
 					case "min":
@@ -311,8 +312,8 @@ define(
 				}
 			}
 
-			function getNStateSoundState(handler, handlerControlAddress, soundId) {
-				var tokens = tokenizeAddress(handlerContentAddress);
+			function getNStateSoundState(handler, address, soundId) {
+				var tokens = tokenizeAddress(address);
 				var stateId = tokens[1];
 				if (stateId > handler.states.length) {
 					console.log("ERROR: Can't get that state!");
@@ -321,28 +322,28 @@ define(
 				return handler.states[stateId];
 			}
 
-			function getSceneChangeSoundState(handler, handlerControlAddress, soundId) {
+			function getSceneChangeSoundState(handler, address, soundId) {
 				// Cheerio!
 				return;
 			}
 
 			// To set in the sliderBoxes when that state is clicked
-			myInterface.getSoundState = function (handlerContentAddress, soundName) {
+			myInterface.getSoundState = function (address, soundName) {
 				var soundId = getSoundId(soundName);
-				var handlerName = getHandlerNameFromContentAddress(handlerContentAddress);
+				var handlerName = getHandlerNameFromAddress(address);
 				// IF the handler doesn't exist, do nothing
 				if (!scene.handlers[handlerName])
 					return false;
 				var handler = scene.handlers[handlerName];
 				switch (handler.type) {
 					case "range":
-						getRangeSoundState(handler, handlerControlAddress, soundId);
+						getRangeSoundState(handler, address, soundId);
 						break;
 					case "nState":
-						getNStateSoundState(handler, handlerControlAddress, soundId);
+						getNStateSoundState(handler, address, soundId);
 						break;
 					case "scene_change":
-						getSceneChangeSoundState(handler, handlerControlAddress, soundId);
+						getSceneChangeSoundState(handler, address, soundId);
 						break;
 					default:
 						console.log("ERROR! Got an unknown handler type: " + type);

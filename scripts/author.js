@@ -72,6 +72,14 @@ define(
 			return parseInt(str, 10);
 		}
 
+		function tokenizeByVBar(s) {
+			return s.trim().split("|");
+		}
+
+		function joinByVBar() {
+			return Array.prototype.join.call(arguments, "|");
+		}
+
 		function setActive(node) {
 			var currentClass = node.getAttribute("class").trim().split(" ");
 			if (currentClass.indexOf("active") > -1)
@@ -112,7 +120,7 @@ define(
 			console.log("Scene id is " + nextSceneId);
 			var sceneDiv = document.createElement("div");
 			sceneDiv.setAttribute("class", "scene");
-			sceneDiv.setAttribute("id", "scene/" + nextSceneId);
+			sceneDiv.setAttribute("id", joinByVBar("scene", nextSceneId));
 
 			var pDiv = document.createElement("p");
 			pDiv.innerHTML = "Scene " + nextSceneId;
@@ -147,7 +155,7 @@ define(
 
 		// REDUCES subsequent nodes
 		function removeScene(sceneNode) {
-			var sceneId = atoi(sceneNode.getAttribute("id").split("/").pop());
+			var sceneId = atoi(tokenizeByVBar(sceneNode.getAttribute("id")).pop());
 			console.log("This scene's ID is " + sceneId);
 			var nextNode = sceneNode.nextSibling;
 			sceneNode.parentNode.removeChild(sceneNode);
@@ -160,14 +168,14 @@ define(
 
 		function removeSceneById(id) {
 			console.log("Removing scene with ID " + id);
-			removeScene(elem("scene/" + id));
+			removeScene(elem(joinByVBar("scene", id)));
 		}
 
 		function removeSceneByButton(button) {
 			console.log("Starting with node:");
 			console.log(button);
 			var currNode = button;
-			while (currNode && (!currNode.getAttribute("class") || currNode.getAttribute("class").split("/")[0] !== "scene"))
+			while (currNode && (!currNode.getAttribute("class") || tokenizeByVBar(currNode.getAttribute("class"))[0] !== "scene"))
 				currNode = currNode.parentNode;
 			console.log("Bubbled up to node:");
 			console.log(currNode);
@@ -181,12 +189,13 @@ define(
 
 			var i;
 			for (i = 0; i < soundList.length; i++) {
-				var model = soundList[i].trim().split("/")[0];
+				var model = tokenizeByVBar(soundList[i])[0];
 				//DANGER. May be incorrect.
 				sliderBoxes[soundList[i]] = makeSliderBox(soundModels[model]());
 			}
 		}
 
+		//Callback is optional
 		function loadSoundModels(callback) {
 			// TODO: Sanitize list (?)
 			function soundModelHelper(num) {
@@ -199,18 +208,17 @@ define(
 						function (currentSM) {
 							console.log("Adding " + soundModelNames[num] + " to soundModels object");
 
-							soundModels[soudnModelNames[num]] = currentSM;
+							soundModels[soundModelNames[num]] = currentSM;
 							soundModelHelper(num + 1);
 						}
 					);
-				} else {
+				} else if (callback)
 					callback();
-				}
 			}
 			soundModelHelper(0);
 		}
 
-		function reloadSoundModels() {
+		function reloadSoundModels(callback) {
 			// Memory leak?
 			soundModelNames = [];
 			soundModels = {};
@@ -220,7 +228,7 @@ define(
 			console.log("Sound models received:");
 			printArr(soundModelNames);
 
-			loadSoundModels();
+			loadSoundModels(callback);
 		}
 
 		function clearSliderBoxes() {
@@ -239,9 +247,8 @@ define(
 
 		function refreshSliderBoxes() {
 			closeSliderBoxes();
-			clearSliderboxes();
-			reloadSoundModels();
-			loadSliderBoxes();
+			clearSliderBoxes();
+			reloadSoundModels(loadSliderBoxes);
 		}
 
 		function selectScene(sceneNode) {
@@ -252,9 +259,9 @@ define(
 			var currSceneId = story.getCurrentSceneId();
 			console.log("Current Active ID = " + currSceneId);
 			if (currSceneId > -1)
-				removeActive(elem("scene/" + currSceneId));
+				removeActive(elem(joinByVBar("scene", currSceneId)));
 			setActive(sceneNode);
-			var sceneId = atoi(sceneNode.getAttribute("id").split("/").pop());
+			var sceneId = atoi(tokenizeByVBar(sceneNode.getAttribute("id")).pop());
 			console.log("This scene has ID=" + sceneId);
 			story.setCurrentScene(sceneId);
 			console.log("Set Story's current scene to " + sceneId);
@@ -265,18 +272,17 @@ define(
 
 		function selectSceneById(id) {
 			console.log("Selecting by ID " + id);
-			selectScene(elem("scene/" + id));
+			selectScene(elem(joinByVBar("scene", id)));
 		}
 
 		function selectSceneByNode(node) {
 			var currNode = node;
-			while (currNode && (!currNode.getAttribute("class") || currNode.getAttribute("class").split("/")[0] !== "scene"))
+			while (currNode && (!currNode.getAttribute("class") || tokenizeByVBar(currNode.getAttribute("class"))[0] !== "scene"))
 				currNode = currNode.parentNode;
 			selectScene(currNode);
 		}
 
 		function makeSceneSelector(sceneDiv) {
-			// var id = sceneDiv.getAttribute("id").trim().split("/")[1];
 			return function (e) {
 				e.preventDefault();
 				selectScene(sceneDiv);
@@ -289,11 +295,11 @@ define(
 			var currId;
 			while(currNode && currNode.getAttribute("class") && currNode.getAttribute("class").split(" ").indexOf("scene") > -1) {
 				console.log("This node IS a scene");
-				currId = atoi(currNode.getAttribute("id").split("/").pop());
+				currId = atoi(tokenizeByVBar(currNode.getAttribute("id")).pop());
 				console.log("It has ID=" + currId);
 				currId += diff;
 				console.log("It's new ID is=" + currId);
-				currNode.setAttribute("id", "scene/" + currId);
+				currNode.setAttribute("id", joinByVBar("scene", currId));
 				console.log("Set it's new ID!");
 				currNode = currNode.nextSibling;
 				console.log("Moved to the next Node!");
@@ -301,7 +307,6 @@ define(
 		}
 
 		function makeSceneDeleter(sceneDiv) {
-			// var id = sceneDiv.getAttribute("id").trim().split("/")[1];
 			return function (e) {
 				e.preventDefault();
 				removeScene(sceneDiv);
@@ -403,10 +408,10 @@ define(
 			// TODO: Add visual feedback (?)
 			var id = button.getAttribute("id");
 
-			var tokens = id.trim().split("/");
-			var address = tokens[0] + "/" + tokens[1];
+			var tokens = tokenizeByVBar(id);
+			var address = joinByVBar(tokens[0], tokens[1]);
 			//TODO: This depends on current soundName format. Generalise.
-			var soundName = tokens[2] + "/" + tokens[3];
+			var soundName = joinByVBar(tokens[2], tokens[3]);
 
 			story.getCurrentScene().setSoundState(address, soundName, getCurrentSoundState(soundName));
 		}
@@ -421,7 +426,7 @@ define(
 		function createSetStateButton(controllerName, paramName, soundName) {
 			var button = document.createElement("button");
 			button.setAttribute("class", "setStateButton");
-			button.setAttribute("id", controllerName + "/" + paramName + "/" + soundName);
+			button.setAttribute("id", joinByVBar(controllerName, paramName, soundName));
 			button.innerHTML = "SET";
 
 			button.addEventListener("click", makeStateSetter(button));
@@ -444,7 +449,7 @@ define(
 			var containers = document.getElementsByClassName("buttonContainer");
 			var i;
 			for (i = 0; i < containers.length; i++) {
-				var tokens = containers[i].getAttribute("id").trim().split("/");
+				var tokens = tokenizeByVBar(containers[i].getAttribute("id"));
 				var button = createSetStateButton(tokens[0], tokens[1], soundName);
 				containers[i].appendChild(button);
 			}
@@ -456,10 +461,10 @@ define(
 			for (i = 0; i < buttons.length; i++) {
 				var button = buttons[i];
 				var id = button.getAttribute("id");
-				var tokens = id.trim().split("/");
+				var tokens = tokenizeByVBar(id);
 
 				//TODO: This depends on current soundName format. Generalise.
-				var currentSoundName = tokens[2] + "/" + tokens[3];
+				var currentSoundName = joinByVBar(tokens[2], tokens[3]);
 
 				if (currentSoundName === soundName) {
 						button.parentNode.removeChild(button);
@@ -484,7 +489,7 @@ define(
 			printArr(arguments);
 			var row = document.createElement("div");
 			row.setAttribute("class", "controllerParamRow");
-			row.setAttribute("id", controllerName + "/" + paramName);
+			row.setAttribute("id", joinByVBar(controllerName, paramName));
 
 			var nameDiv = document.createElement("div");
 			nameDiv.setAttribute("class", "controllerParamRowName");
@@ -496,7 +501,7 @@ define(
 
 			var buttonContainer = document.createElement("div");
 			buttonContainer.setAttribute("class", "buttonContainer");
-			buttonContainer.setAttribute("id", controllerName + "/" + paramName + "/buttonContainer");
+			buttonContainer.setAttribute("id", joinByVBar(controllerName, paramName, "buttonContainer"));
 			row.appendChild(buttonContainer);
 			populateStateSettersByContainer(buttonContainer, controllerName, paramName);
 
@@ -569,10 +574,10 @@ define(
 		}
 
 		function deleteSoundByButton(button) {
-			var tokens = button.getAttribute("id").trim().split("/");
-			var soundName = tokens[0] + "/" + tokens[1];
+			var tokens = tokenizeByVBar(button.getAttribute("id"));
+			var soundName = joinByVBar(tokens[0], tokens[1]);
 			story.getCurrentScene().removeSoundByName(soundName);
-			var soundBox = elem(soundName + "/soundBox");
+			var soundBox = elem(joinByVBar(soundName, "soundBox"));
 			soundBox.parentNode.removeChild(soundBox);
 
 			removeStateSettersBySound(soundName);
@@ -588,7 +593,7 @@ define(
 		function makeSoundBox(name) {
 			var soundDiv = document.createElement("div");
 			soundDiv.setAttribute("class", "sound");
-			soundDiv.setAttribute("id", name + "/soundBox");
+			soundDiv.setAttribute("id", joinByVBar(name, "soundBox"));
 
 			var namePar = document.createElement("p");
 			namePar.innerHTML = name;
@@ -596,7 +601,7 @@ define(
 
 			var deleteButton = document.createElement("button");
 			deleteButton.setAttribute("class", "soundDelete");
-			deleteButton.setAttribute("id", name + "/delete");
+			deleteButton.setAttribute("id", joinByVBar(name, "delete"));
 			deleteButton.addEventListener("click", makeSoundDeleter(deleteButton));
 			deleteButton.innerHTML = "Remove";
 			soundDiv.appendChild(deleteButton);
@@ -676,12 +681,17 @@ define(
 			addNewSound(model);
 		}
 
+		function cleanup() {
+			closeSliderBoxes();
+		}
+
 		mapElementsToIds();
 
 		drawSceneEditor();
 		elements.newSceneButton.addEventListener("click", addNewScene);
 		//elements.newHandlerContentItemButton.addEventListener("click", addNewHandlerContentItem);
 		elements.newSoundButton.addEventListener("click", newSoundHandler);
+		window.onbeforeunload = cleanup;
 		console.log("Completed loading author.js");
 	}
 );

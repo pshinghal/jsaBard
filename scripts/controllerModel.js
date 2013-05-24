@@ -6,7 +6,7 @@ define(
 			"interface": [
 				{
 					"interfaceType": "prslider",
-					"eventType": "nState",
+					"eventType": "range",
 					"paramioID": "prslider/36474",
 					"message": [
 						"mousedown"
@@ -18,7 +18,6 @@ define(
 						"height": "11.15%"
 					},
 					"orientation": "h",
-					"numStates": 2,
 					"color": "blue",
 					"invisible": ""
 				},

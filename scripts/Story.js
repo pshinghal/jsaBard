@@ -2,6 +2,7 @@ define(
 	["Scene"],
 	function (Scene) {
 		return function () {
+			//TODO: Handle the changing of currentScene and currentSceneId when scenes are deleted.
 			var myInterface = {};
 
 			var story = [];
