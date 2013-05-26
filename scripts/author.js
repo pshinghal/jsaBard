@@ -111,6 +111,12 @@ define(
 			return sliderBoxes[soundName].getSelected();
 		}
 
+		function setCurrentSoundState(soundName, state) {
+			if (!sliderBoxes[soundName])
+				return;
+			sliderBoxes[soundName].setState(state);
+		}
+
 		//===============
 		// DOM functions
 		//===============
@@ -404,6 +410,17 @@ define(
 			return rowDiv;
 		}
 
+		function getStateByButon(button) {
+			var id = button.getAttribute("id");
+
+			var tokens = tokenizeByVBar(id);
+			var address = joinByVBar(tokens[0], tokens[1]);
+			var soundName = joinByVBar(tokens[2], tokens[3]);
+
+			setCurrentSoundState(soundName, story.getCurrentScene().getSoundState(address, soundName));
+			console.log("Got sound into " + address + " " + soundName);
+		}
+
 		function setStateByButton(button) {
 			// TODO: Add visual feedback (?)
 			var id = button.getAttribute("id");
@@ -416,10 +433,13 @@ define(
 			story.getCurrentScene().setSoundState(address, soundName, getCurrentSoundState(soundName));
 		}
 
-		function makeStateSetter(button) {
+		function makeStateGetterSetter(button) {
 			return function (e) {
 				e.preventDefault();
-				setStateByButton(button);
+				if (e.shiftKey)
+					setStateByButton(button);
+				else
+					getStateByButon(button);
 			};
 		}
 
@@ -429,7 +449,7 @@ define(
 			button.setAttribute("id", joinByVBar(controllerName, paramName, soundName));
 			button.innerHTML = "SET";
 
-			button.addEventListener("click", makeStateSetter(button));
+			button.addEventListener("click", makeStateGetterSetter(button));
 
 			return button;
 		}

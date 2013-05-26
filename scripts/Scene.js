@@ -337,17 +337,14 @@ define(
 				var handler = scene.handlers[handlerName];
 				switch (handler.type) {
 					case "range":
-						getRangeSoundState(handler, address, soundId);
-						break;
+						return getRangeSoundState(handler, address, soundId);
 					case "nState":
-						getNStateSoundState(handler, address, soundId);
-						break;
+						return getNStateSoundState(handler, address, soundId);
 					case "scene_change":
-						getSceneChangeSoundState(handler, address, soundId);
-						break;
+						return getSceneChangeSoundState(handler, address, soundId);
 					default:
 						console.log("ERROR! Got an unknown handler type: " + type);
-						break;
+						return null;
 				}
 			};
 
