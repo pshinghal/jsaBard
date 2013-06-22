@@ -9,7 +9,7 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 */
 require.config({
 	paths: {
-		"jsaSound": "../jsaSound"
+		"jsaSound": "http://localhost:8080/"
 	}
 });
 define(
