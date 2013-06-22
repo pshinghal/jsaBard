@@ -1,11 +1,12 @@
 require.config({
 	paths: {
-		"jsaSound": "http://localhost:8080/"
+		"jsaSound": "http://localhost:8080/",
+		"jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min"
 	}
 });
 define(
-	["controllerModel", "Story", "jsaSound/jsaCore/sliderBox"],
-	function (controllerModel, Story, makeSliderBox) {
+	["controllerModel", "Story", "jsaSound/jsaCore/sliderBox", "jquery"],
+	function (controllerModel, Story, makeSliderBox, $) {
 		//TODO: Do not allow models to be added when no scene is selected (but a scene HAS been created)
 
 		var i;
@@ -52,7 +53,9 @@ define(
 			newHandlerContentItemButton: "newHandlerContentItem",
 			newModelButton: "newModel",
 			newSoundButton: "newSound",
-			newSoundNameField: "newSoundName"
+			newSoundNameField: "newSoundName",
+			saveStoryButton: "saveButton",
+			saveStoryNameField: "storyName"
 		};
 
 		var story = Story();
@@ -701,6 +704,37 @@ define(
 			addNewSound(model);
 		}
 
+		function saveCurrentStory(storyName) {
+			var data = {
+				story: story.getStoryArr(),
+				name: storyName
+			};
+			console.log("Saving story:");
+			console.log(story.getStoryArr());
+
+			var failCb = function () {
+				alert("Whoops! Couldn't save it");
+			};
+
+			var successCb = function () {
+				alert("Story saved!");
+			};
+
+			$.post("/saveStory", data)
+			.done(function (res) {
+				if (res)
+					successCb();
+				else
+					failCb();
+			})
+			.fail(failCb);
+		}
+
+		function saveStoryHandler() {
+			var storyName = elements.saveStoryNameField.value;
+			saveCurrentStory(storyName);
+		}
+
 		function cleanup() {
 			closeSliderBoxes();
 		}
@@ -711,6 +745,7 @@ define(
 		elements.newSceneButton.addEventListener("click", addNewScene);
 		//elements.newHandlerContentItemButton.addEventListener("click", addNewHandlerContentItem);
 		elements.newSoundButton.addEventListener("click", newSoundHandler);
+		elements.saveStoryButton.addEventListener("click", saveStoryHandler);
 		window.onbeforeunload = cleanup;
 		console.log("Completed loading author.js");
 	}
