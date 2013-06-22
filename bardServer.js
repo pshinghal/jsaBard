@@ -34,12 +34,15 @@ var express = require("express");
 var app = express();
 var server = require("http").createServer(app);
 var io = require("socket.io").listen(server);
+var fs = require("fs");
 
 server.listen(8000);
 
 var parties = {};
 // A map from party name to a structure with info on
 // the synths and controllers that belong to the party.
+
+app.use(express.bodyParser());
 
 function addStatic(route) {
     console.log("Adding static handler for " + route);
@@ -59,6 +62,33 @@ function addGetter(route, file) {
 addGetter("/", "/scene.html");
 addGetter("/control", "/sceneControl.html");
 addGetter("/author", "/author.html");
+
+function isValidFilename(name) {
+    if (name.length > 32)
+        return false;
+    // Allow only alphanumeric chars, spaces, dots, hyphens and underscores
+    if (name.search(/^[\w\ '.\-\_]+$/) == -1)
+        return false;
+    return true;
+}
+
+var STORY_DIR = "./myStories";
+app.post("/saveStory", function (req, res) {
+    console.log("Got POST request for /saveStory");
+    var storyName = req.body.name;
+    if (!isValidFilename(storyName)) {
+        res.json(false);
+        return;
+    }
+    fs.writeFile(STORY_DIR + "/" + storyName + ".json", JSON.stringify(req.body.story), function (err) {
+        if (err) {
+            console.log(err);
+            res.json(false);
+        } else {
+            res.json(true);
+        }
+    });
+});
 
 addStatic("/");
 
