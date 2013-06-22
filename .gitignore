@@ -13,3 +13,5 @@ scripts/socket.io-client/
 node_modules/
 jsaSound/
 jsaSound
+
+myStories/*.json
