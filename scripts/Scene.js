@@ -218,7 +218,7 @@ define(
 				return myHandler;
 			}
 
-			scene.handlers = [];
+			scene.handlers = {};
 
 			for (temp in controllerModel.interface) {
 				if (controllerModel.interface.hasOwnProperty(temp)) {
