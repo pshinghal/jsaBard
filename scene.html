@@ -27,33 +27,38 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 	<body>
 		<div class="topContainer">
 			<h1>jsaBard for Storytelling with Interactive Sound Modeling</h1>
-			<p>
-				This is the jsaBard story player. To use it:
-				<ol>
-					<li>Create a story using the <a href="/author">authoring tool</a>, which lets you load use sounds from the <a href = "http://animatedsoundworks.com/jsaSound/">jsaSound</a> library.
-					</li>
-					<li>Load the story below.</li>
-					<li>Connect a device to the <a href="/control">controller interace</a>. For best results, try using a smartphone as a controller.</li>
-				</ol>
-			</p>
+			
 		</div>
 		<!-- Dynamically create the scene list for selection -->
 		<hr />
 		<div class="mainContainer">
-			<!-- And this is the phone party stuff -->
-			<div class="partyBoxContainer">
-				<h2> Interface experiment - Smart phone control.</h2>
-				<!-- TODO: Replace this message with an illustrative image -->
+			<div class="bardDescription">
+				<p>
+					This is the jsaBard story player. To use it:
+					<ol>
+						<!-- TODO: Put the input elements inside this list: looks neater like that -->
+						<li>Create a story using the <a href="/author">authoring tool</a>, which lets you load use sounds from the <a href = "http://animatedsoundworks.com/jsaSound/">jsaSound</a> library.
+						</li>
+						<li>Load the story below.</li>
+						<li>Load the <a href="/control">controller interace</a> on a controlling device. For best results, try using a smartphone as a controller.</li>
+					</ol>
+				</p>
+			</div>
+			<!-- TODO: Replace this message with an illustrative image -->
+			<div class="notice">
 				<h2> Always push the <FONT COLOR="#cc0066"> ALLOW </FONT> button(s) (above) to enable microphone.</h2>
-				<div class="contentID">
+			</div>
+			<div class="storySelector">
+				<p>Enter the name of a previously authored story and press Load:</p>
+				<input class="textInput" id="storyName" type="text" placeholder="Story name" autofocus />
+				<button id="loadStory">Load</button>
+			</div>
+			<!-- And this is the phone party stuff -->
+			<div class="partySelector">
 					<!-- Maybe add generated QR Code later -->
-					<div class="span2">
-						Type the 9-letter code the phone receives, then press Join: </br>
-						<input id="party_box" style="width:100px" type="text" autofocus disabled placeholder="controller name"/>
+						<p>Type the 9-letter code the phone receives, then press Join:</p>
+						<input class="textInput" id="party_box" type="text" disabled placeholder="Controller code"/>
 						<button id="join_party" disabled>Join</button>
-						<br><br>
-					</div>
-				</div>
 			</div>
 		</div>
 	</body>

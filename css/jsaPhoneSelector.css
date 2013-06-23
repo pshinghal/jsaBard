@@ -7,16 +7,31 @@ body {
 .topContainer {
 	background: #B0AAB0;
 	padding: 1px 20px;
+	text-align: center;
+	width: 960px;
+	margin: auto;
 }
 
 .mainContainer {
 	background: #B0AAB0;
-	padding: 1px 20px;
+	padding: 20px;
+	width: 960px;
+	margin: auto;
 	/*height: 100%;*/
 }
 
-.contentID {
-	width: 600px;
-	margin-left: auto;
-	margin-right: auto;
+.textInput {
+	width: 200px;
+	text-align: center;
+	font-size: large;
+}
+
+button {
+	text-align: center;
+	font-size: large;
+	width: 64px;
+}
+
+p {
+	margin: 0;
 }
