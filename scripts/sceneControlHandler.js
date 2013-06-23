@@ -27,7 +27,7 @@ define(
 
 		var currentScene, numScenes;
 
-		var initScene = function () {
+		var initStory = function () {
 			if (rig.length <= 0) {
 				console.log("Rig has no scenes!");
 				return;
@@ -110,7 +110,7 @@ define(
 			}
 		};
 
-		var init = function () {
+		var initMessaging = function () {
 			// These are on the controlee web page:
 			var party_setup = document.getElementById('party_setup');
 			var party_box = document.getElementById('party_box');
@@ -232,9 +232,8 @@ define(
 			};
 		};
 
-		initScene();
-
-		init();
+		initStory();
+		initMessaging();
 
 		return myInterface;
 	}
