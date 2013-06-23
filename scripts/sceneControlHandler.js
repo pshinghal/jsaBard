@@ -130,8 +130,8 @@ define(
 				// Visual feedback
 				// TODO: Do this only when it's actually joined in the server
 				party_box.value = "Joined!";
-				party_box.setAttribute('disabled');
 				join_party_btn.setAttribute('disabled');
+				party_box.setAttribute('disabled');
 
 				console.log("button click to join " + partyName);
 
@@ -249,9 +249,9 @@ define(
 
 			function goodCb(res) {
 				alert("Story loaded!");
-				console.log("Got response: " + res);
-				window.otherThingy = res;
-				console.log(res);
+				console.log("Response: " + JSON.stringify(res));
+				elem("loadStory").setAttribute("disabled");
+				elem("storyName").setAttribute("disabled");
 				initStory(res);
 			}
 
