@@ -16,60 +16,45 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 		<title>jsaBard</title>
 		<meta name="description" content="jsaSound: an interactive sound library">
 
-
-		<script type="text/javascript" data-main="scripts/bardMain.js" src="scripts/require.js" ></script> 
-
-
-
+		<script type="text/javascript" data-main="scripts/bardMain.js" src="scripts/require.js" ></script>
 			<!-- #include for node party connection with phone -->
 		<script type="text/javascript">	
 		var jsaHost="/";
 		var jsaSoundRelHTML = "jsaSound";
 		</script>
-
-
-		<!--  Set up the control (phone) input here  -->
-
-		<!-- --------------------------------------------- -->
-
-
+		<!-- Set up the control (phone) input here -->
 	</head>
 	<body>
-		<div class="soundSelectorDivID">
-			<div class=selectorTextDivID>
-				<h1> jsaBard for Storytelling with Interactive Sound Modeling </h1>
-				This is a single "scene" controlled from a phone using a couple of sounds from the experimental collection at <a href = "http://animatedsoundworks.com/jsaSound/"> jsaSound</a>.  
-				<!-- Here we will dynamically create the scene list for selection -->
+		<div class="topContainer">
+			<h1>jsaBard for Storytelling with Interactive Sound Modeling</h1>
+			<p>
+				This is the jsaBard story player. To use it:
+				<ol>
+					<li>Create a story using the <a href="/author">authoring tool</a>, which lets you load use sounds from the <a href = "http://animatedsoundworks.com/jsaSound/">jsaSound</a> library.
+					</li>
+					<li>Load the story below.</li>
+					<li>Connect a device to the <a href="/control">controller interace</a>. For best results, try using a smartphone as a controller.</li>
+				</ol>
+			</p>
+		</div>
+		<!-- Dynamically create the scene list for selection -->
+		<hr />
+		<div class="mainContainer">
+			<!-- And this is the phone party stuff -->
+			<div class="partyBoxContainer">
+				<h2> Interface experiment - Smart phone control.</h2>
+				<!-- TODO: Replace this message with an illustrative image -->
+				<h2> Always push the <FONT COLOR="#cc0066"> ALLOW </FONT> button(s) (above) to enable microphone.</h2>
 				<div class="contentID">
-					Scene 1: drum beats (Toggle), telphone voice (Pushbutton)
+					<!-- Maybe add generated QR Code later -->
+					<div class="span2">
+						Type the 9-letter code the phone receives, then press Join: </br>
+						<input id="party_box" style="width:100px" type="text" autofocus disabled placeholder="controller name"/>
+						<button id="join_party" disabled>Join</button>
+						<br><br>
+					</div>
 				</div>
 			</div>
 		</div>
-
-<!--  -----------------------   and this is the phone party stuff   ------------------------------- -->
-<hr />
-	<div class="soundSelectorDivID2">
-		<div class=selectorTextDivID>
-		<h2> Interface experiment -  Smart phone control.</h2>
-		 <br>
-
-		<h2> &#160;&#160; Always push the <FONT COLOR="#cc0066"> ALLOW </FONT> button(s) (above) to enable microphone.</h2><br><br>
-		<div class="contentID">
-		<!-- <img border="0" src="./images/qrcode.6092328.controler.jpg" alt="Controller QRcode address" width="250" height="250" /> -->
-
-		<div class="span2">
-			Type the 9-letter code the phone receives, then press Join: </br>
-			<input id="party_box" style="width:100px" type="text" autofocus disabled placeholder="controller name"/>
-			<button id="join_party" disabled>Join</button>
-			<br><br>
-		</div>
-		</div>
-		</div>
-	</div>
-
-
-
-
-
 	</body>
 </html>
