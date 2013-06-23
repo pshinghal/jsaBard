@@ -12,10 +12,10 @@ require.config({
 		"jsaSound": "http://localhost:8080/"
 	}
 });
+
 define(
 	["sceneControlHandler"],
 	function (m_handler) {
 		return 4;
 	}
 );
-

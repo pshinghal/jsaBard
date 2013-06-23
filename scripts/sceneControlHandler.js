@@ -13,7 +13,6 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 //------------------------------
 // This is where we set up the responses to incoming control messages.
 
-
 define(
 	[ "require", "jsaSound/jsaCore/sliderBox", "rig", "/socket.io/socket.io.js"],
 	// TODO: init and initScene need to be cleaned up/combined.
