@@ -116,11 +116,17 @@ define(
 			var party_box = document.getElementById('party_box');
 			var join_party_btn = document.getElementById('join_party');
 
+			party_box.removeAttribute('disabled');
 			join_party_btn.removeAttribute('disabled');
 
 			join_party_btn.onclick = function (e) {
 				var partyName = party_box.value.toLowerCase().replace(/[^a-z]/g, '');
+
+				// Visual feedback
+				// TODO: Do this only when it's actually joined in the server
 				party_box.value = "Joined!";
+				party_box.setAttribute('disabled');
+				join_party_btn.setAttribute('disabled');
 
 				console.log("button click to join " + partyName);
 
