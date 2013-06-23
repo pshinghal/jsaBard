@@ -9,7 +9,8 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 */
 require.config({
 	paths: {
-		"jsaSound": "http://localhost:8080/"
+		"jsaSound": "http://localhost:8080/",
+		"jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min"
 	}
 });
 
