@@ -14,10 +14,10 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 // This is where we set up the responses to incoming control messages.
 
 define(
-	[ "require", "jsaSound/jsaCore/sliderBox", "rig", "/socket.io/socket.io.js"],
+	[ "require", "jsaSound/jsaCore/sliderBox", "rig", "jquery", "/socket.io/socket.io.js"],
 	// TODO: init and initScene need to be cleaned up/combined.
 	// Doesn't look nice that both async inits are executed in a non-daisy-chained manner.
-	function (require, makeSliderBox, rig) {
+	function (require, makeSliderBox, rig, $) {
 		var soundModels = {};
 		var m_scene;
 		var playingP = {};
@@ -26,6 +26,10 @@ define(
 		var myInterface = {};
 
 		var currentScene, numScenes;
+
+		function elem(id) {
+			return document.getElementById(id);
+		}
 
 		var initStory = function () {
 			if (rig.length <= 0) {
@@ -36,6 +40,7 @@ define(
 			currentScene = 0;
 			// set initial scene to nullScene
 			myInterface.setScene(rig[currentScene]);
+			initMessaging();
 		};
 
 		myInterface.addSM = function (i_modelName, i_soundModel) {
@@ -238,8 +243,32 @@ define(
 			};
 		};
 
-		initStory();
-		initMessaging();
+		function loadStory() {
+			// TODO: (MAYBE) Ensure another story isn't already loaded
+			var storyName = elem("storyName").value;
+
+			function goodCb(res) {
+				alert("Story loaded!");
+				console.log("Got response: " + res);
+				window.otherThingy = res;
+				console.log(res);
+				initStory(res);
+			}
+
+			function badCb() {
+				alert("Could not load story!");
+			}
+
+			$.get("/loadStory", {name: storyName})
+			.done(function (res) {
+				if (res)
+					goodCb(res);
+				else
+					badCb();
+			}).fail(badCb);
+		}
+
+		elem("loadStory").addEventListener("click", loadStory);
 
 		return myInterface;
 	}
