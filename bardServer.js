@@ -90,6 +90,25 @@ app.post("/saveStory", function (req, res) {
     });
 });
 
+app.get("/loadStory", function (req, res) {
+    console.log("Got GET request for /loadStory");
+    var storyName = req.query.name;
+    if (!isValidFilename(storyName)) {
+        res.json(false);
+        return;
+    }
+    fs.readFile(STORY_DIR + "/" + storyName + ".json", "utf8", function (err, data) {
+        if (err) {
+            console.log("Encountered error!");
+            console.log(err);
+            res.json(false);
+        } else {
+            console.log("Got data!");
+            res.json(JSON.parse(data));
+        }
+    });
+});
+
 addStatic("/");
 
 function partyNamed(name) {
