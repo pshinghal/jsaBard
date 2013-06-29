@@ -27,11 +27,26 @@ define(
 			// If scene objects are constructed from JSON representations, this value will have to
 			// be stored in the JSON too (or derived from the list of sound names.
 			// i.e. nextSoundKey = <highest key in list> + 1)
+			function getHighestKey() {
+				var i, max = -1;
+				for (i = 0; i < scene.sounds.length; i++) {
+					max = Math.max(max, getSoundKeyFromName(scene.sounds[i]));
+				}
+				return max;
+			}
 
 			var scene = {};
 			myInterface.getSceneObj = function () {
 				return scene;
 			};
+
+			// Used to "import" a text-only scene into an object with the required methods
+			// TODO: Add a way to set the custom controllerModel
+			myInterface.setSceneObj = function (newScene) {
+				scene = newScene;
+				nextSoundKey = getHighestKey();
+			};
+
 			myInterface.getJSON = function () {
 				return JSON.stringify(scene);
 			};
@@ -65,6 +80,10 @@ define(
 
 			function getSoundModelFromName(name) {
 				return tokenizeByVBar(name)[0];
+			}
+			function getSoundKeyFromName(name) {
+				return tokenizeByVBar(name)[1];
+
 			}
 
 			function addSoundToRangeHandler(handler) {

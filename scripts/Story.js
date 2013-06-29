@@ -10,6 +10,8 @@ define(
 			var currentSceneId = -1;
 
 			var nextSceneId = 0;
+			// Must be auto-generated when story is loaded from JSON
+
 			myInterface.getNextSceneId = function () {
 				return nextSceneId;
 			};
@@ -71,6 +73,16 @@ define(
 				}
 
 				return arr;
+			};
+
+			myInterface.setStoryArr = function () {
+				var i;
+				for (i = 0; i < story.length; i++) {
+					var temp = Scene();
+					temp.setSceneObj(story[i]);
+					this.addScene(temp);
+				}
+				nextSceneId = story.length;
 			};
 
 			return myInterface;
