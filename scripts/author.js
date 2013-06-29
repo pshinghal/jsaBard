@@ -46,7 +46,6 @@ define(
 		var elemIds = {
 			scenesDiv: "scenes",
 			descriptionDiv: "description",
-			// handlerContentsDiv: "handlerContents",
 			sceneEditorDiv: "sceneEditor",
 			modelsDiv: "models",
 			newSceneButton: "newScene",
@@ -59,7 +58,6 @@ define(
 		};
 
 		var story = Story();
-		var currSceneNumber = 0;
 
 		var sliderBoxes = {};
 		var soundModelNames = [];
@@ -321,84 +319,6 @@ define(
 				removeScene(sceneDiv);
 			};
 		}
-
-/*
-		function getNewHandlerContentItem() {
-			var hDiv = document.createElement("div");
-			hDiv.setAttribute("class", "handlerContentItem");
-			hDiv.setAttribute("id", "handlerContentItem/" + nextHandlerContentItemId);
-
-			// TODO: Replace with actual content-adders
-			var pDiv = document.createElement("p");
-			pDiv.innerHTML = "Handler Item " + nextHandlerContentItemId + " will be editable soon";
-			hDiv.appendChild(pDiv);
-
-			var deleteButton = document.createElement("button");
-			deleteButton.innerHTML = "Delete";
-			deleteButton.setAttribute("class", "deleteHandlerContentItem");
-			deleteButton.setAttribute("id", "button/handlerContentItem/" + nextHandlerContentItemId);
-			deleteButton.addEventListener("click", makeHandlerContentItemDeleter(nextHandlerContentItemId));
-			hDiv.appendChild(deleteButton);
-
-			// Add horizontal rule at the end
-			hDiv.appendChild(document.createElement("hr"));
-
-			nextHandlerContentItemId++;
-
-			return hDiv;
-		}
-
-		function appendHandlerContentItems(handlerContentItemNode) {
-			var temp = elements.newHandlerContentItemButton;
-			temp.parentNode.removeChild(temp);
-			var handlerContents = elements.handlerContentsDiv;
-			handlerContents.insertAdjacentElement("beforeend", handlerContentItemNode);
-			handlerContents.insertAdjacentElement("beforeend", temp);
-		}
-
-		function addNewHandlerContentItem() {
-			appendHandlerContentItems(getNewHandlerContentItem());
-		}
-
-		function removeHandlerContentItem(handlerContentItemNode) {
-			sceneNode.parentNode.removeChild(handlerContentItemNode);
-			// TODO: Remove Everything else attached to this scene
-		}
-
-		function removeHandlerContentItemById(id) {
-			removeScene(elem("handlerContentItem/" + id));
-		}
-
-		// TODO: Change this to the "ByButton" styl
-		function makeHandlerContentItemDeleter(id) {
-			return function () {
-				removeHandlerContentItemById(id);
-			};
-		}
-
-		function getNewModel() {
-			var modelDiv = document.createElement("div");
-			modelDiv.setAttribute("class", "model");
-			modelDiv.setAttribute("id", "model/" + nextModelId);
-
-			// TODO: Replace with text box for new model
-			var pDiv = document.createElement("p");
-			pDiv.innerHTML = "Model " + nextModelId;
-			modelDiv.appendChild(pDiv);
-
-			var deleteButton = document.createElement("button");
-			deleteButton.innerHTML = "Delete";
-			deleteButton.setAttribute("class", "deleteModel");
-			deleteButton.addEventListener("click", makeHandlerContentItemDeleter(nextModelId));
-			modelDiv.appendChild(deleteButton);
-
-			// Add horizontal rule at the end
-			modelDiv.appendChild(document.createElement("hr"));
-
-			nextModelId++;
-
-			return modelDiv;
-		}*/
 
 		function makeControllerName(name, type) {
 			var rowDiv = document.createElement("div");
@@ -674,11 +594,6 @@ define(
 		}
 
 		function redrawStateSetters() {
-			// var controllerBox = elem("controllerElementParams");
-			// var soundsBox = elem("soundList");
-
-			// while (controllerBox.hasChildNodes())
-			// 	controllerBox.removeChild(controllerBox.lastChild);
 			clearAllStateSetters();
 
 			var soundNames = story.getCurrentScene().getSoundNames();
@@ -743,7 +658,6 @@ define(
 
 		drawSceneEditor();
 		elements.newSceneButton.addEventListener("click", addNewScene);
-		//elements.newHandlerContentItemButton.addEventListener("click", addNewHandlerContentItem);
 		elements.newSoundButton.addEventListener("click", newSoundHandler);
 		elements.saveStoryButton.addEventListener("click", saveStoryHandler);
 		window.onbeforeunload = cleanup;
