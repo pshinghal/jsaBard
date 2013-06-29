@@ -18,60 +18,93 @@ define(
 	// TODO: init and initScene need to be cleaned up/combined.
 	// Doesn't look nice that both async inits are executed in a non-daisy-chained manner.
 	function (require, makeSliderBox, $, controllerModel) {
-		var soundModels = {};
 		var story = {};
-		var m_scene;
-		var playingP = {};
+
+		var sliderBoxes = {};
+		var soundModelNames = [];
+		var soundModels = {};
+
+		var isPlaying = {};
 		var currState = {};
 
-		var myInterface = {};
-
-		var currentScene, numScenes;
+		var numScenes;
 
 		function elem(id) {
 			return document.getElementById(id);
 		}
 
-		var initStory = function (newStory) {
-			story = newStory;
-			if (story.length <= 0) {
+		function tokenizeByVBar(s) {
+			return s.trim().split("|");
+		}
+
+		function getSoundModelFromName(name) {
+			return tokenizeByVBar(name)[0];
+		}
+
+		function initStory (storyArr) {
+			story = Story();
+			story.setStoryArr(storyArr);
+			if (storyArr.length <= 0) {
 				console.log("This story has no scenes!");
 				return;
 			}
-			numScenes = story.length;
-			currentScene = 0;
-			// set initial scene to nullScene
-			myInterface.setScene(story[currentScene]);
+			numScenes = storyArr.length;
+			setScene(0);
 			initMessaging();
-		};
+		}
 
-		myInterface.addSM = function (i_modelName, i_soundModel) {
-			console.log("Adding sound model in handler");
-			soundModels[i_modelName] = i_soundModel;
-			playingP[i_modelName] = false;
-		};
+		function setScene (sceneId) {
+			console.log("Setting scene in handler to scene " + sceneId);
+			story.setCurrentScene(sceneId);
+			reloadSounds();
+		}
 
-		myInterface.setScene = function (newScene) {
-			console.log("Setting scene in handler to scene " + newScene);
-			m_scene = newScene;
-			loadSoundModels(m_scene, initialiseTwoStates);
-		};
+		function clearSliderBoxes() {
+			// Memory leak?
+			sliderBoxes = {};
+		}
 
-		//Callback is optional
-		function loadSoundModels(scene, callback) {
+		function closeSliderBoxes() {
+			var x;
+			for (x in sliderBoxes) {
+				if (sliderBoxes.hasOwnProperty(x)) {
+					sliderBoxes[x].close();
+				}
+			}
+		}
+
+		function reloadSounds() {
+			closeSliderBoxes();
+			clearSliderBoxes();
+			reloadSoundModels(loadSounds);
+		}
+
+		function reloadSoundModels(callback) {
+			// Memory leak?
+			soundModelNames = [];
+			soundModels = {};
+			if (!story.getCurrentScene())
+				return;
+			soundModelNames = story.getCurrentScene().getSoundModels();
+
+			loadSoundModels(callback);
+		}
+
+		//Callbacks are optional
+		function loadSoundModels(callback) {
+			// TODO: Sanitize list (?)
 			function soundModelHelper(num) {
-				if (num < scene.models.length) {
-					console.log("The scene you are loading has " + scene.models.length + " models.");
+				if (num < soundModelNames.length) {
+					console.log("The scene you are loading has " + soundModelNames.length + " models.");
 					require(
 						// Get the model
-						["jsaSound/jsaModels/" + scene.models[num]],
+						["jsaSound/jsaModels/" + soundModelNames[num]],
 						// And open the sliderBox
 						function (currentSM) {
-							console.log("making slider box");
-							console.log("RIG is " + rig);
-							console.log("scenelist  " + rig[0]);
-							var sb = makeSliderBox(currentSM());
-							myInterface.addSM(scene.models[num], sb);
+							console.log("Making slider box");
+							console.log("Adding " + soundModelNames[num] + " to soundModels object");
+
+							soundModels[soundModelNames[num]] = currentSM;
 							soundModelHelper(num + 1);
 						}
 					);
@@ -82,18 +115,38 @@ define(
 			soundModelHelper(0);
 		}
 
-		function closeSoundModels(scene){
-			var currentSMName;
-			//console.log("closeing " + soundModels.length + " soundmodels.");
-			for (currentSMName in soundModels){
-				//console.log("i is " + i + " and soundModels[i] is "  + soundModels[i]);
-				if (soundModels.hasOwnProperty(currentSMName))
-					soundModels[currentSMName].close();
+		function loadSounds() {
+			initSounds();
+			loadSliderBoxes();
+		}
+
+		function initSounds() {
+			initialiseIsPlaying();
+			loadSliderBoxes();
+			initialiseTwoStates();
+		}
+
+		function initialiseIsPlaying() {
+			isPlaying = {};
+			var soundList = story.getCurrentScene().getSoundNames();
+
+			var i;
+			for (i = 0; i < soundList.length; i++) {
+				isPlaying[soundList[i]] = false;
 			}
-			for (currentSMName in playingP) {
-				playingP[currentSMName] = false;
+		}
+
+		function loadSliderBoxes() {
+			if (!story.getCurrentScene())
+				return;
+			var soundList = story.getCurrentScene().getSoundNames();
+
+			var i;
+			for (i = 0; i < soundList.length; i++) {
+				var model = getSoundModelFromName(soundList[i]);
+				//DANGER. May be incorrect.
+				sliderBoxes[soundList[i]] = makeSliderBox(soundModels[model]());
 			}
-			soundModels = {};
 		}
 
 		var initialiseTwoStates = function () {
@@ -216,9 +269,8 @@ define(
 
 					case "scene_change":
 						console.log("sceneChange!");
-						closeSoundModels(rig[currentScene]);
 						currentScene = (currentScene+1)%numScenes;
-						myInterface.setScene(rig[currentScene]);
+						setScene(rig[currentScene]);
 						break;
 
 					default:
@@ -271,7 +323,5 @@ define(
 		}
 
 		elem("loadStory").addEventListener("click", loadStory);
-
-		return myInterface;
 	}
 );
