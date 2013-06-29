@@ -75,7 +75,7 @@ define(
 				return arr;
 			};
 
-			myInterface.setStoryArr = function () {
+			myInterface.setStoryArr = function (story) {
 				var i;
 				for (i = 0; i < story.length; i++) {
 					var temp = Scene();
