@@ -147,6 +147,8 @@ io.sockets.on('connection', function (socket) {
             socket.on('disconnect', make_on_disconnect('Controller', party, party.controllers, socket));
             console.log("controller connected");
         }
+        // TODO: Check for error cases. If there are any, send 'confirm' with ERROR.
+        socket.emit("confirm", {party: data.party});
     });
 });
 
