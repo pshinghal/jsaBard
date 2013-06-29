@@ -35,3 +35,9 @@ button {
 p {
 	margin: 0;
 }
+
+.activeText {
+	font-family: Arial;
+	font-size: large;
+	color: #2222FF;
+}
