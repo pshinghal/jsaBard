@@ -14,10 +14,10 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 // This is where we set up the responses to incoming control messages.
 
 define(
-	[ "require", "jsaSound/jsaCore/sliderBox", "jquery", "controllerModel", "/socket.io/socket.io.js"],
+	[ "require", "jsaSound/jsaCore/sliderBox", "jquery", "controllerModel", "Story", "/socket.io/socket.io.js"],
 	// TODO: init and initScene need to be cleaned up/combined.
 	// Doesn't look nice that both async inits are executed in a non-daisy-chained manner.
-	function (require, makeSliderBox, $, controllerModel) {
+	function (require, makeSliderBox, $, controllerModel, Story) {
 		var story = {};
 
 		var sliderBoxes = {};
