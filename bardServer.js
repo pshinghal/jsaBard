@@ -80,7 +80,7 @@ app.post("/saveStory", function (req, res) {
         res.json(false);
         return;
     }
-    fs.writeFile(STORY_DIR + "/" + storyName + ".json", JSON.stringify(req.body.story), function (err) {
+    fs.writeFile(STORY_DIR + "/" + storyName + ".json", req.body.story, function (err) {
         if (err) {
             console.log(err);
             res.json(false);

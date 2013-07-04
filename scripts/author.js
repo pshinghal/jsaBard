@@ -1,6 +1,6 @@
 require.config({
 	paths: {
-		"jsaSound": "http://localhost:8080/",
+		"jsaSound": "http://animatedsoundworks.com:8001/",
 		"jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min"
 	}
 });
@@ -333,7 +333,7 @@ define(
 			return rowDiv;
 		}
 
-		function getStateByButon(button) {
+		function getStateByButton(button) {
 			var id = button.getAttribute("id");
 
 			var tokens = tokenizeByVBar(id);
@@ -362,7 +362,7 @@ define(
 				if (e.shiftKey)
 					setStateByButton(button);
 				else
-					getStateByButon(button);
+					getStateByButton(button);
 			};
 		}
 
@@ -621,7 +621,7 @@ define(
 
 		function saveCurrentStory(storyName) {
 			var data = {
-				story: story.getStoryArr(),
+				story: JSON.stringify(story.getStoryArr()),
 				name: storyName
 			};
 			console.log("Saving story:");
