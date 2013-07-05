@@ -3,7 +3,7 @@ body {
     padding: 0;
 }
 
-.container {
+.controllerContainer {
     margin: 20 auto;
     width: 100%;
     max-width: 480px;
@@ -12,11 +12,19 @@ body {
     position: relative;
 }
 
-button {
+.connectorContainer {
+    margin: 20 auto;
+    width: 100%;
+    max-width: 480px;
+    height: 480px;
+    max-height: 100%;
+    position: relative;
+}
+
+.controllerContainer button {
     -webkit-appearance: none;
     -moz-appearance: none;
     width: 100%;
-    /*height: 160px;*/
     height: 100%;
     font-size: x-large;
     margin:auto
@@ -28,18 +36,18 @@ button {
     height: 45%;
     width: 95%;
 }
+    /*height: 160px;*/
 
 #textcontainer {
     font-size: x-large;
-    /*height: 40px;*/
-    height:auto;
-    margin:auto;
+    height: auto;
+    margin: auto;
 }
 
-p {
+.controllerContainer p {
     margin: auto;
     font-family: sans-serif;
-    text-align:center;
+    text-align: center;
 }
 
 #toggle {
