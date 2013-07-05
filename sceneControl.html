@@ -10,86 +10,86 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 ------------------------------------------------------------------------------------------*/ -->
 <html>
 <!--  Kumar Subramanian (http://nishabdam.com) is the Guru responsible for the party node.js architecture! -->
-    <head>
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<head>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<link rel="stylesheet" type="text/css" href="css/sceneControl.css">
 
 		<script type="text/javascript">
-            // Will this work everywhere?
+			// Will this work everywhere?
 			var jsaHost="/";
 		</script>
-        <script src="/socket.io/socket.io.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
 
 		<script src="control_scripts/control_utils.js"></script>
-        <script>
-            // make_party(n) is a function that gives a roughly
-            // pronounceable string name that has about 13xn bits
-            // of pseudo-randomness in it.
-            var make_party = (function () {
-                var letters  = "abcdefghijklmnopqrstuvwxyz";
-                var category = "vcccvcccvcccccvcccccvccccc";
-                var consonants = "bcdfghjklmnpqrstvwxyz";
-                var vowels = "aeiou";
+		<script>
+			// make_party(n) is a function that gives a roughly
+			// pronounceable string name that has about 13xn bits
+			// of pseudo-randomness in it.
+			var make_party = (function () {
+				var letters  = "abcdefghijklmnopqrstuvwxyz";
+				var category = "vcccvcccvcccccvcccccvccccc";
+				var consonants = "bcdfghjklmnpqrstvwxyz";
+				var vowels = "aeiou";
 
-                return function (n) {
-                    var result = [];
-                    var i, k, a1, a2, a3;
-                    for (i = 0; i < n; ++i) {
-                        k = Math.floor(Math.random() * letters.length);
-                        a1 = letters.charAt(k);
-                        a2 = vowels.charAt(Math.floor(Math.random() * vowels.length));
-                        a3 = consonants.charAt(Math.floor(Math.random() * consonants.length));
+				return function (n) {
+					var result = [];
+					var i, k, a1, a2, a3;
+					for (i = 0; i < n; ++i) {
+						k = Math.floor(Math.random() * letters.length);
+						a1 = letters.charAt(k);
+						a2 = vowels.charAt(Math.floor(Math.random() * vowels.length));
+						a3 = consonants.charAt(Math.floor(Math.random() * consonants.length));
 
-                        if (category.charAt(k) === 'c') {
-                            // First letter is a consonant. Make the second
-                            // a vowel and the third a consonant.
-                            result.push(a1 + a2 + a3);
-                        } else {
-                            // First letter is a vowel. Make the second a consonant
-                            // and the third a vowel.
-                            result.push(a1 + a3 + a2);
-                        }
-                    }
-                    return result.join(' ');
-                };
-            }());
-        </script>
-        <script>
+						if (category.charAt(k) === 'c') {
+							// First letter is a consonant. Make the second
+							// a vowel and the third a consonant.
+							result.push(a1 + a2 + a3);
+						} else {
+							// First letter is a vowel. Make the second a consonant
+							// and the third a vowel.
+							result.push(a1 + a3 + a2);
+						}
+					}
+					return result.join(' ');
+				};
+			}());
+		</script>
+		<script>
 			var socket = io.connect(jsaHost);
 			console.log("Controller: socket = " + socket);
 			
-            var party = make_party(3);
+			var party = make_party(3);
 
-            socket.on('connect', function () {
+			socket.on('connect', function () {
 				console.log("Controller: socket.emit register and party name  " + party);
-                socket.emit('register', {party: party.replace(/ /g, ''), type: "control"});
-            });
+				socket.emit('register', {party: party.replace(/ /g, ''), type: "control"});
+			});
 
-            function send(msg) {
+			function send(msg) {
 				//console.log("Controler: send  " + JSON.stringify(msg));
-                socket.send(JSON.stringify(msg));
-            }
+				socket.send(JSON.stringify(msg));
+			}
 
-            function relativeOffset(element, event) {
-                var totalOffsetX = 0;
-                var totalOffsetY = 0;
-                var elemX = 0;
-                var elemY = 0;
-                var currentElement = element;
+			function relativeOffset(element, event) {
+				var totalOffsetX = 0;
+				var totalOffsetY = 0;
+				var elemX = 0;
+				var elemY = 0;
+				var currentElement = element;
 
-                do {
-                    totalOffsetX += currentElement.offsetLeft;
-                    totalOffsetY += currentElement.offsetTop;
-                } while(currentElement = currentElement.offsetParent)
+				do {
+					totalOffsetX += currentElement.offsetLeft;
+					totalOffsetY += currentElement.offsetTop;
+				} while(currentElement = currentElement.offsetParent)
 
-                elemX = event.pageX - totalOffsetX;
-                elemY = event.pageY - totalOffsetY;
+				elemX = event.pageX - totalOffsetX;
+				elemY = event.pageY - totalOffsetY;
 
-                return {x:elemX, y:elemY};        
-            }
+				return {x:elemX, y:elemY};
+			}
 			//----------------------------------------------------------------------------
-            function setupCanvas(id) {
+			function setupCanvas(id) {
 			
 				// first set up callbacks for the phone sensor data
 				window.addEventListener('deviceorientation', function(event) {
@@ -97,104 +97,100 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 					var pitch = event.beta;
 					var roll = event.gamma;
 					
-                    // DEBUG MODE for pitch and roll
+					// DEBUG MODE for pitch and roll
 					// document.getElementById("pitch").innerHTML = parseInt(pitch);
 					// document.getElementById("roll").innerHTML = parseInt(roll);
 					
-                    // send them together
+					// send them together
 					// map [-45,45] to [-1,1]
 					var foo1 = mapconstrain(-45, 45, 0, 1, pitch);
 					var foo2 = mapconstrain(-45, 45, 0, 1, roll);
 
 					send({ id: "pitch", type: "range", val: foo1});
-                    send({ id: "roll", type: "range", val: foo2 });
+					send({ id: "roll", type: "range", val: foo2 });
 
 				}, false);
 
-                var toggleElem = document.getElementById("toggle");
-                var pushbuttonElem = document.getElementById("pushbutton");
-                var scenebuttonElem = document.getElementById("scenebutton");
+				var toggleElem = document.getElementById("toggle");
+				var pushbuttonElem = document.getElementById("pushbutton");
+				var scenebuttonElem = document.getElementById("scenebutton");
 
 
-                function sendToggle (event) {
-                    event.preventDefault();
-                    send({ id: "toggle", type: "play_stop", val: "play_stop"});
-                }
+				function sendToggle (event) {
+					event.preventDefault();
+					send({ id: "toggle", type: "play_stop", val: "play_stop"});
+				}
 
-                function sendPushbuttonDown (event) {
-                    event.preventDefault();
-                    send({ id: "pushbutton", type: "play_stop", val: "play"});
-                }
+				function sendPushbuttonDown (event) {
+					event.preventDefault();
+					send({ id: "pushbutton", type: "play_stop", val: "play"});
+				}
 
-                function sendPushbuttonUp (event) {
-                    event.preventDefault();
-                    send({ id: "pushbutton", type: "play_stop", val: "stop"});
-                }
+				function sendPushbuttonUp (event) {
+					event.preventDefault();
+					send({ id: "pushbutton", type: "play_stop", val: "stop"});
+				}
 
-                function sendTwoStateDown (event) {
-                    event.preventDefault();
-                    send({ id: "dummyTwoState", type: "twoState", val: "down"});
-                }
-           
-                function sendTwoStateUp (event) {
-                    event.preventDefault();
-                    send({ id: "dummyTwoState", type: "twoState", val: "up"});
-                }
-           
+				function sendTwoStateDown (event) {
+					event.preventDefault();
+					send({ id: "dummyTwoState", type: "twoState", val: "down"});
+				}
 
-                function sendSceneChange (event){
-                    event.preventDefault();
-                    send({id: "sceneChange", type: "scene_change", val: null});
-                }
+				function sendTwoStateUp (event) {
+					event.preventDefault();
+					send({ id: "dummyTwoState", type: "twoState", val: "up"});
+				}
 
-                toggleElem.addEventListener("touchstart", sendToggle, false);              
-                // toggleElem.addEventListener("mousedown", sendToggle, false);
+				function sendSceneChange (event){
+					event.preventDefault();
+					send({id: "sceneChange", type: "scene_change", val: null});
+				}
 
-                //pushbuttonElem.addEventListener("touchstart", sendPushbuttonDown, false);
-                // pushbuttonElem.addEventListener("mousedown", sendPushbuttonDown, false);
-                pushbuttonElem.addEventListener("touchstart", sendTwoStateDown, false);
+				toggleElem.addEventListener("touchstart", sendToggle, false);
+				// toggleElem.addEventListener("mousedown", sendToggle, false);
 
-                //pushbuttonElem.addEventListener("touchend", sendPushbuttonUp, false);
-                // pushbuttonElem.addEventListener("mouseup", sendPushbuttonUp, false);
-                pushbuttonElem.addEventListener("touchend", sendTwoStateUp, false); 
+				//pushbuttonElem.addEventListener("touchstart", sendPushbuttonDown, false);
+				// pushbuttonElem.addEventListener("mousedown", sendPushbuttonDown, false);
+				pushbuttonElem.addEventListener("touchstart", sendTwoStateDown, false);
 
+				//pushbuttonElem.addEventListener("touchend", sendPushbuttonUp, false);
+				// pushbuttonElem.addEventListener("mouseup", sendPushbuttonUp, false);
+				pushbuttonElem.addEventListener("touchend", sendTwoStateUp, false);
 
-                scenebuttonElem.addEventListener("touchstart", sendSceneChange, false);
-
-
-            }
-        </script>
-    </head>
-    <body>
-        <div class="connectorContainer">
-            <p>Enter the 9-letter code from your Synth to load the controller. (If you haven't opened a synth, <a href="/">open it</a> on a non-mobile device with Google Chrome.)</p>
-            <input type="text" id="partyName" />
-            <button>Load</button>
-            <!-- DEBUG MODE for pitch and roll -->
-            <!-- <div style="background-color:#DDDDFF;height:320px;width:80px;float:left;">
-            <h4>
-                Pitch    <div id="pitch" align="center">p</div><br>
-                Roll    <div id="roll" align="center">r</div><br>
-                </h4>
-            </div> -->
-        </div>
-        <div hidden class="controllerContainer">
-            <div class="innerContainer">
-                <button id="toggle">Toggle</button>
-            </div>
-            <div class="innerContainer" id="textcontainer">
-                <p id="partyname">Party Name</p>
-            </div>
-            <div class="innerContainer">
-                <button id="pushbutton">Push Button</button>
-            </div>
-             <div class="innerContainer">
-                <button id="scenebutton">Scene Change</button>
-            </div>
-        </div>
-        <script>
-             setupCanvas("touch");
-             document.getElementById("partyname").innerHTML = party;
-        </script>
-    </body>
+				scenebuttonElem.addEventListener("touchstart", sendSceneChange, false);
+			}
+		</script>
+	</head>
+	<body>
+		<div class="connectorContainer">
+			<p>Enter the 9-letter code from your Synth to load the controller. (If you haven't opened a synth, <a href="/">open it</a> on a non-mobile device with Google Chrome.)</p>
+			<input type="text" id="partyName" />
+			<button>Load</button>
+			<!-- DEBUG MODE for pitch and roll -->
+			<!-- <div style="background-color:#DDDDFF;height:320px;width:80px;float:left;">
+			<h4>
+				Pitch    <div id="pitch" align="center">p</div><br>
+				Roll    <div id="roll" align="center">r</div><br>
+				</h4>
+			</div> -->
+		</div>
+		<div hidden class="controllerContainer">
+			<div class="innerContainer">
+				<button id="toggle">Toggle</button>
+			</div>
+			<div class="innerContainer" id="textcontainer">
+				<p id="partyname">Party Name</p>
+			</div>
+			<div class="innerContainer">
+				<button id="pushbutton">Push Button</button>
+			</div>
+			 <div class="innerContainer">
+				<button id="scenebutton">Scene Change</button>
+			</div>
+		</div>
+		<script>
+			 setupCanvas("touch");
+			 document.getElementById("partyname").innerHTML = party;
+		</script>
+	</body>
 </html>
