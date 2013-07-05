@@ -282,7 +282,7 @@ define(
 					console.log("ERROR: Can't set that state!");
 					return;
 				}
-				handler.states[stateId] = state;
+				handler.states[stateId][soundId] = state;
 			}
 
 			function setSceneChangeSoundState(handler, address, soundId, state) {
@@ -338,7 +338,7 @@ define(
 					console.log("ERROR: Can't get that state!");
 					return;
 				}
-				return handler.states[stateId];
+				return handler.states[stateId][soundId];
 			}
 
 			function getSceneChangeSoundState(handler, address, soundId) {
