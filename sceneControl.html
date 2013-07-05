@@ -166,29 +166,32 @@ You should have received a copy of the GNU General Public License and GNU Lesser
         </script>
     </head>
     <body>
-	<div class="container">
-        <!-- <canvas id="touch" width="240" height="240"></canvas> -->
-        <div class="innerContainer">
-            <button id="toggle">Toggle</button>
+        <div class="connectorContainer">
+            <p>Enter the 9-letter code from your Synth to load the controller. (If you haven't opened a synth, <a href="/">open it</a> on a non-mobile device with Google Chrome.)</p>
+            <input type="text" id="partyName" />
+            <button>Load</button>
+            <!-- DEBUG MODE for pitch and roll -->
+            <!-- <div style="background-color:#DDDDFF;height:320px;width:80px;float:left;">
+            <h4>
+                Pitch    <div id="pitch" align="center">p</div><br>
+                Roll    <div id="roll" align="center">r</div><br>
+                </h4>
+            </div> -->
         </div>
-        <div class="innerContainer" id="textcontainer">
-            <p id="partyname">Party Name</p>
+        <div hidden class="controllerContainer">
+            <div class="innerContainer">
+                <button id="toggle">Toggle</button>
+            </div>
+            <div class="innerContainer" id="textcontainer">
+                <p id="partyname">Party Name</p>
+            </div>
+            <div class="innerContainer">
+                <button id="pushbutton">Push Button</button>
+            </div>
+             <div class="innerContainer">
+                <button id="scenebutton">Scene Change</button>
+            </div>
         </div>
-        <div class="innerContainer">
-            <button id="pushbutton">Push Button</button>
-        </div>
-         <div class="innerContainer">
-            <button id="scenebutton">Scene Change</button>
-        </div>
-
-	</div >
-    <!-- DEBUG MODE for pitch and roll -->
-	<!-- <div style="background-color:#DDDDFF;height:320px;width:80px;float:left;">
-		<h4>
-		Pitch    <div id="pitch" align="center">p</div><br>
-		Roll    <div id="roll" align="center">r</div><br>
-		</h4>	
-	</div> -->
         <script>
              setupCanvas("touch");
              document.getElementById("partyname").innerHTML = party;
