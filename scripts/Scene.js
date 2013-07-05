@@ -173,7 +173,7 @@ define(
 						removeSoundFromHandlerById(scene.handlers[handlerName], id);
 					}
 				}
-			};
+			}
 
 			myInterface.removeSoundByName = function (name) {
 				var id = getSoundId(name);
@@ -295,8 +295,10 @@ define(
 				var soundId = getSoundId(soundName);
 				var handlerName = getHandlerNameFromAddress(address);
 				// IF the handler doesn't exist, do nothing
-				if (!scene.handlers[handlerName])
+				if (!scene.handlers[handlerName]) {
+					console.log("ERROR! handler " + handlerName + " does not exist!");
 					return false;
+				}
 				var handler = scene.handlers[handlerName];
 				switch (handler.type) {
 					case "range":
@@ -348,8 +350,10 @@ define(
 				var soundId = getSoundId(soundName);
 				var handlerName = getHandlerNameFromAddress(address);
 				// IF the handler doesn't exist, do nothing
-				if (!scene.handlers[handlerName])
+				if (!scene.handlers[handlerName]) {
+					console.log("ERROR! handler " + handlerName + " does not exist!");
 					return false;
+				}
 				var handler = scene.handlers[handlerName];
 				switch (handler.type) {
 					case "range":
