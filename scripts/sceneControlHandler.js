@@ -49,8 +49,8 @@ define(
 				return;
 			}
 			numScenes = storyArr.length;
-			setScene(0);
 			initMessaging();
+			setScene(0);
 		}
 
 		function setScene (sceneId) {
@@ -116,17 +116,16 @@ define(
 		}
 
 		function loadSounds() {
-			initSounds();
+			initIsPlaying();
 			loadSliderBoxes();
+			initNStates();
+			// There may be a need to initialise other types of handlers as well
+			// Currently, other types will start with their default values from jsaSound
+			// Later on, we could have them start with default values from the story. eg.
 		}
 
-		function initSounds() {
-			initialiseIsPlaying();
-			loadSliderBoxes();
-			initialiseTwoStates();
-		}
-
-		function initialiseIsPlaying() {
+		// Defaults all sounds to NOT PLAYING
+		function initIsPlaying() {
 			isPlaying = {};
 			var soundList = story.getCurrentScene().getSoundNames();
 
@@ -149,26 +148,18 @@ define(
 			}
 		}
 
-		var initialiseTwoStates = function () {
-			var handler;
+		function initNStates() {
+			var handlerName;
+			var handlers = story.getCurrentScene().getSceneObj().handlers;
 			var firstStateTargets;
 			var i;
-			for (handler in m_scene.handlers) {
-				if (m_scene.handlers.hasOwnProperty(handler) && m_scene.handlers[handler].type === "twoState") {
-					currState[handler] = 0;
-					firstStateTargets = m_scene.handlers[handler].targets[0];
-					for (i = 0; i < firstStateTargets.length; i += 1) {
-						//console.log("firstStateTargets[i].model " + firstStateTargets[i].model);
-						//console.log("soundModels " + soundModels[firstStateTargets[i].model]);
-						//console.log("setting value to " + firstStateTargets[i].defaultValue);
-						soundModels[firstStateTargets[i].model].setParamNorm(firstStateTargets[i].parameter, firstStateTargets[i].defaultValue);
-						if (firstStateTargets[i].defaultState && (firstStateTargets[i].defaultState === "play")){
-							soundModels[firstStateTargets[i].model].play();
-						}
-					}
+			for (handlerName in handlers) {
+				if (handlers.hasOwnProperty(handlerName) && handlers[handlerName].type === "nState") {
+					currState[handlerName] = 0;
+					setState(handlers[handlerName].states[0]);
 				}
 			}
-		};
+		}
 
 		function defaultHandler(msg) {
 			console.error(JSON.stringify(msg));
