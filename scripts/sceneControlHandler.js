@@ -182,7 +182,7 @@ define(
 		};
 
 		function rangeMessageHandler(handler, value) {
-			setState(interpolateState(handler.min, handler.max));
+			setState(interpolateStates(handler.min, handler.max, value));
 		}
 
 		function nStateMessageHandler(handler, value) {
