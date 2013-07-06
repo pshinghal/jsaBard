@@ -42,6 +42,27 @@ define(
 			socket.on("connect", initConnectorView);
 		}
 
+		function loadStory(storyName) {
+
+			function goodCb(res) {
+				console.log("Got Story!");
+				console.log("Response: " + JSON.stringify(res));
+				initControllerView(res);
+			}
+
+			function badCb() {
+				alert("ERROR! Try something else.");
+			}
+
+			$.get("/loadStory", {name: storyName})
+			.done(function (res) {
+				if (res)
+					goodCb(res);
+				else
+					badCb();
+			}).fail(badCb);
+		}
+
 		function initConnectorView() {
 			var partyNameInput = elem("partyName");
 			var partyButton = elem("partyButton");
@@ -54,7 +75,8 @@ define(
 				console.log("Attempting to join " + partyName);
 				socket.on("confirm", function (data) {
 					if (data.party === partyName) {
-						initControllerView();
+						console.log("Joined with story: " + data.story);
+						loadStory(data.story);
 					} else {
 						alert("Couldn't connect!");
 						partyNameInput.value = "";
@@ -72,63 +94,10 @@ define(
 			enable("partyButton");
 		}
 
-		function initControllerView() {
-			function send(msg) {
-				socket.send(JSON.stringify(msg));
-			}
-
-			function sendOrientation(event) {
-				var pitch = event.beta;
-				var roll = event.gamma;
-				var foo1 = mapconstrain(-45, 45, 0, 1, pitch);
-				var foo2 = mapconstrain(-45, 45, 0, 1, roll);
-
-				send({ id: "pitch", type: "range", val: foo1});
-				send({ id: "roll", type: "range", val: foo2 });
-			}
-
-			function sendToggle (event) {
-				event.preventDefault();
-				send({ id: "toggle", type: "play_stop", val: "play_stop"});
-			}
-
-			function sendPushbuttonDown (event) {
-				event.preventDefault();
-				send({ id: "pushbutton", type: "play_stop", val: "play"});
-			}
-
-			function sendPushbuttonUp (event) {
-				event.preventDefault();
-				send({ id: "pushbutton", type: "play_stop", val: "stop"});
-			}
-
-			function sendTwoStateDown (event) {
-				event.preventDefault();
-				send({ id: "dummyTwoState", type: "twoState", val: "down"});
-			}
-
-			function sendTwoStateUp (event) {
-				event.preventDefault();
-				send({ id: "dummyTwoState", type: "twoState", val: "up"});
-			}
-
-			function sendSceneChange (event){
-				event.preventDefault();
-				send({id: "sceneChange", type: "scene_change", val: null});
-			}
-
+		function initControllerView(storyObj) {
 			hide("connectorContainer");
-			show("controllerContainer");
-
-			var toggleElem = document.getElementById("toggle");
-			var pushbuttonElem = document.getElementById("pushbutton");
-			var scenebuttonElem = document.getElementById("scenebutton");
-
-			window.addEventListener("deviceorientation", sendOrientation, false);
-			toggleElem.addEventListener("touchstart", sendToggle, false);
-			pushbuttonElem.addEventListener("touchstart", sendTwoStateDown, false);
-			pushbuttonElem.addEventListener("touchend", sendTwoStateUp, false);
-			scenebuttonElem.addEventListener("touchstart", sendSceneChange, false);
+			show("app");
+			renderer.renderSurface(storyObj.controller);
 		}
 
 		init();
