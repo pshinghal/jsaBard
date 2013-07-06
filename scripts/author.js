@@ -5,27 +5,27 @@ require.config({
 	}
 });
 define(
-	["controllerModel", "Story", "jsaSound/jsaCore/sliderBox", "jquery"],
-	function (controllerModel, Story, makeSliderBox, $) {
+	["Story", "jsaSound/jsaCore/sliderBox", "jquery"],
+	function (Story, makeSliderBox, $) {
 		//TODO: Do not allow models to be added when no scene is selected (but a scene HAS been created). Maybe avoid non-selection completely
 
 		var i;
+		var controllerModel = {};
 
-		// TODO IMPORTANT!
-		// THIS CODE SHOULD PROBABLY BE MOVED SOMEWHERE ELSE LATER!
-		var tempControllerModel = { interface: {} };
-		for (i = 0; i < controllerModel.interface.length; i++) {
-			var x;
-			var name = controllerModel.interface[i].paramioID;
-			tempControllerModel.interface[name] = {};
-			for (x in controllerModel.interface[i]) {
-				if (controllerModel.interface[i].hasOwnProperty(x) && x != "paramioID") {
-					tempControllerModel.interface[name][x] = controllerModel.interface[i][x];
+		function setController(model) {
+			var tempControllerModel = { interface: {} };
+			controllerModel.interface = {};
+			for (i = 0; i < model.interface.length; i++) {
+				var x;
+				var name = model.interface[i].paramioID;
+				controllerModel.interface[name] = {};
+				for (x in model.interface[i]) {
+					if (model.interface[i].hasOwnProperty(x) && x != "paramioID") {
+						controllerModel.interface[name][x] = model.interface[i][x];
+					}
 				}
 			}
 		}
-		controllerModel = tempControllerModel;
-		// END IMPORTANT
 
 		// FOR DEBUGGING
 		function printArr(arr) {
@@ -667,9 +667,10 @@ define(
 			elements.loadControllerButton.addEventListener("click", loadController);
 		}
 
-		function initAuthorView(controllerModel) {
+		function initAuthorView(model) {
 			hide("welcomeContainer");
 			show("authorContainer");
+			setController(model);
 			drawSceneEditor();
 			elements.newSceneButton.addEventListener("click", addNewScene);
 			elements.newSoundButton.addEventListener("click", newSoundHandler);
