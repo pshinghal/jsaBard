@@ -16,13 +16,14 @@ require.config({
 		}
 	},
 	paths: {
-		"socketio": "/socket.io/socket.io"
+		"socketio": "/socket.io/socket.io",
+		"renderer": "http://localhost:8002/appscripts/renderSurface"
 	}
 });
 
 define(
-	["socketio"],
-	function (io) {
+	["socketio", "renderer"],
+	function (io, renderer) {
 		function elem(id) { return document.getElementById(id); }
 		function hide(id) { elem(id).setAttribute("hidden"); }
 		function show(id) { elem(id).removeAttribute("hidden"); }
