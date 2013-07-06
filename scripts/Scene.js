@@ -1,23 +1,7 @@
 define(
-	["controllerModel"],
-	function (controllerModel) {
-		var i;
-		var tempControllerModel = { interface: {} };
-		for (i = 0; i < controllerModel.interface.length; i++) {
-			var x;
-			var name = controllerModel.interface[i].paramioID;
-			tempControllerModel.interface[name] = {};
-			for (x in controllerModel.interface[i]) {
-				if (controllerModel.interface[i].hasOwnProperty(x) && x != "paramioID") {
-					tempControllerModel.interface[name][x] = controllerModel.interface[i][x];
-				}
-			}
-		}
-		controllerModel = tempControllerModel;
-		console.log("MADE CONTROLLER MODEL!");
-		console.log(controllerModel);
-
-		return function () {
+	[],
+	function () {
+		return function (controllerModel) {
 			var myInterface = {};
 			var temp;
 			var nextSoundKey = 0; //NEVER DECREMENT!

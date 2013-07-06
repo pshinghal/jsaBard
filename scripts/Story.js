@@ -1,7 +1,7 @@
 define(
 	["Scene"],
 	function (Scene) {
-		return function () {
+		return function (controllerModel) {
 			//TODO: Handle the changing of currentScene and currentSceneId when scenes are deleted.
 			var myInterface = {};
 
@@ -17,7 +17,7 @@ define(
 			};
 
 			function getNewScene() {
-				return Scene();
+				return Scene(controllerModel);
 			}
 
 			myInterface.addSceneAtEnd = function (newScene) {
@@ -78,7 +78,7 @@ define(
 			myInterface.setStoryArr = function (story) {
 				var i;
 				for (i = 0; i < story.length; i++) {
-					var temp = Scene();
+					var temp = Scene(controllerModel);
 					temp.setSceneObj(story[i]);
 					this.addScene(temp);
 				}
