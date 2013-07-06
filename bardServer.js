@@ -158,9 +158,10 @@ io.sockets.on('connection', function (socket) {
         var party = partyNamed(data.party);
         if (party && data.type === 'synth') {
             party.synths.push(socket);
+            party.story = data.story;
             socket.on('message', make_fwd(party.controllers));
             socket.on('disconnect', make_on_disconnect('Synth', party, party.synths, socket));
-            console.log("synth connected");
+            console.log("synth connected with story " + party.story);
         } else if (party && data.type === 'control') {
             party.controllers.push(socket);
             socket.on('message', make_fwd(party.synths));
@@ -168,7 +169,7 @@ io.sockets.on('connection', function (socket) {
             console.log("controller connected");
         }
         // TODO: Check for error cases. If there are any, send 'confirm' with ERROR.
-        socket.emit("confirm", {party: data.party});
+        socket.emit("confirm", {party: data.party, story: party.story});
     });
 });
 
