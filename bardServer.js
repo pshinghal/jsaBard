@@ -59,7 +59,7 @@ function addGetter(route, file) {
     console.log("Added");
 }
 
-addGetter("/", "/scene.html");
+addGetter("/", "/player.html");
 addGetter("/control", "/sceneControl.html");
 addGetter("/author", "/author.html");
 

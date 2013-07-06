@@ -7,17 +7,27 @@ This library is free software; you can redistribute it and/or modify it under th
 This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNULesser General Public License for more details.
 You should have received a copy of the GNU General Public License and GNU Lesser General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>
 ------------------------------------------------------------------------------------------*/
-// Kumar Subramanian (http://nishabdam.com) is the Guru responsible for the party node.js architecture! -->
+// Kumar Subramanian (http://nishabdam.com) is the Guru responsible for the party node.js architecture!
 // Modified, adapted, and further messed with by:
 //	Lonce Wyse, July 2010
-//------------------------------
-// This is where we set up the responses to incoming control messages.
+// Re-done by Pallav Shinghal (http://pshinghal.com)
+
+require.config({
+	shim: {
+		"socketio": {
+			exports: "io"
+		}
+	},
+	paths: {
+		"jsaSound": "http://animatedsoundworks.com:8001/",
+		"jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min",
+		"socketio": "/socket.io/socket.io"
+	}
+});
 
 define(
-	[ "require", "jsaSound/jsaCore/sliderBox", "jquery", "controllerModel", "Story", "/socket.io/socket.io.js"],
-	// TODO: init and initScene need to be cleaned up/combined.
-	// Doesn't look nice that both async inits are executed in a non-daisy-chained manner.
-	function (require, makeSliderBox, $, controllerModel, Story) {
+	[ "require", "jsaSound/jsaCore/sliderBox", "jquery", "Story", "socketio"],
+	function (require, makeSliderBox, $, Story, io) {
 		var story = {};
 
 		var sliderBoxes = {};

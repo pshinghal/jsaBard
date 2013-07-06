@@ -9,27 +9,20 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 -->
 <html>
 	<head>
-       <link rel="stylesheet" type="text/css" href="css/jsaPhoneSelector.css">
- 	 	<!--
-		This code is an alpha 000.1 version of jsaBard, a sound system for storytellers
-		-->
+       <link rel="stylesheet" type="text/css" href="css/player.css">
 		<title>jsaBard</title>
-		<meta name="description" content="jsaSound: an interactive sound library">
+		<meta name="description" content="jsaBard: Interactive Sound Modeling for Storytellers">
 
-		<script type="text/javascript" data-main="scripts/bardMain.js" src="scripts/require.js" ></script>
-			<!-- #include for node party connection with phone -->
 		<script type="text/javascript">	
 		var jsaHost="/";
 		var jsaSoundRelHTML = "jsaSound";
 		</script>
-		<!-- Set up the control (phone) input here -->
+		<script type="text/javascript" data-main="scripts/player.js" src="scripts/require.js" ></script>
 	</head>
 	<body>
 		<div class="topContainer">
 			<h1>jsaBard for Storytelling with Interactive Sound Modeling</h1>
-			
 		</div>
-		<!-- Dynamically create the scene list for selection -->
 		<hr />
 		<div class="mainContainer">
 			<div class="bardDescription">
@@ -53,13 +46,10 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 				<input class="textInput" id="storyName" type="text" placeholder="Story name" autofocus />
 				<button id="loadStory">Load</button>
 			</div>
-			<!-- And this is the phone party stuff -->
 			<div hidden id="partySelector">
-					<!-- Maybe add generated QR Code later -->
-					<p>2. Type this 9-letter code in your controller to play:</p>
-					<!-- <input class="textInput" id="party_box" type="text" disabled placeholder="Controller code"/>
-					<button id="join_party" disabled>Join</button> -->
-					<p id="partyName" class="activeText">loading...</p>
+				<!-- TODO: Maybe add generated QR Code later -->
+				<p>2. Type this 9-letter code in your controller to play:</p>
+				<p id="partyName" class="activeText">loading...</p>
 			</div>
 		</div>
 	</body>
