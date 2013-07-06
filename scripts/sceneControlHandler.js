@@ -148,6 +148,29 @@ define(
 			}
 		}
 
+		function setState(state) {
+			var i, j;
+			var soundList = story.getCurrentScene().getSoundNames();
+			for (i = 0; i < soundList.length && i < state.length; i++) {
+				var sliderBox = sliderBoxes[soundList[i]];
+				var soundState = state[i];
+				if (!sliderBox) {
+					console.log("ERROR: There's no slider box for " + soundList[i]);
+					continue;
+				}
+				for (j = 0; j < soundState.length; j++) {
+					if (soundState[j].type === range)
+						sliderBox.setParamNorm(soundState[j].name, soundState[j].value);
+					else
+						sliderBox.setParam(soundState[j].name, soundState[j].value);
+				}
+			}
+		}
+
+		function interpolateStates(low, high, weight) {
+			// new = low + (weight * (high - low));
+		}
+
 		function initNStates() {
 			var handlerName;
 			var handlers = story.getCurrentScene().getSceneObj().handlers;
