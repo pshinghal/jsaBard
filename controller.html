@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!-- /* ---------------------------------------------------------------------------------------
+This jsaSound Code is distributed under LGPL 3
+Copyright (C) 2012 National University of Singapore
+Inquiries: director@anclab.org
+
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 3 of the License, or any later version.
+This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNULesser General Public License for more details.
+You should have received a copy of the GNU General Public License and GNU Lesser General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>
+------------------------------------------------------------------------------------------*/ -->
+<html>
+<!--  Kumar Subramanian (http://nishabdam.com) is the Guru responsible for the party node.js architecture! -->
+	<head>
+		<title>jsaBard · Controller</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" type="text/css" href="css/controller.css">
+		<script type="text/javascript">
+			// Will this work everywhere?
+			var jsaHost="/";
+		</script>
+		<script type="text/javascript" data-main="scripts/controller.js" src="scripts/require.js" ></script>
+	</head>
+	<body>
+		<div id="connectorContainer">
+			<p>Enter the 9-letter code from your Synth to load the controller. (If you haven't opened a synth, <a href="/">open it</a> on a non-mobile device with Google Chrome.)</p>
+			<input disabled type="text" id="partyName" placeholder="Synth Code" />
+			<button disabled id="partyButton">Load</button>
+		</div>
+		<div hidden id="controllerContainer">
+			<div class="innerContainer">
+				<button id="toggle">Toggle</button>
+			</div>
+			<div class="innerContainer" id="textcontainer">
+				<p id="partyname">Party Name</p>
+			</div>
+			<div class="innerContainer">
+				<button id="pushbutton">Push Button</button>
+			</div>
+			 <div class="innerContainer">
+				<button id="scenebutton">Scene Change</button>
+			</div>
+		</div>
+	</body>
+</html>

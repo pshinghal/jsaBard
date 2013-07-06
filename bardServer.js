@@ -60,7 +60,7 @@ function addGetter(route, file) {
 }
 
 addGetter("/", "/player.html");
-addGetter("/control", "/sceneControl.html");
+addGetter("/controller", "/controller.html");
 addGetter("/author", "/author.html");
 
 function isValidFilename(name) {
