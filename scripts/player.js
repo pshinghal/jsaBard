@@ -51,7 +51,7 @@ define(
 			return tokenizeByVBar(name)[0];
 		}
 
-		function initStory (storyObj) {
+		function initStory (storyObj, storyName) {
 			story = Story(storyObj.controller);
 			story.setStoryScenes(storyObj.scenes);
 			if (storyObj.scenes.length <= 0) {
@@ -59,7 +59,7 @@ define(
 				return;
 			}
 			numScenes = storyObj.scenes.length;
-			initMessaging();
+			initMessaging(storyName);
 			setScene(0);
 		}
 
@@ -281,7 +281,7 @@ define(
 				defaultHandler(handlerName);
 		}
 
-		function initMessaging() {
+		function initMessaging(storyName) {
 			var partyDiv = elem("partySelector");
 			partyDiv.removeAttribute("hidden");
 			var partyNameElem = elem("partyName");
@@ -331,7 +331,8 @@ define(
 				console.log("Synth connected to server with party name: " + partyName);
 				var registerMessage = {
 					party: partyName.replace(/ /g, ''),
-					type: "synth"
+					type: "synth",
+					story: storyName
 				};
 				socket.emit("register", registerMessage);
 				socket.on("confirm", function (data) {
@@ -360,7 +361,7 @@ define(
 				console.log("Response: " + JSON.stringify(res));
 				elem("loadStory").setAttribute("disabled");
 				elem("storyName").setAttribute("disabled");
-				initStory(res);
+				initStory(res, storyName);
 			}
 
 			function badCb() {
