@@ -61,38 +61,17 @@ define(
 
 		var elements = {};
 
-		function elem(elemName) {
-			return document.getElementById(elemName);
-		}
+		function elem(id) { return document.getElementById(id); }
+		function hide(id) { elem(id).setAttribute("hidden"); }
+		function show(id) { elem(id).removeAttribute("hidden"); }
+		function disable(id) { elem(id).setAttribute("disabled"); }
+		function enable(id) { elem(id).removeAttribute("disabled"); }
+		function atoi(str) { return parseInt(str, 10); }
 
-		function atoi(str) {
-			return parseInt(str, 10);
-		}
-
-		function tokenizeByVBar(s) {
-			return s.trim().split("|");
-		}
-
-		function joinByVBar() {
-			return Array.prototype.join.call(arguments, "|");
-		}
-
-		function setActive(node) {
-			var currentClass = node.getAttribute("class").trim().split(" ");
-			if (currentClass.indexOf("active") > -1)
-				return;
-			currentClass.push("active");
-			node.setAttribute("class", currentClass.join(" "));
-		}
-
-		function removeActive(node) {
-			var currentClass = node.getAttribute("class").trim().split(" ");
-			var pos = currentClass.indexOf("active");
-			if (pos == -1)
-				return;
-			currentClass.splice(pos, 1);
-			node.setAttribute("class", currentClass.join(" "));
-		}
+		function tokenizeByVBar(s) { return s.trim().split("|"); }
+		function joinByVBar() { return Array.prototype.join.call(arguments, "|"); }
+		function setActive(node) { node.setAttribute("active"); }
+		function removeActive(node) { node.removeAttribute("active"); }
 
 		function mapElementsToIds() {
 			var x;
@@ -649,13 +628,19 @@ define(
 			closeSliderBoxes();
 		}
 
-		mapElementsToIds();
+		function initAuthorView() {
 
-		drawSceneEditor();
-		elements.newSceneButton.addEventListener("click", addNewScene);
-		elements.newSoundButton.addEventListener("click", newSoundHandler);
-		elements.saveStoryButton.addEventListener("click", saveStoryHandler);
-		window.onbeforeunload = cleanup;
+			mapElementsToIds();
+
+			drawSceneEditor();
+			elements.newSceneButton.addEventListener("click", addNewScene);
+			elements.newSoundButton.addEventListener("click", newSoundHandler);
+			elements.saveStoryButton.addEventListener("click", saveStoryHandler);
+			window.onbeforeunload = cleanup;
+		}
+
+		initAuthorView();
+
 		console.log("Completed loading author.js");
 	}
 );
