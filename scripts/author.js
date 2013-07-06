@@ -50,7 +50,11 @@ define(
 			saveStoryButton: "saveButton",
 			saveStoryNameField: "storyName",
 			soundList: "soundList",
-			controllerElementParams: "controllerElementParams"
+			controllerElementParams: "controllerElementParams",
+			welcomeContainer: "welcomeContainer",
+			authorContainer: "authorContainer",
+			controllerInput: "controllerInput",
+			loadControllerButton: "loadControllerButton"
 		};
 
 		var story = Story();
@@ -628,10 +632,44 @@ define(
 			closeSliderBoxes();
 		}
 
-		function initAuthorView() {
+		function initWelcomeView() {
+			function loadController() {
+				var controllerModelName = elements.controllerInput.value;
+				console.log("Loading controller " + controllerModelName);
+				disable("loadControllerButton");
+				disable("controllerInput");
 
-			mapElementsToIds();
+				function successCb(res) {
+					initAuthorView(res);
+				}
 
+				function failCb() {
+					alert("Nope! Cant't load that");
+					elements.controllerInput.value = "";
+					elements.controllerInput.focus();
+					enable("loadControllerButton");
+					enable("controllerInput");
+				}
+
+				$.get("/loadController", {name: controllerModelName})
+				.done(function (res) {
+					if (res)
+						successCb(res);
+					else
+						failCb();
+				})
+				.fail(failCb);
+			}
+
+			enable("loadControllerButton");
+			enable("controllerInput");
+			elements.controllerInput.focus();
+			elements.loadControllerButton.addEventListener("click", loadController);
+		}
+
+		function initAuthorView(controllerModel) {
+			hide("welcomeContainer");
+			show("authorContainer");
 			drawSceneEditor();
 			elements.newSceneButton.addEventListener("click", addNewScene);
 			elements.newSoundButton.addEventListener("click", newSoundHandler);
@@ -639,7 +677,9 @@ define(
 			window.onbeforeunload = cleanup;
 		}
 
-		initAuthorView();
+		mapElementsToIds();
+
+		$(initWelcomeView);
 
 		console.log("Completed loading author.js");
 	}
