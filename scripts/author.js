@@ -7,7 +7,7 @@ require.config({
 define(
 	["controllerModel", "Story", "jsaSound/jsaCore/sliderBox", "jquery"],
 	function (controllerModel, Story, makeSliderBox, $) {
-		//TODO: Do not allow models to be added when no scene is selected (but a scene HAS been created)
+		//TODO: Do not allow models to be added when no scene is selected (but a scene HAS been created). Maybe avoid non-selection completely
 
 		var i;
 
@@ -25,7 +25,6 @@ define(
 			}
 		}
 		controllerModel = tempControllerModel;
-		console.log(controllerModel);
 		// END IMPORTANT
 
 		// FOR DEBUGGING
@@ -39,22 +38,19 @@ define(
 		// END DEBUGGING
 
 		var nextSceneId = 0;
-		var nextHandlerContentItemId = 0;
-		var nextModelId = 0;
 
 		// TODO: Re-populate and use in the code
 		var elemIds = {
 			scenesDiv: "scenes",
 			descriptionDiv: "description",
 			sceneEditorDiv: "sceneEditor",
-			modelsDiv: "models",
 			newSceneButton: "newScene",
-			newHandlerContentItemButton: "newHandlerContentItem",
-			newModelButton: "newModel",
 			newSoundButton: "newSound",
 			newSoundNameField: "newSoundName",
 			saveStoryButton: "saveButton",
-			saveStoryNameField: "storyName"
+			saveStoryNameField: "storyName",
+			soundList: "soundList",
+			controllerElementParams: "controllerElementParams"
 		};
 
 		var story = Story();
@@ -105,7 +101,6 @@ define(
 			}
 		}
 
-		//TODO: Implement with checked sliderBox, etc.
 		function getCurrentSoundState(soundName) {
 			if (!sliderBoxes[soundName])
 				return null;
@@ -124,7 +119,7 @@ define(
 
 		function getNewScene() {
 			var nextSceneId = story.getNextSceneId();
-			console.log("Scene id is " + nextSceneId);
+			// console.log("Scene id is " + nextSceneId);
 			var sceneDiv = document.createElement("div");
 			sceneDiv.setAttribute("class", "scene");
 			sceneDiv.setAttribute("id", joinByVBar("scene", nextSceneId));
@@ -149,9 +144,8 @@ define(
 		function appendScenes(sceneNode) {
 			var temp = elements.newSceneButton;
 			temp.parentNode.removeChild(temp);
-			var scenes = elements.scenesDiv;
-			scenes.insertAdjacentElement("beforeend", sceneNode);
-			scenes.insertAdjacentElement("beforeend", temp);
+			elements.scenesDiv.insertAdjacentElement("beforeend", sceneNode);
+			elements.scenesDiv.insertAdjacentElement("beforeend", temp);
 		}
 
 		function addNewScene() {
@@ -163,7 +157,7 @@ define(
 		// REDUCES subsequent nodes
 		function removeScene(sceneNode) {
 			var sceneId = atoi(tokenizeByVBar(sceneNode.getAttribute("id")).pop());
-			console.log("This scene's ID is " + sceneId);
+			console.log("Removing scene with ID " + sceneId);
 			var nextNode = sceneNode.nextSibling;
 			sceneNode.parentNode.removeChild(sceneNode);
 
@@ -173,11 +167,13 @@ define(
 			story.removeScene(sceneId);
 		}
 
+		// Unused. Keeping it just in case
 		function removeSceneById(id) {
 			console.log("Removing scene with ID " + id);
 			removeScene(elem(joinByVBar("scene", id)));
 		}
 
+		// Unused. Keeping it just in case
 		function removeSceneByButton(button) {
 			console.log("Starting with node:");
 			console.log(button);
@@ -259,17 +255,17 @@ define(
 		}
 
 		function selectScene(sceneNode) {
-			// Avoid "re-selection" of the same nodes
+			// TODO: Stop "concurrent" selection.
 
-			console.log("Selecting");
-			console.log(sceneNode);
+			// console.log("Selecting scene:");
+			// console.log(sceneNode);
 			var currSceneId = story.getCurrentSceneId();
-			console.log("Current Active ID = " + currSceneId);
+			// console.log("Current Active ID = " + currSceneId);
 			if (currSceneId > -1)
 				removeActive(elem(joinByVBar("scene", currSceneId)));
 			setActive(sceneNode);
 			var sceneId = atoi(tokenizeByVBar(sceneNode.getAttribute("id")).pop());
-			console.log("This scene has ID=" + sceneId);
+			// console.log("This scene has ID=" + sceneId);
 			story.setCurrentScene(sceneId);
 			console.log("Set Story's current scene to " + sceneId);
 			redrawSceneEditor();
@@ -277,11 +273,13 @@ define(
 			refreshSliderBoxes();
 		}
 
+		// Unused. Keeping it just in case
 		function selectSceneById(id) {
 			console.log("Selecting by ID " + id);
 			selectScene(elem(joinByVBar("scene", id)));
 		}
 
+		// Unused. Keeping it just in case
 		function selectSceneByNode(node) {
 			var currNode = node;
 			while (currNode && (!currNode.getAttribute("class") || tokenizeByVBar(currNode.getAttribute("class"))[0] !== "scene"))
@@ -297,19 +295,19 @@ define(
 		}
 
 		function adjustSceneIdsFrom(firstNode, diff) {
-			console.log("Adjusting IDs From a node:" + firstNode);
+			// console.log("Adjusting IDs From a node:" + firstNode);
 			var currNode = firstNode;
 			var currId;
 			while(currNode && currNode.getAttribute("class") && currNode.getAttribute("class").split(" ").indexOf("scene") > -1) {
-				console.log("This node IS a scene");
+				// console.log("This node IS a scene");
 				currId = atoi(tokenizeByVBar(currNode.getAttribute("id")).pop());
-				console.log("It has ID=" + currId);
+				// console.log("It has ID=" + currId);
 				currId += diff;
-				console.log("It's new ID is=" + currId);
+				// console.log("It's new ID is=" + currId);
 				currNode.setAttribute("id", joinByVBar("scene", currId));
-				console.log("Set it's new ID!");
+				// console.log("Set it's new ID!");
 				currNode = currNode.nextSibling;
-				console.log("Moved to the next Node!");
+				// console.log("Moved to the next Node!");
 			}
 		}
 
@@ -512,7 +510,7 @@ define(
 			// TODO: Sanitize
 			// Note: Scene does NOT care about the models
 			var soundName = story.getCurrentScene().addSound(soundModel);
-			elem("soundList").appendChild(makeSoundBox(soundName));
+			elements.soundList.appendChild(makeSoundBox(soundName));
 			populateStateSettersBySound(soundName);
 		}
 
@@ -553,22 +551,19 @@ define(
 		}
 
 		function drawSoundList() {
-			var listDiv = elem("soundList");
-
 			if (!story.getCurrentScene())
 				return;
 
 			var soundNames = story.getCurrentScene().getSoundNames();
 			var i;
 			for (i = 0; i < soundNames.length; i++) {
-				listDiv.appendChild(makeSoundBox(soundNames[i]));
+				elements.soundList.appendChild(makeSoundBox(soundNames[i]));
 			}
 		}
 
 		function clearSoundList() {
-			var listDiv = elem("soundList");
-			while (listDiv.hasChildNodes()) {
-				listDiv.removeChild(listDiv.lastChild);
+			while (elements.soundList.hasChildNodes()) {
+				elements.soundList.removeChild(elements.soundList.lastChild);
 			}
 		}
 
@@ -578,7 +573,7 @@ define(
 		}
 
 		function drawControllerEditors() {
-			var editorDiv = elem("controllerElementParams");
+			var editorDiv = elements.controllerElementParams;
 			var x;
 			for (x in controllerModel.interface) {
 				if (controllerModel.interface.hasOwnProperty(x)) {
