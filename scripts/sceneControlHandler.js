@@ -161,10 +161,6 @@ define(
 			}
 		}
 
-		function defaultHandler(msg) {
-			console.error(JSON.stringify(msg));
-		}
-
 		//TODO: (MAYBE) implement way of specifying whether we want to STOP or to RELEASE
 		// This currently interfaces with the sliderBox, so play and release are no different. i.e. play() while playing is the same as release()
 		// Keeping this at the moment, for possible future use.
@@ -185,67 +181,46 @@ define(
 			}
 		};
 
+		function rangeMessageHandler(handler, value) {
+			setState(interpolateState(handler.min, handler.max));
+		}
+
+		function nStateMessageHandler(handler, value) {
+			setState(handler.states[value]);
+		}
+
+		function sceneChangeMessageHandler(handler, value) {
+			var sceneNum = Math.max(story.getCurrentSceneId() + 1, story.getNextSceneId() - 1); //Don't go beyond the last scene!
+			setScene(sceneNum);
+		}
+
+		function defaultHandler(handlerName) {
+			console.log("ERROR: Message handler for " + handlerName + " does not exist!");
+		}
+
+		var messageHandlers = {
+			"range": rangeMessageHandler,
+			"nState": nStateMessageHandler,
+			"sceneChange": sceneChangeMessageHandler
+		};
+
 		function dispatch(msg) {
 			var i, targetModelName, targetParamName, targetVal;
-			// (handlers[msg.selector] || defaultHandler)(msg); // cool javascript pattern!!!! 
 			var handlerName = msg.id;
-			var handler = m_scene.handlers[handlerName];
+			var handler = story.getCurrentScene().getSceneObj().handlers[handlerName];
 
-			if (! handler){
-				//console.log("message " + handlerName + " not used in this scene");
+			if (!handler) {
+				console.log("ERROR: Handler " + handlerName + " does not exist!");
 				return;
 			}
 
-			// TODO: Check that the parameter and the message have the same (or a compatible) TYPE
-			switch (handler.type) {
-			// TODO: Standardise the "val" part
-			case "range":
-				for (i = 0; i < handler.targets.length; i += 1) {
-					targetModelName = handler.targets[i].model;
-					targetParamName = handler.targets[i].parameter;
-					// console.log("got range message, targetModelName = " + targetModelName + ", and with soundModels = " + soundModels+ ", and soundModels[targetModelName] = " + soundModels[targetModelName]);
-					soundModels[targetModelName].setParamNorm(targetParamName, msg.val);
-				}
-				break;
-
-			//This is a special type.
-			//TODO: Have a more "standardised" version of this, too.
-			//Well, in a way, both are special types. Anything other than range and play/stop is unlikely to exist.
-			case "play_stop":
-				for (i = 0; i < handler.targets.length; i += 1) {
-					targetModelName = handler.targets[i].model;
-					play_stop(targetModelName);
-				}
-				break;
-
-			case "twoState":
-				console.log("Two state !!!");
-				currState[handlerName] = (currState[handlerName] + 1) % 2;
-				var targetState = currState[handlerName];
-				// console.log("Setting state " + targetState);
-				for (i = 0; i < handler.targets[targetState].length; i += 1) {
-					targetModelName = handler.targets[targetState][i].model;
-					targetParamName = handler.targets[targetState][i].parameter;
-					// If no value has been passed, the model will be updated with the dafault value
-					// IMPORTANT NOTE: This specifies an EXACT way in which the value must be passed to control a twoState type function.
-					// MAY NEED TO BE CHANGED
-					targetVal = (msg.val && msg.val[targetModelName] && msg.val[targetModelName][targetParamName]) ? msg.val : handler.targets[targetState][i].defaultValue;
-					soundModels[targetModelName].setParamNorm(targetParamName, targetVal);
-				}
-				break;
-
-			case "scene_change":
-				console.log("sceneChange!");
-				currentScene = (currentScene+1)%numScenes;
-				setScene(rig[currentScene]);
-				break;
-
-			default:
-				console.log("Bad parameter type!");
-			}
+			if (messageHandlers[handler.type])
+				messageHandlers[handler.type](handler, msg.val);
+			else
+				defaultHandler(handlerName);
 		}
 
-		var initMessaging = function () {
+		function initMessaging() {
 			var partyDiv = elem("partySelector");
 			partyDiv.removeAttribute("hidden");
 			var partyNameElem = elem("partyName");
@@ -279,6 +254,15 @@ define(
 				};
 			}());
 
+			function getMessageId(obj) {
+				return obj.data[0];
+			}
+
+			// Works ONLY with one-piece values
+			function getMessageVal(obj) {
+				return obj.data[1];
+			}
+
 			var partyName = makeParty(3);
 
 			var socket = io.connect(window.jsaHost);
@@ -293,14 +277,18 @@ define(
 					if (data.party === registerMessage.party) {
 						partyNameElem.innerHTML = partyName;
 						socket.on("message", function (msgStr) {
-							dispatch(JSON.parse(msgStr));
+							var msgObj = JSON.parse(msgStr);
+							dispatch({
+								id: getMessageId(msgObj),
+								val: getMessageVal(msgObj)
+							});
 						});
 					} else {
 						partyNameElem.innerHTML = "Failed!";
 					}
 				});
 			});
-		};
+		}
 
 		function loadStory() {
 			// TODO: (MAYBE) Ensure another story isn't already loaded
