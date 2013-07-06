@@ -57,7 +57,7 @@ define(
 			loadControllerButton: "loadControllerButton"
 		};
 
-		var story = Story();
+		var story;
 
 		var sliderBoxes = {};
 		var soundModelNames = [];
@@ -671,6 +671,7 @@ define(
 			hide("welcomeContainer");
 			show("authorContainer");
 			setController(model);
+			story = Story(controllerModel);
 			drawSceneEditor();
 			elements.newSceneButton.addEventListener("click", addNewScene);
 			elements.newSoundButton.addEventListener("click", newSoundHandler);
