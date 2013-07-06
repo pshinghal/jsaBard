@@ -14,107 +14,70 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<link rel="stylesheet" type="text/css" href="css/sceneControl.css">
-
 		<script type="text/javascript">
 			// Will this work everywhere?
 			var jsaHost="/";
 		</script>
 		<script src="/socket.io/socket.io.js"></script>
-
 		<script src="control_scripts/control_utils.js"></script>
 		<script>
-			// make_party(n) is a function that gives a roughly
-			// pronounceable string name that has about 13xn bits
-			// of pseudo-randomness in it.
-			var make_party = (function () {
-				var letters  = "abcdefghijklmnopqrstuvwxyz";
-				var category = "vcccvcccvcccccvcccccvccccc";
-				var consonants = "bcdfghjklmnpqrstvwxyz";
-				var vowels = "aeiou";
+			function elem(id) { return document.getElementById(id); }
+			function hide(id) { elem(id).setAttribute("hidden"); }
+			function show(id) { elem(id).removeAttribute("hidden"); }
+			function disable(id) { elem(id).setAttribute("disabled"); }
+			function enable(id) { elem(id).removeAttribute("disabled"); }
 
-				return function (n) {
-					var result = [];
-					var i, k, a1, a2, a3;
-					for (i = 0; i < n; ++i) {
-						k = Math.floor(Math.random() * letters.length);
-						a1 = letters.charAt(k);
-						a2 = vowels.charAt(Math.floor(Math.random() * vowels.length));
-						a3 = consonants.charAt(Math.floor(Math.random() * consonants.length));
+			var socket;
 
-						if (category.charAt(k) === 'c') {
-							// First letter is a consonant. Make the second
-							// a vowel and the third a consonant.
-							result.push(a1 + a2 + a3);
+			function init() {
+				socket = io.connect(window.jsaHost);
+				socket.on("connect", initConnectorView);
+			}
+
+			function initConnectorView() {
+				var partyNameInput = elem("partyName");
+				var partyButton = elem("partyButton");
+
+				function joinParty() {
+					var partyName = partyNameInput.value.toLowerCase().replace(/[^a-z]/g, '');
+					disable("partyButton");
+					partyNameInput.value = "loading...";
+					disable("partyName");
+					console.log("Attempting to join " + partyName);
+					socket.on("confirm", function (data) {
+						if (data.party === partyName) {
+							initControllerView();
 						} else {
-							// First letter is a vowel. Make the second a consonant
-							// and the third a vowel.
-							result.push(a1 + a3 + a2);
+							alert("Couldn't connect!");
+							partyNameInput.value = "";
+							partyNameInput.focus();
 						}
-					}
-					return result.join(' ');
-				};
-			}());
-		</script>
-		<script>
-			var socket = io.connect(jsaHost);
-			console.log("Controller: socket = " + socket);
-			
-			var party = make_party(3);
+					});
+					socket.emit("register", {
+						party: partyName,
+						type: "control"
+					});
+				}
 
-			socket.on('connect', function () {
-				console.log("Controller: socket.emit register and party name  " + party);
-				socket.emit('register', {party: party.replace(/ /g, ''), type: "control"});
-			});
-
-			function send(msg) {
-				//console.log("Controler: send  " + JSON.stringify(msg));
-				socket.send(JSON.stringify(msg));
+				partyButton.addEventListener("click", joinParty);
+				enable("partyName");
+				enable("partyButton");
 			}
 
-			function relativeOffset(element, event) {
-				var totalOffsetX = 0;
-				var totalOffsetY = 0;
-				var elemX = 0;
-				var elemY = 0;
-				var currentElement = element;
+			function initControllerView() {
+				function send(msg) {
+					socket.send(JSON.stringify(msg));
+				}
 
-				do {
-					totalOffsetX += currentElement.offsetLeft;
-					totalOffsetY += currentElement.offsetTop;
-				} while(currentElement = currentElement.offsetParent)
-
-				elemX = event.pageX - totalOffsetX;
-				elemY = event.pageY - totalOffsetY;
-
-				return {x:elemX, y:elemY};
-			}
-			//----------------------------------------------------------------------------
-			function setupCanvas(id) {
-			
-				// first set up callbacks for the phone sensor data
-				window.addEventListener('deviceorientation', function(event) {
-					//var heading = event.alpha;
+				function sendOrientation(event) {
 					var pitch = event.beta;
 					var roll = event.gamma;
-					
-					// DEBUG MODE for pitch and roll
-					// document.getElementById("pitch").innerHTML = parseInt(pitch);
-					// document.getElementById("roll").innerHTML = parseInt(roll);
-					
-					// send them together
-					// map [-45,45] to [-1,1]
 					var foo1 = mapconstrain(-45, 45, 0, 1, pitch);
 					var foo2 = mapconstrain(-45, 45, 0, 1, roll);
 
 					send({ id: "pitch", type: "range", val: foo1});
 					send({ id: "roll", type: "range", val: foo2 });
-
-				}, false);
-
-				var toggleElem = document.getElementById("toggle");
-				var pushbuttonElem = document.getElementById("pushbutton");
-				var scenebuttonElem = document.getElementById("scenebutton");
-
+				}
 
 				function sendToggle (event) {
 					event.preventDefault();
@@ -146,35 +109,28 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 					send({id: "sceneChange", type: "scene_change", val: null});
 				}
 
+				hide("connectorContainer");
+				show("controllerContainer");
+
+				var toggleElem = document.getElementById("toggle");
+				var pushbuttonElem = document.getElementById("pushbutton");
+				var scenebuttonElem = document.getElementById("scenebutton");
+
+				window.addEventListener("deviceorientation", sendOrientation, false);
 				toggleElem.addEventListener("touchstart", sendToggle, false);
-				// toggleElem.addEventListener("mousedown", sendToggle, false);
-
-				//pushbuttonElem.addEventListener("touchstart", sendPushbuttonDown, false);
-				// pushbuttonElem.addEventListener("mousedown", sendPushbuttonDown, false);
 				pushbuttonElem.addEventListener("touchstart", sendTwoStateDown, false);
-
-				//pushbuttonElem.addEventListener("touchend", sendPushbuttonUp, false);
-				// pushbuttonElem.addEventListener("mouseup", sendPushbuttonUp, false);
 				pushbuttonElem.addEventListener("touchend", sendTwoStateUp, false);
-
 				scenebuttonElem.addEventListener("touchstart", sendSceneChange, false);
 			}
 		</script>
 	</head>
 	<body>
-		<div class="connectorContainer">
+		<div id="connectorContainer">
 			<p>Enter the 9-letter code from your Synth to load the controller. (If you haven't opened a synth, <a href="/">open it</a> on a non-mobile device with Google Chrome.)</p>
 			<input disabled type="text" id="partyName" placeholder="Synth Code" />
 			<button disabled id="partyButton">Load</button>
-			<!-- DEBUG MODE for pitch and roll -->
-			<!-- <div style="background-color:#DDDDFF;height:320px;width:80px;float:left;">
-			<h4>
-				Pitch    <div id="pitch" align="center">p</div><br>
-				Roll    <div id="roll" align="center">r</div><br>
-				</h4>
-			</div> -->
 		</div>
-		<div hidden class="controllerContainer">
+		<div hidden id="controllerContainer">
 			<div class="innerContainer">
 				<button id="toggle">Toggle</button>
 			</div>
@@ -189,8 +145,7 @@ You should have received a copy of the GNU General Public License and GNU Lesser
 			</div>
 		</div>
 		<script>
-			 setupCanvas("touch");
-			 document.getElementById("partyname").innerHTML = party;
+			 init();
 		</script>
 	</body>
 </html>
