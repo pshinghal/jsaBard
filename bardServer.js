@@ -109,6 +109,26 @@ app.get("/loadStory", function (req, res) {
     });
 });
 
+var CONTROLLER_DIR = "./myControllers";
+app.get("/loadController", function (req, res) {
+    console.log("Got GET request for /loadController");
+    var controllerName = req.query.name;
+    if (!isValidFilename(controllerName)) {
+        res.json(false);
+        return;
+    }
+    fs.readFile(CONTROLLER_DIR + "/" + controllerName + ".json", "utf8", function (err, data) {
+        if (err) {
+            console.log("Error loading controller!");
+            console.log(err);
+            res.json(false);
+        } else {
+            console.log("Got controller!");
+            res.json(JSON.parse(data));
+        }
+    });
+});
+
 addStatic("/");
 
 function partyNamed(name) {
