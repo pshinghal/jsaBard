@@ -599,11 +599,11 @@ define(
 
 		function saveCurrentStory(storyName) {
 			var data = {
-				story: JSON.stringify(story.getStoryArr()),
+				story: JSON.stringify(story.getStoryObj()),
 				name: storyName
 			};
 			console.log("Saving story:");
-			console.log(story.getStoryArr());
+			console.log(story.getStoryObj());
 
 			var failCb = function () {
 				alert("Whoops! Couldn't save it");

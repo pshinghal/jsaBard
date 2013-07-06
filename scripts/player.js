@@ -51,9 +51,9 @@ define(
 			return tokenizeByVBar(name)[0];
 		}
 
-		function initStory (storyArr) {
-			story = Story();
-			story.setStoryArr(storyArr);
+		function initStory (storyObj) {
+			story = Story(storyObj.controller);
+			story.setStoryScenes(storyObj.scenes);
 			if (storyArr.length <= 0) {
 				console.log("This story has no scenes!");
 				return;
