@@ -3,7 +3,7 @@ body {
     padding: 0;
 }
 
-.controllerContainer {
+#controllerContainer {
     margin: 20 auto;
     width: 100%;
     max-width: 480px;
@@ -12,7 +12,7 @@ body {
     position: relative;
 }
 
-.connectorContainer {
+#connectorContainer {
     margin: 20 auto;
     width: 100%;
     max-width: 480px;
@@ -21,7 +21,7 @@ body {
     position: relative;
 }
 
-.controllerContainer button {
+#controllerContainer button {
     -webkit-appearance: none;
     -moz-appearance: none;
     width: 100%;
@@ -36,7 +36,6 @@ body {
     height: 45%;
     width: 95%;
 }
-    /*height: 160px;*/
 
 #textcontainer {
     font-size: x-large;
@@ -44,7 +43,7 @@ body {
     margin: auto;
 }
 
-.controllerContainer p {
+#controllerContainer p {
     margin: auto;
     font-family: sans-serif;
     text-align: center;
