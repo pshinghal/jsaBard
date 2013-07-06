@@ -7,23 +7,29 @@
 	<script type="text/javascript" data-main="scripts/author.js" src="scripts/require.js" ></script>
 </head>
 <body>
-<div class="container">
-	<div id="scenes">
-		<button id="newScene">Add new scene</button>
+	<div id="welcomeContainer">
+		<p>Welcome to the jsaBard Author!</p>
+		<p>To start creating a new story, enter the name of a <a href="https://github.com/lonce/messageSurface">messageSurface</a>-generated controller and click 'Load'.</p>
+		<input type="text" id="controllerInput" />
+		<button id="loadControllerButton">Load</button>
 	</div>
-	<div id="description">
-	</div>
-	<div id="sceneEditor">
-		<div id="soundList">
+	<div hidden id="authorContainer">
+		<div id="scenes">
+			<button id="newScene">Add new scene</button>
 		</div>
-		<input id="newSoundName" type="text"/>
-		<button id="newSound">Add</button>
-		<div id="controllerElementParams"></div>
+		<div id="description">
+		</div>
+		<div id="sceneEditor">
+			<div id="soundList">
+			</div>
+			<input id="newSoundName" type="text"/>
+			<button id="newSound">Add</button>
+			<div id="controllerElementParams"></div>
+		</div>
+		<div id="saveBox">
+			<input id="storyName" type="text" placeholder="Story Name"/>
+			<button id="saveButton">Save Story</button>
+		</div>
 	</div>
-	<div id="saveBox">
-		<input id="storyName" type="text" placeholder="Story Name"/>
-		<button id="saveButton">Save Story</button>
-	</div>
-</div>
 </body>
 </html>
