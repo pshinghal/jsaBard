@@ -65,24 +65,27 @@ define(
 				return currentScene;
 			};
 
-			myInterface.getStoryArr = function () {
+			myInterface.getStoryObj = function () {
 				var i;
-				var arr = [];
+				var obj = {
+					controller: controllerModel,
+					scenes: []
+				};
 				for (i = 0; i < story.length; i++) {
-					arr.push(story[i].getSceneObj());
+					obj.scenes.push(story[i].getSceneObj());
 				}
 
-				return arr;
+				return obj;
 			};
 
-			myInterface.setStoryArr = function (story) {
+			myInterface.setStoryScenes = function (scenes) {
 				var i;
-				for (i = 0; i < story.length; i++) {
+				for (i = 0; i < scenes.length; i++) {
 					var temp = Scene(controllerModel);
-					temp.setSceneObj(story[i]);
+					temp.setSceneObj(scenes[i]);
 					this.addScene(temp);
 				}
-				nextSceneId = story.length;
+				nextSceneId = scenes.length;
 			};
 
 			return myInterface;
