@@ -167,8 +167,36 @@ define(
 			}
 		}
 
+		function interpolateVals(low, high, weight) {
+			return low + (weight * (high - low));
+		}
+
 		function interpolateStates(low, high, weight) {
-			// new = low + (weight * (high - low));
+			var newState = {};
+			var i, j, k;
+			for (i = 0; i < low.length && i < high.length; i++) {
+				var lowSoundState = low[i];
+				var highSoundState = high[i];
+				newState.push([]);
+				for (j = 0; j < lowSoundState.length; j++) {
+					if (lowSoundState[j].type !== "range")
+						continue;
+					var lowName = lowSoundState[j].name;
+					for (k = 0; k < highSoundState.length; k++) {
+					// Inefficient, but safe
+						var highName = highSoundState[k].name;
+						if (lowName === highName) {
+							newState[i].push({
+								name: highName,
+								type: highSoundState[k].type,
+								value: interpolateVals(lowSoundState[j].value, highSoundState[k].value, weight)
+							});
+							break;
+						}
+					}
+				}
+			}
+			return newState;
 		}
 
 		function initNStates() {
