@@ -646,9 +646,9 @@ define(
 				function failCb() {
 					alert("Nope! Cant't load that");
 					elements.controllerInput.value = "";
-					elements.controllerInput.focus();
 					enable("loadControllerButton");
 					enable("controllerInput");
+					elements.controllerInput.focus();
 				}
 
 				$.get("/loadController", {name: controllerModelName})
