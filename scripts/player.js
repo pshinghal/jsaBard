@@ -54,11 +54,11 @@ define(
 		function initStory (storyObj) {
 			story = Story(storyObj.controller);
 			story.setStoryScenes(storyObj.scenes);
-			if (storyArr.length <= 0) {
+			if (storyObj.scenes.length <= 0) {
 				console.log("This story has no scenes!");
 				return;
 			}
-			numScenes = storyArr.length;
+			numScenes = storyObj.scenes.length;
 			initMessaging();
 			setScene(0);
 		}
