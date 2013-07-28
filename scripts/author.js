@@ -518,15 +518,13 @@ define(
 			soundDiv.setAttribute("class", "sound");
 			soundDiv.setAttribute("id", joinByVBar(name, "soundBox"));
 
-			var namePar = document.createElement("p");
-			namePar.innerHTML = name;
-			soundDiv.appendChild(namePar);
+			soundDiv.innerHTML = name;
 
 			var deleteButton = document.createElement("button");
 			deleteButton.setAttribute("class", "soundDelete");
 			deleteButton.setAttribute("id", joinByVBar(name, "delete"));
 			deleteButton.addEventListener("click", makeSoundDeleter(deleteButton));
-			deleteButton.innerHTML = "Remove";
+			deleteButton.innerHTML = "X";
 			soundDiv.appendChild(deleteButton);
 
 			return soundDiv;
