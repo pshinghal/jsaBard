@@ -42,7 +42,6 @@ define(
 		// TODO: Re-populate and use in the code
 		var elemIds = {
 			scenesDiv: "scenes",
-			descriptionDiv: "description",
 			sceneEditorDiv: "sceneEditor",
 			newSceneButton: "newScene",
 			newSoundButton: "newSound",
