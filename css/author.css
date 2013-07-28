@@ -1,3 +1,99 @@
+@import url(http://fonts.googleapis.com/css?family=Ubuntu:400,700);
+
 .scene[active] {
 	background-color: #999999
+}
+
+input {
+	font-family: 'Ubuntu', sans-serif;
+}
+
+button {
+	font-family: 'Ubuntu', sans-serif;
+}
+
+#welcomeContainer {
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 18px;
+	width: 960px;
+	text-align: center;
+	margin: auto;
+}
+
+#welcomeContainer input {
+	font-size: xx-large;
+}
+
+#welcomeContainer button {
+	font-size: xx-large;
+}
+
+#authorContainer {
+	width: 960px;
+	font-family: 'Ubuntu', sans-serif;
+	margin: auto;
+	height: 540px;
+}
+
+#authorLeft {
+	display: inline-block;
+	width: 240px;
+	margin: 0;
+	height: 100%;
+	overflow-y: auto;
+	float: left;
+}
+
+#scenes {
+	display: block;
+}
+
+#saveBox {
+	display: block;
+	margin: auto;
+	text-align: center;
+	height: 40px;
+}
+
+#saveBox input {
+	font-size: x-large;
+	width: 500px;
+}
+
+#saveBox button {
+	font-size: x-large;
+}
+
+#authorRight {
+	height: 100%;
+	display: inline-block;
+	width: 720px;
+	margin: 0;
+	float: left;
+}
+
+#sceneEditor {
+	display: block;
+	font-size: 14px;
+	white-space: nowrap;
+	overflow: auto;
+}
+
+#soundList {
+	display: inline-block;
+}
+
+#newSoundDiv {
+	display: inline-block;
+}
+
+.sound {
+	display: inline-block;
+	width: 160px;
+	text-align: center;
+}
+
+#soundbar {
+	height: 32px;
+	display: block;
 }
