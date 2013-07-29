@@ -87,6 +87,10 @@ button {
 	display: inline-block;
 }
 
+#newSoundDiv input {
+	width: 160px;
+}
+
 .sound {
 	display: inline-block;
 	width: 160px;
@@ -96,4 +100,22 @@ button {
 #soundbar {
 	height: 32px;
 	display: block;
+}
+
+.controllerParamRowName {
+	display: inline-block;
+	width: 160px;
+}
+
+.buttonContainer {
+	display: inline-block;
+}
+
+.buttonContainer button {
+	width: 160px;
+}
+
+#soundFiller {
+	width: 160px;
+	display: inline-block;
 }

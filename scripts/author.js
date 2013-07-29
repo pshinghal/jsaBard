@@ -419,9 +419,7 @@ define(
 			var nameDiv = document.createElement("div");
 			nameDiv.setAttribute("class", "controllerParamRowName");
 
-			var namePar = document.createElement("p");
-			namePar.innerHTML = paramWords;
-			nameDiv.appendChild(namePar);
+			nameDiv.innerHTML = paramWords;
 			row.appendChild(nameDiv);
 
 			var buttonContainer = document.createElement("div");
