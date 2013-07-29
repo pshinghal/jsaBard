@@ -17,7 +17,7 @@ require.config({
 	},
 	paths: {
 		"socketio": "/socket.io/socket.io",
-		"renderer": "http://localhost:8002/appscripts/renderSurface"
+		"renderer": "http://animatedsoundworks.com:8002/appscripts/renderSurface"
 	}
 });
 
