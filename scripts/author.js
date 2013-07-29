@@ -132,8 +132,10 @@ define(
 
 		function addNewScene() {
 			console.log("Adding new scene");
-			appendScenes(getNewScene());
+			var newScene = getNewScene();
+			appendScenes(newScene);
 			story.addNewScene();
+			selectScene(newScene);
 		}
 
 		// REDUCES subsequent nodes
@@ -492,8 +494,8 @@ define(
 			// TODO: Sanitize
 			// Note: Scene does NOT care about the models
 			var soundName = story.getCurrentScene().addSound(soundModel);
-			elements.soundList.appendChild(makeSoundBox(soundName));
-			populateStateSettersBySound(soundName);
+			selectSceneById(story.getCurrentSceneId());
+			elements.newSoundNameField.value = "";
 		}
 
 		function deleteSoundByButton(button) {
