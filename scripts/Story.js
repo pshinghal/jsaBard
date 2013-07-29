@@ -41,6 +41,15 @@ define(
 			myInterface.removeScene = function (id) {
 				story.splice(id, 1);
 				nextSceneId--;
+				if (id < currentSceneId)
+					currentSceneId--;
+				else if (id === currentSceneId)
+					if (nextSceneId <= currentSceneId) {
+						currentSceneId = nextSceneId - 1;
+						currentScene = null;
+					} else {
+						this.setCurrentScene(currentSceneId);
+					}
 			};
 
 			myInterface.setCurrentScene = function (id) {
