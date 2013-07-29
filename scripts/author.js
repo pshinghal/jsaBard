@@ -65,16 +65,16 @@ define(
 		var elements = {};
 
 		function elem(id) { return document.getElementById(id); }
-		function hide(id) { elem(id).setAttribute("hidden"); }
-		function show(id) { elem(id).removeAttribute("hidden"); }
-		function disable(id) { elem(id).setAttribute("disabled"); }
-		function enable(id) { elem(id).removeAttribute("disabled"); }
+		function hide(id) { if (elem(id)) elem(id).setAttribute("hidden"); }
+		function show(id) { if (elem(id)) elem(id).removeAttribute("hidden"); }
+		function disable(id) { if (elem(id)) elem(id).setAttribute("disabled"); }
+		function enable(id) { if (elem(id)) elem(id).removeAttribute("disabled"); }
 		function atoi(str) { return parseInt(str, 10); }
 
 		function tokenizeByVBar(s) { return s.trim().split("|"); }
 		function joinByVBar() { return Array.prototype.join.call(arguments, "|"); }
-		function setActive(node) { node.setAttribute("active"); }
-		function removeActive(node) { node.removeAttribute("active"); }
+		function setActive(node) { if (node) node.setAttribute("active"); }
+		function removeActive(node) { if (node) node.removeAttribute("active"); }
 
 		function mapElementsToIds() {
 			var x;
