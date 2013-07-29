@@ -303,11 +303,7 @@ define(
 			var rowDiv = document.createElement("div");
 			rowDiv.setAttribute("class", "controllerNameRow");
 
-			var namePara = document.createElement("p");
-			namePara.setAttribute("class", "controllerName");
-			namePara.innerHTML = name;
-
-			rowDiv.appendChild(namePara);
+			rowDiv.innerHTML = name;
 
 			return rowDiv;
 		}

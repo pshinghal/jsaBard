@@ -85,6 +85,8 @@ button {
 	font-size: 14px;
 	white-space: nowrap;
 	overflow: auto;
+	font-size: large;
+	padding: 4px;
 }
 
 #soundList {
@@ -113,6 +115,11 @@ button {
 .controllerParamRowName {
 	display: inline-block;
 	width: 160px;
+	float: left;
+}
+
+.controllerParamRow {
+	height: 32px;
 }
 
 .buttonContainer {
@@ -121,6 +128,10 @@ button {
 
 .buttonContainer button {
 	width: 160px;
+	font-size: large;
+	margin: 0;
+	padding: 0;
+	height: 32px;
 }
 
 #soundFiller {
