@@ -117,9 +117,6 @@ define(
 			deleteButton.addEventListener("click", makeSceneDeleter(sceneDiv));
 			sceneDiv.appendChild(deleteButton);
 
-			// Add horizontal rule at the end
-			sceneDiv.appendChild(document.createElement("hr"));
-
 			return sceneDiv;
 		}
 

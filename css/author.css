@@ -1,7 +1,14 @@
 @import url(http://fonts.googleapis.com/css?family=Ubuntu:400,700);
 
 .scene[active] {
-	background-color: #999999
+	/*background-color: #999999;*/
+	border-radius: 10px;
+	border-style: dotted;
+	border-color: #3494f4;
+}
+
+.scene {
+	padding: 2px;
 }
 
 input {
@@ -41,6 +48,7 @@ button {
 	margin: 0;
 	height: 100%;
 	overflow-y: auto;
+	overflow-x: hidden;
 	float: left;
 }
 
