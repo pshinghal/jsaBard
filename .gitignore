@@ -16,3 +16,4 @@ jsaSound
 
 myStories/*.json
 myControllers/*.json
+!surface.json
