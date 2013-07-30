@@ -51,8 +51,24 @@ define(
 			return tokenizeByVBar(name)[0];
 		}
 
+		function fixController(model) {
+			var controllerModel = {};
+			controllerModel.interface = {};
+			for (i = 0; i < model.interface.length; i++) {
+				var x;
+				var name = model.interface[i].paramioID;
+				controllerModel.interface[name] = {};
+				for (x in model.interface[i]) {
+					if (model.interface[i].hasOwnProperty(x) && x != "paramioID") {
+						controllerModel.interface[name][x] = model.interface[i][x];
+					}
+				}
+			}
+			return controllerModel;
+		}
+
 		function initStory (storyObj, storyName) {
-			story = Story(storyObj.controller);
+			story = Story(fixController(storyObj.controller));
 			story.setStoryScenes(storyObj.scenes);
 			if (storyObj.scenes.length <= 0) {
 				console.log("This story has no scenes!");
