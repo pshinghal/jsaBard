@@ -185,7 +185,7 @@ define(
 					continue;
 				}
 				for (j = 0; j < soundState.length; j++) {
-					if (soundState[j].type === range)
+					if (soundState[j].type === "range")
 						sliderBox.setParamNorm(soundState[j].name, soundState[j].value);
 					else
 						sliderBox.setParam(soundState[j].name, soundState[j].value);
