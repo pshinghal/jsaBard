@@ -95,10 +95,29 @@ define(
 			enable("partyButton");
 		}
 
+		function fixController(controller) {
+			var newController = {};
+			newController.interface = [];
+			var x, y;
+			for (x in controller.interface) {
+				if (controller.interface.hasOwnProperty(x)) {
+					newController.interface.push({ paramioID: x });
+					for (y in controller.interface[x]) {
+						if (controller.interface[x].hasOwnProperty(y)) {
+							newController.interface[length - 1][y] = controller.interface[length - 1][y];
+						}
+					}
+				}
+			}
+
+			return newController;
+		}
+
 		function initControllerView(storyObj) {
 			hide("connectorContainer");
 			show("app");
-			renderer.renderSurface(storyObj.controller);
+			var newController = fixController(storyObj.controller);
+			renderer.renderSurface(newController);
 		}
 
 		init();
