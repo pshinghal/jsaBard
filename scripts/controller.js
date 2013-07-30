@@ -104,7 +104,7 @@ define(
 					newController.interface.push({ paramioID: x });
 					for (y in controller.interface[x]) {
 						if (controller.interface[x].hasOwnProperty(y)) {
-							newController.interface[newController.interface.length - 1][y] = controller.interface[length - 1][y];
+							newController.interface[newController.interface.length - 1][y] = controller.interface[x][y];
 						}
 					}
 				}
