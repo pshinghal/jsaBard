@@ -17,12 +17,13 @@ require.config({
 	},
 	paths: {
 		"socketio": "/socket.io/socket.io",
-		"renderer": "http://animatedsoundworks.com:8002/appscripts/renderSurface"
+		"messageSurface": "http://animatedsoundworks.com:8002",
+		"jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min"
 	}
 });
 
 define(
-	["socketio", "renderer"],
+	["socketio", "messageSurface/appscripts/renderSurface", "jquery"],
 	function (io, renderer) {
 		function elem(id) { return document.getElementById(id); }
 		function hide(id) { elem(id).setAttribute("hidden"); }
