@@ -186,7 +186,7 @@ define(
 				}
 				for (j = 0; j < soundState.length; j++) {
 					if (soundState[j].type === "range")
-						sliderBox.setParamNorm(soundState[j].name, soundState[j].value);
+						sliderBox.setParam(soundState[j].name, soundState[j].value);
 					else
 						sliderBox.setParam(soundState[j].name, soundState[j].value);
 				}
@@ -198,7 +198,7 @@ define(
 		}
 
 		function interpolateStates(low, high, weight) {
-			var newState = {};
+			var newState = [];
 			var i, j, k;
 			for (i = 0; i < low.length && i < high.length; i++) {
 				var lowSoundState = low[i];
@@ -332,12 +332,12 @@ define(
 			}());
 
 			function getMessageId(obj) {
-				return obj.data[0];
+				return obj.d[0];
 			}
 
 			// Works ONLY with one-piece values
 			function getMessageVal(obj) {
-				return obj.data[1];
+				return obj.d[1];
 			}
 
 			var partyName = makeParty(3);
@@ -356,6 +356,8 @@ define(
 						partyNameElem.innerHTML = partyName;
 						socket.on("message", function (msgStr) {
 							var msgObj = JSON.parse(msgStr);
+							//console.log("Got MESSAGE! Value of msgObj is:");
+							//console.log(msgObj);
 							dispatch({
 								id: getMessageId(msgObj),
 								val: getMessageVal(msgObj)

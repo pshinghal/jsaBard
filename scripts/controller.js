@@ -118,6 +118,7 @@ define(
 			show("app");
 			var newController = fixController(storyObj.controller);
 			renderer.renderSurface(newController);
+			renderer.configure("/", 0);
 		}
 
 		init();

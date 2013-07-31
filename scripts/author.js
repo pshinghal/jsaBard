@@ -376,8 +376,8 @@ define(
 		function removeStateSettersBySound(soundName) {
 			var buttons = document.getElementsByClassName("setStateButton");
 			var i;
-			for (i = 0; i < buttons.length; i++) {
-				var button = buttons[i];
+			while (buttons.length > 0) {
+				var button = buttons[0];
 				var id = button.getAttribute("id");
 				var tokens = tokenizeByVBar(id);
 
@@ -493,10 +493,7 @@ define(
 			var tokens = tokenizeByVBar(button.getAttribute("id"));
 			var soundName = joinByVBar(tokens[0], tokens[1]);
 			story.getCurrentScene().removeSoundByName(soundName);
-			var soundBox = elem(joinByVBar(soundName, "soundBox"));
-			soundBox.parentNode.removeChild(soundBox);
-
-			removeStateSettersBySound(soundName);
+			selectSceneById(story.getCurrentSceneId());
 		}
 
 		function makeSoundDeleter(button) {
