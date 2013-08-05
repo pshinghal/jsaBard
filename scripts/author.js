@@ -549,6 +549,8 @@ define(
 				if (controllerModel.interface.hasOwnProperty(x)) {
 					var name = x;
 					var type = controllerModel.interface[x].eventType;
+					if (type === "sceneChange")
+						continue;
 					var args = {};
 					if (controllerModel.interface[x].hasOwnProperty("numStates"))
 						args.numStates = controllerModel.interface[x].numStates;

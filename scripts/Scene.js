@@ -92,11 +92,11 @@ define(
 					case "nState":
 						addSoundToNStateHandler(handler);
 						break;
-					case "scene_change":
+					case "sceneChange":
 						addSoundToSceneChangeHandler(handler);
 						break;
 					default:
-						console.log("ERROR! Got an unknown handler type: " + type);
+						console.log("ERROR! Got an unknown handler type: " + handler.type);
 						break;
 				}
 			}
@@ -140,7 +140,7 @@ define(
 					case "nState":
 						removeSoundFromNStateHandlerById(handler, id);
 						break;
-					case "scene_change":
+					case "sceneChange":
 						removeSoundFromSceneChangeHandlerById(handler, id);
 						break;
 					default:
@@ -208,7 +208,7 @@ define(
 					case "nState":
 						buildNStateHandler(myHandler, controllerModel.interface[handlerName].numStates);
 						break;
-					case "scene_change":
+					case "sceneChange":
 						buildSceneChangeHandler(myHandler);
 						break;
 					default:
@@ -223,7 +223,6 @@ define(
 			for (temp in controllerModel.interface) {
 				if (controllerModel.interface.hasOwnProperty(temp)) {
 					scene.handlers[temp] = buildHandler(temp);
-					scene.handlers[temp].type = controllerModel.interface[temp].eventType;
 					if (controllerModel.interface[temp].hasOwnProperty("numStates"))
 						scene.handlers[temp].numStates = controllerModel.interface[temp].numStates;
 
@@ -291,7 +290,7 @@ define(
 					case "nState":
 						setNStateSoundState(handler, address, soundId, state);
 						break;
-					case "scene_change":
+					case "sceneChange":
 						setSceneChangeSoundState(handler, address, soundId, state);
 						break;
 					default:
@@ -344,7 +343,7 @@ define(
 						return getRangeSoundState(handler, address, soundId);
 					case "nState":
 						return getNStateSoundState(handler, address, soundId);
-					case "scene_change":
+					case "sceneChange":
 						return getSceneChangeSoundState(handler, address, soundId);
 					default:
 						console.log("ERROR! Got an unknown handler type: " + type);

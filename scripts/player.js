@@ -267,7 +267,7 @@ define(
 		}
 
 		function sceneChangeMessageHandler(handler, value) {
-			var sceneNum = Math.max(story.getCurrentSceneId() + 1, story.getNextSceneId() - 1); //Don't go beyond the last scene!
+			var sceneNum = Math.min(story.getCurrentSceneId() + 1, story.getNextSceneId() - 1); //Don't go beyond the last scene!
 			setScene(sceneNum);
 		}
 
