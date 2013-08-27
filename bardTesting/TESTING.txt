@@ -1,0 +1,11 @@
+Make sure you are connected to the Internet
+Click on RunBard.bat
+Click the ALLOW button on the Browser window
+
+Make sure you phone is connected to the same network as your computer (e.g. NUS)
+Get the IP address of your computer (type "ipconfig" into a command window)
+Point your phone Chrome browser to: 
+	IPaddress:8000/controller
+In the text box that comes up on the web page, Type in the 9-letter code the browser provides
+
+

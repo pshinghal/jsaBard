@@ -1,7 +1,9 @@
 require.config({
 	paths: {
+		//LOCAL "jsaSound": "http://localhost:8001/",
 		"jsaSound": "http://animatedsoundworks.com:8001/",
-		"jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min"
+		"jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min",
+		//LOCAL "jquery": "http://localhost:8002/scripts/jquery.min"
 	}
 });
 define(

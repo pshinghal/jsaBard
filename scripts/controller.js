@@ -17,7 +17,10 @@ require.config({
 	},
 	paths: {
 		"socketio": "/socket.io/socket.io",
+		//"messageSurface": "http://localhost:8002",
+		//LOCAL "messageSurface": "http://192.168.43.250:8002",
 		"messageSurface": "http://animatedsoundworks.com:8002",
+		//LOCAL "jquery": "http://192.168.43.250:8000/scripts/jquery.min"
 		"jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min"
 	}
 });
