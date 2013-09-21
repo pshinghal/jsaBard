@@ -55,7 +55,9 @@ define(
 			welcomeContainer: "welcomeContainer",
 			authorContainer: "authorContainer",
 			controllerInput: "controllerInput",
-			loadControllerButton: "loadControllerButton"
+			loadControllerButton: "loadControllerButton",
+			storyInput: "storyInput",
+			loadStoryButton: "loadStoryButton"
 		};
 
 		var story;
@@ -624,25 +626,63 @@ define(
 		}
 
 		function initWelcomeView() {
+			function disableInteracts() {
+				disable("loadControllerButton");
+				disable("controllerInput");
+				disable("loadStoryButton");
+				disable("storyInput");
+			}
+
+			function enableInteracts() {
+				enable("loadControllerButton");
+				enable("controllerInput");
+				enable("loadStoryButton");
+				enable("storyInput");
+			}
+
 			function loadController() {
 				var controllerModelName = elements.controllerInput.value;
 				console.log("Loading controller " + controllerModelName);
-				disable("loadControllerButton");
-				disable("controllerInput");
+				disableInteracts();
 
 				function successCb(res) {
 					initAuthorView(res);
 				}
 
 				function failCb() {
-					alert("Nope! Cant't load that");
+					alert("Nope! Can't load that");
 					elements.controllerInput.value = "";
-					enable("loadControllerButton");
-					enable("controllerInput");
+					enableInteracts();
 					elements.controllerInput.focus();
 				}
 
 				$.get("/loadController", {name: controllerModelName})
+				.done(function (res) {
+					if (res)
+						successCb(res);
+					else
+						failCb();
+				})
+				.fail(failCb);
+			}
+
+			function loadStory() {
+				var storyName = elements.storyName.value;
+				console.log("Loading story " + storyName);
+				disableInteracts();
+
+				function successCb(res) {
+					// initAuthorView(res);
+				}
+
+				function failCb() {
+					alert("Nope! Can't load that");
+					elements.storyInput.value = "";
+					enableInteracts();
+					elements.storyInput.focus();
+				}
+
+				$.get("/loadStory", {name: storyName})
 				.done(function (res) {
 					if (res)
 						successCb(res);
