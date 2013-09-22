@@ -14,6 +14,8 @@ define(
 		var i;
 		var controllerModel = {};
 
+		// Changes controller from messageSurface's array-of-objects representation
+		// to jsaBard's object-keyed-by-paramioID representation
 		function setController(model) {
 			var tempControllerModel = { interface: {} };
 			controllerModel.interface = {};
@@ -38,8 +40,6 @@ define(
 			console.log("---");
 		}
 		// END DEBUGGING
-
-		var nextSceneId = 0;
 
 		// TODO: Re-populate and use in the code
 		var elemIds = {
@@ -103,15 +103,13 @@ define(
 		// DOM functions
 		//===============
 
-		function getNewScene() {
-			var nextSceneId = story.getNextSceneId();
-			// console.log("Scene id is " + nextSceneId);
+		function makeScene(sceneId) {
 			var sceneDiv = document.createElement("div");
 			sceneDiv.setAttribute("class", "scene");
-			sceneDiv.setAttribute("id", joinByVBar("scene", nextSceneId));
+			sceneDiv.setAttribute("id", joinByVBar("scene", sceneId));
 
 			var pDiv = document.createElement("p");
-			pDiv.innerHTML = "Scene " + nextSceneId;
+			pDiv.innerHTML = "Scene " + sceneId;
 			pDiv.addEventListener("click", makeSceneSelector(sceneDiv));
 			sceneDiv.appendChild(pDiv);
 
@@ -122,6 +120,13 @@ define(
 			sceneDiv.appendChild(deleteButton);
 
 			return sceneDiv;
+		}
+
+		function getNewScene() {
+			var nextSceneId = story.getNextSceneId();
+			// console.log("Scene id is " + nextSceneId);
+
+			return makeScene(nextSceneId);
 		}
 
 		function appendScenes(sceneNode) {
@@ -137,6 +142,14 @@ define(
 			appendScenes(newScene);
 			story.addNewScene();
 			selectScene(newScene);
+		}
+
+		function addExistingScenes() {
+			var i;
+			for (i = 0; i < story.getNextSceneId(); i++) {
+				appendScenes(makeScene(i));
+			}
+			selectScene(0);
 		}
 
 		// REDUCES subsequent nodes
@@ -242,6 +255,9 @@ define(
 		function selectScene(sceneNode) {
 			// TODO: Stop "concurrent" selection.
 
+			if (!sceneNode)
+				return;
+
 			// console.log("Selecting scene:");
 			// console.log(sceneNode);
 			var currSceneId = story.getCurrentSceneId();
@@ -258,7 +274,6 @@ define(
 			refreshSliderBoxes();
 		}
 
-		// Unused. Keeping it just in case
 		function selectSceneById(id) {
 			console.log("Selecting by ID " + id);
 			selectScene(elem(joinByVBar("scene", id)));
@@ -646,7 +661,7 @@ define(
 				disableInteracts();
 
 				function successCb(res) {
-					initAuthorView(res);
+					initAuthorViewWithController(res);
 				}
 
 				function failCb() {
@@ -667,12 +682,12 @@ define(
 			}
 
 			function loadStory() {
-				var storyName = elements.storyName.value;
+				var storyName = elements.storyInput.value;
 				console.log("Loading story " + storyName);
 				disableInteracts();
 
 				function successCb(res) {
-					// initAuthorView(res);
+					initAuthorViewWithStory(res);
 				}
 
 				function failCb() {
@@ -692,22 +707,40 @@ define(
 				.fail(failCb);
 			}
 
-			enable("loadControllerButton");
-			enable("controllerInput");
+			enableInteracts();
 			elements.controllerInput.focus();
 			elements.loadControllerButton.addEventListener("click", loadController);
+			elements.loadStoryButton.addEventListener("click", loadStory);
 		}
 
-		function initAuthorView(model) {
+		function switchContainer() {
 			hide("welcomeContainer");
 			show("authorContainer");
-			setController(model);
-			story = Story(controllerModel);
-			drawSceneEditor();
+		}
+
+		function setupAuthorListeners() {
 			elements.newSceneButton.addEventListener("click", addNewScene);
 			elements.newSoundButton.addEventListener("click", newSoundHandler);
 			elements.saveStoryButton.addEventListener("click", saveStoryHandler);
 			window.onbeforeunload = cleanup;
+		}
+
+		function initAuthorViewWithController(model) {
+			switchContainer();
+			setController(model);
+			story = Story(controllerModel);
+			drawSceneEditor();
+			setupAuthorListeners();
+		}
+
+		function initAuthorViewWithStory(storyObj) {
+			switchContainer();
+			controllerModel = storyObj.controller;
+			story = Story(controllerModel);
+			story.setStoryScenes(storyObj.scenes);
+			addExistingScenes();
+			drawSceneEditor();
+			setupAuthorListeners();
 		}
 
 		mapElementsToIds();
