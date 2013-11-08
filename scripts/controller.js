@@ -19,7 +19,17 @@ require.config({
 		"socketio": "/socket.io/socket.io",
 		//"messageSurface": "http://localhost:8002",
 		//LOCAL "messageSurface": "http://192.168.43.250:8002",
-		"messageSurface": "http://animatedsoundworks.com:8002",
+		//"messageSurface": "http://animatedsoundworks.com:8002",
+		"messageSurface": (function(){
+			if (! window.document.location.hostname){
+				alert("This page cannot be run as a file, but must be served from a server ." );
+			}
+				// hardcoded to read sounds served from jsaSound listening on port 8001 (on the same server as the AnticipatoryScore server is running)
+				var host = "http://"+window.document.location.hostname + ":8002";
+				console.log("Will look surfaces served from " + host);
+				return (host );
+			})(),
+
 		//LOCAL "jquery": "http://192.168.43.250:8000/scripts/jquery.min"
 		"jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min"
 	}

@@ -1,0 +1,11 @@
+
+Need to know the file name (should have drop down slector like jsaSound does
+
+Document "How To"
+   shift->Set to store settings
+   Set - to send them to the synth
+
+
+
+
+  
