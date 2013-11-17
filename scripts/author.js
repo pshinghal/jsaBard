@@ -6,7 +6,7 @@ require.config({
 			}
 				// hardcoded to read sounds served from jsaSound listening on port 8001 (on the same server as the AnticipatoryScore server is running)
 				var host = "http://"+window.document.location.hostname + ":8001";
-				console.log("Will look for sounds served from " + host);
+				console.log("jsaBard will look for sounds served from " + host);
 				return (host );
 			})(),
 		"jquery": "http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min",
@@ -208,7 +208,7 @@ define(
 			function soundModelHelper(num) {
 				if (num < soundModelNames.length) {
 					console.log("The scene you are loading has " + soundModelNames.length + " models.");
-					require(
+					require( 
 						// Get the model
 						["jsaSound/jsaModels/" + soundModelNames[num]],
 						// And open the sliderBox

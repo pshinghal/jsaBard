@@ -36,7 +36,11 @@ var server = require("http").createServer(app);
 var io = require("socket.io").listen(server);
 var fs = require("fs");
 
-server.listen(8000);
+var k_portnum=8000;
+server.listen(process.argv[2] || k_portnum);
+console.log("Connected and listening on port " + k_portnum);
+
+
 
 var parties = {};
 // A map from party name to a structure with info on
