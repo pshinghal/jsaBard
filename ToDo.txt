@@ -6,6 +6,17 @@ Document "How To"
    Set - to send them to the synth
 
 
+   In authoring tool, sound file names are too long for the display.
+
+   Need drop-down box for selecting sounds
+   	(This will also save the ungraceful way unfound jsaSound model files are handled)
+   	make it so no need to type .js at the end of file names
+
+Should be able to name scenes for easy recall.
+
+Insert scenes between pre-existing ones.
+
+
 
 
   

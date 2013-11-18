@@ -35,9 +35,11 @@ require.config({
 });
 
 define(
-	[ "require", "jsaSound/jsaCore/sliderBox", "jquery", "Story", "socketio"],
-	function (require, makeSliderBox, $, Story, io) {
+	[ "require", "jsaSound/jsaCore/sliderBox", "jsaSound/jsaCore/config", "jquery", "Story", "socketio"],
+	function (require, makeSliderBox, jsaSoundConfig, $, Story, io) {
 		var story = {};
+
+		var soundServer = jsaSoundConfig.resourcesPath;
 
 		var sliderBoxes = {};
 		var soundModelNames = [];
@@ -133,7 +135,7 @@ define(
 					console.log("The scene you are loading has " + soundModelNames.length + " models.");
 					require(
 						// Get the model
-						["jsaSound/jsaModels/" + soundModelNames[num]],
+						[soundServer + "/jsaModels/" + soundModelNames[num]],
 						// And open the sliderBox
 						function (currentSM) {
 							console.log("Making slider box");

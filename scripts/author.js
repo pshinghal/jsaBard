@@ -13,12 +13,14 @@ require.config({
 	}
 });
 define(
-	["Story", "jsaSound/jsaCore/sliderBox", "jquery"],
-	function (Story, makeSliderBox, $) {
+	["Story", "jsaSound/jsaCore/sliderBox", "jsaSound/jsaCore/config", "jquery"],
+	function (Story, makeSliderBox, jsaSoundConfig, $) {
 		//TODO: Do not allow models to be added when no scene is selected (but a scene HAS been created). Maybe avoid non-selection completely
 
 		var i;
 		var controllerModel = {};
+
+		var soundServer = jsaSoundConfig.resourcesPath;
 
 		// Changes controller from messageSurface's array-of-objects representation
 		// to jsaBard's object-keyed-by-paramioID representation
@@ -210,7 +212,8 @@ define(
 					console.log("The scene you are loading has " + soundModelNames.length + " models.");
 					require( 
 						// Get the model
-						["jsaSound/jsaModels/" + soundModelNames[num]],
+						//["jsaSound/jsaModels/" + soundModelNames[num]],
+						[soundServer + "/jsaModels/" + soundModelNames[num]],
 						// And open the sliderBox
 						function (currentSM) {
 							console.log("Adding " + soundModelNames[num] + " to soundModels object");
