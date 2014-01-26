@@ -1,9 +1,10 @@
 body {
     margin: 0;
-    padding: 0;
+    padding: 0;   
 }
 
 #controllerContainer {
+    background: black;
     margin: 20 auto;
     width: 100%;
     max-width: 480px;
@@ -27,7 +28,7 @@ body {
     width: 100%;
     height: 100%;
     font-size: x-large;
-    margin:auto
+    margin:auto;
 }
 
 .innerContainer {

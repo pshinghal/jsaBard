@@ -279,8 +279,10 @@ define(
 		}
 
 		function sceneChangeMessageHandler(handler, value) {
-			var sceneNum = Math.min(story.getCurrentSceneId() + 1, story.getNextSceneId() - 1); //Don't go beyond the last scene!
-			setScene(sceneNum);
+			//console.log("sceneChangeMessageHandler with value = " + value)
+			//var sceneNum = Math.min(story.getCurrentSceneId() + 1, story.getNextSceneId() - 1); //Don't go beyond the last scene!
+			//setScene(sceneNum);
+			setScene(value);
 		}
 
 		function defaultHandler(handlerName) {
@@ -389,8 +391,8 @@ define(
 			function goodCb(res) {
 				alert("Story loaded!");
 				console.log("Response: " + JSON.stringify(res));
-				elem("loadStory").setAttribute("disabled");
-				elem("storyName").setAttribute("disabled");
+				elem("loadStory").setAttribute("disabled", true);
+				elem("storyName").setAttribute("disabled", true);
 				initStory(res, storyName);
 			}
 

@@ -25,7 +25,7 @@ require.config({
 				alert("This page cannot be run as a file, but must be served from a server ." );
 			}
 				// messageSurface server is hardcoded to port 8002 (on the same server as jsaBard - or from animatedsoundworks)
-				//LOCAL var host = "http://"+window.document.location.hostname + ":8002";
+				// LOCAL var host = "http://"+window.document.location.hostname + ":8002";
 				var host = "http://animatedsoundworks.com:8002";
 				console.log("Will look surfaces served from " + host);
 				return (host );
@@ -40,9 +40,9 @@ define(
 	["socketio", "messageSurface/appscripts/renderSurface", "jquery"],
 	function (io, renderer) {
 		function elem(id) { return document.getElementById(id); }
-		function hide(id) { elem(id).setAttribute("hidden"); }
+		function hide(id) { elem(id).setAttribute("hidden", true); }
 		function show(id) { elem(id).removeAttribute("hidden"); }
-		function disable(id) { elem(id).setAttribute("disabled"); }
+		function disable(id) { elem(id).setAttribute("disabled", true); }
 		function enable(id) { elem(id).removeAttribute("disabled"); }
 
 		function mapconstrain(f1, f2, t1, t2, x) {
