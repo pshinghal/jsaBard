@@ -14,8 +14,8 @@ require.config({
 	}
 });
 define(
-	["Story", "jsaSound/jsaCore/sliderBox", "jsaSound/jsaCore/config", "jquery"],
-	function (Story, makeSliderBox, jsaSoundConfig, $) {
+	["Story", "jsaSound/jsaCore/sliderBox", "jsaSound/jsaCore/config", "soundSelect", "jquery"],
+	function (Story, makeSliderBox, jsaSoundConfig, soundSelectFactory, $) {
 		//TODO: Do not allow models to be added when no scene is selected (but a scene HAS been created). Maybe avoid non-selection completely
 
 		var i;
@@ -56,7 +56,7 @@ define(
 			sceneEditorDiv: "sceneEditor",
 			newSceneButton: "newScene",
 			newSoundButton: "newSound",
-			newSoundNameField: "newSoundName",
+			newSoundSelector: "newSoundSelector", 
 			saveStoryButton: "saveButton",
 			saveStoryNameField: "storyName",
 			soundList: "soundList",
@@ -214,7 +214,10 @@ define(
 					require( 
 						// Get the model
 						//["jsaSound/jsaModels/" + soundModelNames[num]],
-						[soundServer + "/jsaModels/" + soundModelNames[num]],
+						
+						//[soundServer + "/jsaModels/" + soundModelNames[num]],
+						[soundServer + soundModelNames[num] + ".js"],
+
 						// And open the sliderBox
 						function (currentSM) {
 							console.log("Adding " + soundModelNames[num] + " to soundModels object");
@@ -507,15 +510,18 @@ define(
 			return blockDiv;
 		}
 
-		function addNewSound(soundModel) {
+		function addNewSound(modelName) {
 			if (!story.getCurrentScene())
 				return;
 
+			
+			
+
 			// TODO: Sanitize
 			// Note: Scene does NOT care about the models
-			var soundName = story.getCurrentScene().addSound(soundModel);
+			story.getCurrentScene().addSound(modelName);
 			selectSceneById(story.getCurrentSceneId());
-			elements.newSoundNameField.value = "";
+			//elements.newSoundNameField.value = "";
 		}
 
 		function deleteSoundByButton(button) {
@@ -533,6 +539,14 @@ define(
 		}
 
 		function makeSoundBox(name) {
+
+			// Rather than being stripped here, it should probably be stripped everywhere and only added when wi "load the sounds/slider boxes"
+			if (name.indexOf("jsaModels/") === 0) {
+				name = name.substr("jsaModels/".length);
+			}
+
+
+
 			var soundDiv = document.createElement("div");
 			soundDiv.setAttribute("class", "sound");
 			soundDiv.setAttribute("id", joinByVBar(name, "soundBox"));
@@ -611,7 +625,9 @@ define(
 		}
 
 		function newSoundHandler() {
-			var model = elements.newSoundNameField.value;
+			var model = elements.newSoundSelector.getModelName();
+			if (! model) return;
+			console.log("newSoundHandler: soundModeName is " + model);
 			addNewSound(model);
 		}
 
@@ -728,9 +744,9 @@ define(
 			show("authorContainer");
 		}
 
-		function setupAuthorListeners() {
+		function setupAuthorListeners() { 
 			elements.newSceneButton.addEventListener("click", addNewScene);
-			elements.newSoundButton.addEventListener("click", newSoundHandler);
+			elements.newSoundSelector.addEventListener("change", newSoundHandler);
 			elements.saveStoryButton.addEventListener("click", saveStoryHandler);
 			window.onbeforeunload = cleanup;
 		}

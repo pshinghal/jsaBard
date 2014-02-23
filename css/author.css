@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Ubuntu:400,700);
+
 
 .scene[active] {
 	/*background-color: #999999;*/
@@ -8,36 +8,44 @@
 }
 
 .scene {
-	padding: 2px;
+	padding: 4px;
 }
 
 input {
-	font-family: 'Ubuntu', sans-serif;
 }
 
 button {
-	font-family: 'Ubuntu', sans-serif;
+	-webkit-box-shadow:rgba(0,0,0,0.2) 0 1px 0 0;
+	-moz-box-shadow:rgba(0,0,0,0.2) 0 1px 0 0;
+	box-shadow:rgba(0,0,0,0.2) 0 1px 0 0;
+	border-bottom-color:#333;
+	border:1px solid #61c4ea;
+	background-color:#7cceee;
+	border-radius:5px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	color:#333;
+	font-family:'Verdana',Arial,sans-serif;
+	font-size:14px;
+	text-shadow:#b2e2f5 0 1px 0;
+	padding:5px
+	margin: 5px;
 }
 
 #welcomeContainer {
-	font-family: 'Ubuntu', sans-serif;
-	font-size: 18px;
 	width: 960px;
 	text-align: center;
 	margin: auto;
 }
 
 #welcomeContainer input {
-	font-size: xx-large;
 }
 
 #welcomeContainer button {
-	font-size: xx-large;
 }
 
 #authorContainer {
 	width: 960px;
-	font-family: 'Ubuntu', sans-serif;
 	margin: auto;
 	height: 540px;
 }
@@ -64,12 +72,10 @@ button {
 }
 
 #saveBox input {
-	font-size: x-large;
 	width: 500px;
 }
 
 #saveBox button {
-	font-size: x-large;
 }
 
 #authorRight {
@@ -82,10 +88,8 @@ button {
 
 #sceneEditor {
 	display: block;
-	font-size: 14px;
 	white-space: nowrap;
 	overflow: auto;
-	font-size: large;
 	padding: 4px;
 }
 
@@ -112,26 +116,31 @@ button {
 	display: block;
 }
 
+.controllerNameRow{
+	font-weight: bold;
+}
+
 .controllerParamRowName {
 	display: inline-block;
-	width: 160px;
+	width: 120px;
 	float: left;
+	padding: 2px;
 }
 
 .controllerParamRow {
 	height: 32px;
+	padding: 2px;
 }
 
-.buttonContainer {
-	display: inline-block;
+.setStateButton{
+	padding: 	10px;
 }
 
 .buttonContainer button {
 	width: 160px;
-	font-size: large;
-	margin: 0;
-	padding: 0;
+	margin: 5;
 	height: 32px;
+	padding: 	10px;
 }
 
 #soundFiller {

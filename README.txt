@@ -31,12 +31,6 @@ At the top of files
     		<script src="http://192.168.1.85:8000/socket.io/socket.io.js"></script>
 
 
-To run on local windows 7 machine:
-   	(Install IIS -  http://www.youtube.com/watch?v=dC84NQqjYEc)
-        Make sure Firewall allows connections.
-
-	Control Panel -> Adminstrative Tools -> IIS Manager
-        Create a website (don't use port 8000 cause message-router is using that port) with the project folder as the location. If you are using windows default port 80, then you don't have to specify port number for the web page.
 
         run: node message-router.js
 	Open localhost:port/index.html, 

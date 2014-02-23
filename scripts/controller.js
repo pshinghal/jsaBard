@@ -25,8 +25,8 @@ require.config({
 				alert("This page cannot be run as a file, but must be served from a server ." );
 			}
 				// messageSurface server is hardcoded to port 8002 (on the same server as jsaBard - or from animatedsoundworks)
-				// LOCAL var host = "http://"+window.document.location.hostname + ":8002";
-				var host = "http://animatedsoundworks.com:8002";
+				var host = "http://"+window.document.location.hostname + ":8002";
+				// LOCAL var host = "http://animatedsoundworks.com:8002";
 				console.log("Will look surfaces served from " + host);
 				return (host );
 			})(),
