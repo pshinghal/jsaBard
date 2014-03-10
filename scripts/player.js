@@ -40,11 +40,15 @@ define(
 	function (require, makeSliderBox, jsaSoundConfig, $, Story, io) {
 		var story = {};
 
+		var showSliderBoxesP = true;
+
 		var soundServer = jsaSoundConfig.resourcesPath;
 
 		var sliderBoxes = {};
 		var soundModelNames = [];
-		var soundModels = {};
+		var soundModelFactories = {};
+
+		var rawSoundModels = {};
 
 		var isPlaying = {};
 		var currState = {};
@@ -59,7 +63,7 @@ define(
 			return s.trim().split("|");
 		}
 
-		function getSoundModelFromName(name) {
+		function getSMFactoryFromName(name) {
 			return tokenizeByVBar(name)[0];
 		}
 
@@ -100,6 +104,7 @@ define(
 		function clearSliderBoxes() {
 			// Memory leak?
 			sliderBoxes = {};
+			rawSoundModels = {};
 		}
 
 		function closeSliderBoxes() {
@@ -107,6 +112,13 @@ define(
 			for (x in sliderBoxes) {
 				if (sliderBoxes.hasOwnProperty(x)) {
 					sliderBoxes[x].close();
+				}
+			}
+
+			for (x in rawSoundModels) {
+				if (rawSoundModels.hasOwnProperty(x)) {
+					rawSoundModels[x].release();
+					rawSoundModels[x].destroy();
 				}
 			}
 		}
@@ -120,7 +132,7 @@ define(
 		function reloadSoundModels(callback) {
 			// Memory leak?
 			soundModelNames = [];
-			soundModels = {};
+			soundModelFactories = {};
 			if (!story.getCurrentScene())
 				return;
 			soundModelNames = story.getCurrentScene().getSoundModels();
@@ -140,9 +152,10 @@ define(
 						// And open the sliderBox
 						function (currentSM) {
 							console.log("Making slider box");
-							console.log("Adding " + soundModelNames[num] + " to soundModels object");
+							console.log("Adding " + soundModelNames[num] + " to soundModelFactories object");
 
-							soundModels[soundModelNames[num]] = currentSM;
+							soundModelFactories[soundModelNames[num]] = currentSM;
+							console.log("just created soundModelFactories[" + soundModelNames[num] + "]");
 							soundModelHelper(num + 1);
 						}
 					);
@@ -177,30 +190,47 @@ define(
 			if (!story.getCurrentScene())
 				return;
 			var soundList = story.getCurrentScene().getSoundNames();
-
 			var i;
 			for (i = 0; i < soundList.length; i++) {
-				var model = getSoundModelFromName(soundList[i]);
-				//DANGER. May be incorrect.
-				sliderBoxes[soundList[i]] = makeSliderBox(soundModels[model]());
+				var smFactoractory = getSMFactoryFromName(soundList[i]);
+
+				rawSoundModels[soundList[i]] = soundModelFactories[smFactoractory]();
+				if (showSliderBoxesP===true){
+					sliderBoxes[soundList[i]] = makeSliderBox(rawSoundModels[soundList[i]]);
+				} 
 			}
 		}
 
 		function setState(state) {
 			var i, j;
 			var soundList = story.getCurrentScene().getSoundNames();
+
+			var model;
+			var soundState;
+
+
 			for (i = 0; i < soundList.length && i < state.length; i++) {
-				var sliderBox = sliderBoxes[soundList[i]];
-				var soundState = state[i];
-				if (!sliderBox) {
+
+				if (showSliderBoxesP===true){
+					model = sliderBoxes[soundList[i]];
+				} else{
+					model = rawSoundModels[soundList[i]];
+				}
+				soundState = state[i];
+
+				//console.log("will set state for sliderBoxes[" + soundList[i] + "]");
+				console.log("will set state for soundModelss[" + tokenizeByVBar(soundList[i])[0] + "]");
+
+
+				if (!model) {
 					console.log("ERROR: There's no slider box for " + soundList[i]);
 					continue;
 				}
 				for (j = 0; j < soundState.length; j++) {
 					if (soundState[j].type === "range")
-						sliderBox.setParam(soundState[j].name, soundState[j].value);
+						model.setParam(soundState[j].name, soundState[j].value);
 					else
-						sliderBox.setParam(soundState[j].name, soundState[j].value);
+						model.setParam(soundState[j].name, soundState[j].value);
 				}
 			}
 		}
@@ -250,25 +280,6 @@ define(
 			}
 		}
 
-		//TODO: (MAYBE) implement way of specifying whether we want to STOP or to RELEASE
-		// This currently interfaces with the sliderBox, so play and release are no different. i.e. play() while playing is the same as release()
-		// Keeping this at the moment, for possible future use.
-		var play_stop = function (targetModelName) {
-			console.log("Play/Stop " + targetModelName);
-			if (soundModels[targetModelName] && playingP[targetModelName]) {
-				// console.log("Yes, playing");
-				// console.log(soundModels[targetModelName]);
-				soundModels[targetModelName].release();
-				// console.log("releasing sound");
-				playingP[targetModelName] = false;
-			} else {
-				// console.log("Not playing");
-				// console.log(soundModels[targetModelName]);
-				soundModels[targetModelName].play();
-				// console.log("playing sound");
-				playingP[targetModelName] = true;
-			}
-		};
 
 		function rangeMessageHandler(handler, value) {
 			setState(interpolateStates(handler.min, handler.max, value));
