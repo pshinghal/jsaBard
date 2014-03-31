@@ -17,9 +17,6 @@ require.config({
 	},
 	paths: {
 		"socketio": "/socket.io/socket.io",
-		//"messageSurface": "http://localhost:8002",
-		//LOCAL "messageSurface": "http://192.168.43.250:8002",
-		//"messageSurface": "http://animatedsoundworks.com:8002",
 		"messageSurface": (function(){
 			if (! window.document.location.hostname){
 				alert("This page cannot be run as a file, but must be served from a server ." );
