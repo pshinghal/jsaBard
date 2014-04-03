@@ -211,12 +211,14 @@ define(
 			function soundModelHelper(num) {
 				if (num < soundModelNames.length) {
 					console.log("The scene you are loading has " + soundModelNames.length + " models.");
+					console.log("requireing sound file " + soundServer + "/jsaModels/" + soundModelNames[num]);
+			
 					require( 
 						// Get the model
 						//["jsaSound/jsaModels/" + soundModelNames[num]],
 						
 						//[soundServer + "/jsaModels/" + soundModelNames[num]],
-						[soundServer + soundModelNames[num] + ".js"],
+						[soundServer + "/jsaModels/" + soundModelNames[num]],
 
 						// And open the sliderBox
 						function (currentSM) {

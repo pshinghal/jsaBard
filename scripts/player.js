@@ -40,7 +40,7 @@ define(
 	function (require, makeSliderBox, jsaSoundConfig, $, Story, io) {
 		var story = {};
 
-		var showSliderBoxesP = false;
+		var showSliderBoxesP = true;
 
 		var soundServer = jsaSoundConfig.resourcesPath;
 
